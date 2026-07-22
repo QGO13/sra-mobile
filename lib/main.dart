@@ -9,6 +9,9 @@ import 'package:sra_hotel/features/auth/presentation/bloc/auth_event.dart';
 import 'package:sra_hotel/features/auth/presentation/bloc/auth_state.dart';
 import 'package:sra_hotel/features/auth/presentation/pages/login_page.dart';
 import 'package:sra_hotel/features/auth/presentation/pages/register_page.dart';
+import 'package:sra_hotel/features/auth/presentation/pages/otp_page.dart';
+import 'package:sra_hotel/features/auth/presentation/pages/change_password_page.dart';
+import 'package:sra_hotel/features/auth/presentation/pages/logout_page.dart';
 import 'package:sra_hotel/features/home/presentation/pages/client_shell_page.dart';
 import 'package:sra_hotel/features/client_booking/presentation/pages/client_booking_page.dart';
 import 'package:sra_hotel/features/cart/presentation/pages/cart_page.dart';
@@ -98,6 +101,9 @@ class _MyAppState extends State<MyApp> {
           AppRoutes.welcome: (context) => const SraWelcomePage(),
           AppRoutes.login: (context) => const LoginPage(),
           AppRoutes.register: (context) => const RegisterPage(),
+          AppRoutes.otp: (context) => const OtpPage(),
+          AppRoutes.changePassword: (context) => const ChangePasswordPage(),
+          AppRoutes.logout: (context) => const LogoutPage(),
           AppRoutes.home: (context) => const ClientShellPage(),
           AppRoutes.search: (context) => BlocProvider<ClientBookingBloc>(
                 create: (_) => di.sl<ClientBookingBloc>(),

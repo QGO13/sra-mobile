@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:sra_hotel/core/routes/app_routes.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
 import 'package:sra_hotel/core/widgets/widgets.dart';
@@ -10,7 +9,7 @@ import 'package:sra_hotel/features/auth/presentation/bloc/auth_state.dart';
 import 'package:sra_hotel/l10n/app_localizations.dart';
 import 'package:sra_hotel/main.dart';
 
-/// Page de connexion SRA Hotel — Pixel-Perfect reproduction du design Next.js React.
+/// Page de connexion SRA Hotel — Refonte Pixel-Perfect utilisant exclusivement les composants Core.
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -22,7 +21,6 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _showPassword = false;
   String? _errorMessage;
 
   @override
@@ -57,22 +55,17 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final currentLocale = Localizations.localeOf(context);
 
     final bgPage = isDark ? AppColors.darkSurface : AppColors.fog;
-    final bgCard = isDark ? AppColors.darkCard : AppColors.white;
-    final borderCard = isDark ? AppColors.darkBorder : const Color(0x17212222);
-    final textMain = isDark ? AppColors.white : AppColors.ink;
-    final textMuted = isDark ? AppColors.overlayDarkMedium : const Color(0xFF6B6C6C);
-    final inputBg = isDark ? AppColors.darkElevated : AppColors.white;
-    final inputBorder = isDark ? AppColors.darkBorder : const Color(0x1F212222);
+    final textMuted = isDark ? AppColors.overlayDarkMedium : AppColors.inkMuted;
 
     return Scaffold(
       backgroundColor: bgPage,
       appBar: AppBar(
-        backgroundColor: const Color(0x00000000),
+        backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
           LanguageSelector(
@@ -81,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
               MyApp.setLocale(context, newLocale);
             },
           ),
-          const SizedBox(width: AppDimensions.spacingMd),
+          AppDimensions.hGapMd,
         ],
       ),
       body: BlocListener<AuthBloc, AuthState>(
@@ -110,231 +103,106 @@ class _LoginPageState extends State<LoginPage> {
                 horizontal: AppDimensions.spacingLg,
                 vertical: AppDimensions.spacingXl,
               ),
-              child: Container(
+              child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 480),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // ── Logo Next.js (160px max width) ──────────────────────
-                    Center(
-                      child: Image.network(
-                        "https://sra-hotel.com/media/logo-SweetRestAparthotel_color.png",
-                        width: 160,
-                        fit: BoxFit.contain,
-                        errorBuilder: (context, error, stackTrace) =>
-                            const SraLogo(size: 80),
-                      ),
-                    ),
-                    const SizedBox(height: AppDimensions.spacingLg),
+                    // ── Logo Officiel Asset (logo-SweetRestAparthotel_simple.png) ──
+                    const SraLogo(height: AppDimensions.avatarSizeLg * 1.5),
+                    AppDimensions.vGapLg,
 
-                    // ── Titre Serif Playfair Display + Sous-titre ────────────
+                    // ── Titres Playfair Display + Raleway ────────────
                     Text(
-                      localizations.welcomeBack,
+                      l10n.welcomeBack,
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.playfairDisplay(
-                        fontSize: 32,
-                        fontWeight: FontWeight.w400,
-                        color: textMain,
-                        height: 1.2,
+                      style: AppTextStyles.displayMedium.copyWith(
+                        color: isDark ? AppColors.white : AppColors.ink,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    AppDimensions.vGapXs,
                     Text(
-                      localizations.loginSubtitle,
+                      l10n.loginSubtitle,
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.raleway(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w300,
+                      style: AppTextStyles.bodyMedium.copyWith(
                         color: textMuted,
-                        height: 1.6,
                       ),
                     ),
-                    const SizedBox(height: AppDimensions.spacingLg),
+                    AppDimensions.vGapLg,
 
-                    // ── Comptes de Démonstration Banner (Accordéon Next.js) ──
+                    // ── Comptes de Démonstration Accordéon ──
                     DemoAccountsBanner(onSelect: _selectDemoAccount),
-                    const SizedBox(height: AppDimensions.spacingLg),
+                    AppDimensions.vGapLg,
 
-                    // ── Card du Formulaire (Flat Luxury Design Next.js) ──────
-                    Container(
-                      padding: const EdgeInsets.fromLTRB(40, 44, 40, 38),
-                      decoration: BoxDecoration(
-                        color: bgCard,
-                        border: Border.all(color: borderCard, width: 1.0),
-                        boxShadow: const [AppShadows.card],
-                      ),
+                    // ── Card du Formulaire ──────
+                    SraCard(
+                      padding: const EdgeInsets.all(AppDimensions.spacingXl),
                       child: Form(
                         key: _formKey,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            // ── Champ Email ──────────────────────────────────
-                            Text(
-                              "EMAIL *",
-                              style: GoogleFonts.raleway(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 2.0,
-                                color: AppColors.gold,
-                              ),
-                            ),
-                            const SizedBox(height: AppDimensions.spacingSm),
-                            TextFormField(
+                            // ── Champ Email ──
+                            SraInput(
+                              label: l10n.email,
+                              placeholder: "contact@email.com",
                               controller: _emailController,
                               keyboardType: TextInputType.emailAddress,
-                              style: GoogleFonts.raleway(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w300,
-                                color: textMain,
-                              ),
-                              decoration: InputDecoration(
-                                hintText: "contact@email.com",
-                                hintStyle: GoogleFonts.raleway(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w300,
-                                  color: textMuted,
-                                ),
-                                filled: true,
-                                fillColor: inputBg,
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 18,
-                                  vertical: 14,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: inputBorder, width: 1.0),
-                                  borderRadius: BorderRadius.zero,
-                                ),
-                                focusedBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(color: AppColors.gold, width: 1.5),
-                                  borderRadius: BorderRadius.zero,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: AppDimensions.spacingLg),
-
-                            // ── Champ Mot de passe ───────────────────────────
-                            Text(
-                              "MOT DE PASSE *",
-                              style: GoogleFonts.raleway(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 2.0,
+                              prefixIcon: const Icon(
+                                Icons.alternate_email_rounded,
                                 color: AppColors.gold,
+                                size: AppDimensions.iconSizeMd,
                               ),
                             ),
-                            const SizedBox(height: AppDimensions.spacingSm),
-                            TextFormField(
-                              controller: _passwordController,
-                              obscureText: !_showPassword,
-                              style: GoogleFonts.raleway(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w300,
-                                color: textMain,
-                              ),
-                              decoration: InputDecoration(
-                                hintText: "••••••••",
-                                hintStyle: GoogleFonts.raleway(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w300,
-                                  color: textMuted,
-                                ),
-                                filled: true,
-                                fillColor: inputBg,
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 18,
-                                  vertical: 14,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: inputBorder, width: 1.0),
-                                  borderRadius: BorderRadius.zero,
-                                ),
-                                focusedBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(color: AppColors.gold, width: 1.5),
-                                  borderRadius: BorderRadius.zero,
-                                ),
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    _showPassword
-                                        ? Icons.visibility_off_outlined
-                                        : Icons.visibility_outlined,
-                                    color: textMuted,
-                                    size: 16,
-                                  ),
-                                  onPressed: () {
-                                    setState(() => _showPassword = !_showPassword);
-                                  },
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: AppDimensions.spacingLg),
+                            AppDimensions.vGapLg,
 
-                            // ── Message d'erreur sémantique Next.js ──────────
+                            // ── Champ Mot de passe ──
+                            SraInput(
+                              label: l10n.password,
+                              placeholder: "••••••••",
+                              controller: _passwordController,
+                              obscureText: true,
+                              prefixIcon: const Icon(
+                                Icons.lock_outline_rounded,
+                                color: AppColors.gold,
+                                size: AppDimensions.iconSizeMd,
+                              ),
+                            ),
+                            AppDimensions.vGapLg,
+
+                            // ── Erreur sémantique ──
                             if (_errorMessage != null) ...[
                               Container(
                                 padding: const EdgeInsets.symmetric(
-                                  horizontal: 14,
-                                  vertical: 11,
+                                  horizontal: AppDimensions.spacingSm,
+                                  vertical: AppDimensions.spacingXs,
                                 ),
-                                decoration: const BoxDecoration(
-                                  color: Color(0x14E05555),
-                                  border: Border(
-                                    left: BorderSide(
-                                      color: Color(0xFFE05555),
-                                      width: 2.0,
-                                    ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.statusError.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(AppDimensions.radiusXs),
+                                  border: Border.all(
+                                    color: AppColors.statusError,
+                                    width: AppDimensions.borderThin,
                                   ),
                                 ),
                                 child: Text(
                                   _errorMessage!,
-                                  style: GoogleFonts.raleway(
-                                    fontSize: 13.5,
-                                    fontWeight: FontWeight.w400,
-                                    color: const Color(0xFFC0392B),
+                                  style: AppTextStyles.bodySmall.copyWith(
+                                    color: AppColors.statusError,
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: AppDimensions.spacingLg),
+                              AppDimensions.vGapLg,
                             ],
 
-                            // ── Bouton de connexion Next.js (Se Connecter) ──
+                            // ── Bouton de connexion SRA ──
                             BlocBuilder<AuthBloc, AuthState>(
                               builder: (context, state) {
-                                final isLoading = state is AuthLoading;
-
-                                return SizedBox(
-                                  height: AppDimensions.buttonHeight,
-                                  child: ElevatedButton(
-                                    onPressed: isLoading ? null : _submit,
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColors.gold,
-                                      foregroundColor: AppColors.white,
-                                      elevation: 0,
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.zero,
-                                      ),
-                                    ),
-                                    child: isLoading
-                                        ? const SizedBox(
-                                            width: 20,
-                                            height: 20,
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 2,
-                                              valueColor: AlwaysStoppedAnimation<Color>(
-                                                AppColors.white,
-                                              ),
-                                            ),
-                                          )
-                                        : Text(
-                                            "SE CONNECTER",
-                                            style: GoogleFonts.raleway(
-                                              fontSize: 11.5,
-                                              fontWeight: FontWeight.w600,
-                                              letterSpacing: 1.8,
-                                              color: AppColors.white,
-                                            ),
-                                          ),
-                                  ),
+                                return SraButton(
+                                  label: l10n.login.toUpperCase(),
+                                  isLoading: state is AuthLoading,
+                                  onPressed: _submit,
                                 );
                               },
                             ),
@@ -343,49 +211,34 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
 
-                    const SizedBox(height: AppDimensions.spacingLg),
+                    AppDimensions.vGapLg,
 
-                    // ── Séparateur "OU" Next.js ──────────────────────────────
+                    // ── Séparateur "OU" ──
                     Row(
                       children: [
-                        Expanded(
-                          child: Container(
-                            height: 1,
-                            color: borderCard,
-                          ),
-                        ),
+                        const Expanded(child: Divider()),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMd),
                           child: Text(
                             "OU",
-                            style: GoogleFonts.raleway(
-                              fontSize: 11.5,
-                              fontWeight: FontWeight.w500,
-                              letterSpacing: 1.0,
-                              color: const Color(0xFFBBBCC1),
+                            style: AppTextStyles.labelUppercase.copyWith(
+                              color: textMuted,
                             ),
                           ),
                         ),
-                        Expanded(
-                          child: Container(
-                            height: 1,
-                            color: borderCard,
-                          ),
-                        ),
+                        const Expanded(child: Divider()),
                       ],
                     ),
 
-                    const SizedBox(height: AppDimensions.spacingLg),
+                    AppDimensions.vGapLg,
 
-                    // ── Lien Créer un compte ─────────────────────────────────
+                    // ── Lien Créer un compte ──
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           "Pas encore de compte ? ",
-                          style: GoogleFonts.raleway(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w300,
+                          style: AppTextStyles.bodyMedium.copyWith(
                             color: textMuted,
                           ),
                         ),
@@ -395,19 +248,18 @@ class _LoginPageState extends State<LoginPage> {
                           },
                           child: Text(
                             "Créer un compte",
-                            style: GoogleFonts.raleway(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
+                            style: AppTextStyles.bodyMedium.copyWith(
                               color: AppColors.gold,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
                       ],
                     ),
 
-                    const SizedBox(height: AppDimensions.spacingXl),
+                    AppDimensions.vGapXl,
 
-                    // ── Bouton Retour à l'accueil ────────────────────────────
+                    // ── Bouton Retour à l'accueil ──
                     Center(
                       child: GestureDetector(
                         onTap: () {
@@ -415,11 +267,8 @@ class _LoginPageState extends State<LoginPage> {
                         },
                         child: Text(
                           "← Retour à l'accueil",
-                          style: GoogleFonts.raleway(
-                            fontSize: 12.5,
-                            fontWeight: FontWeight.w400,
-                            letterSpacing: 0.5,
-                            color: const Color(0xFFBBBCC1),
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: textMuted,
                           ),
                         ),
                       ),
