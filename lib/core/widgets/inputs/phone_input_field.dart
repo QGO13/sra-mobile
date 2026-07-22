@@ -4,21 +4,12 @@ import 'package:sra_hotel/core/constants/country_dial_codes.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
 import 'package:sra_hotel/l10n/app_localizations.dart';
 
-/// Widget de saisie du numéro de téléphone international.
+/// Widget de saisie du numéro de téléphone international avec support Dark Mode.
 /// Compose un volet indicatif (sélecteur de pays) + un champ de saisie du numéro local.
-/// La valeur complète est accessible via [onChanged] sous la forme "+225 0707070707".
 class PhoneInputField extends StatefulWidget {
-  /// Contrôleur pour le numéro local (sans indicatif)
   final TextEditingController numberController;
-
-  /// Pays sélectionné initialement (code ISO, ex: "CI")
   final String? initialCountryCode;
-
-  /// Callback appelé quand l'indicatif ou le numéro change.
-  /// Reçoit le numéro complet (indicatif + numéro local).
   final ValueChanged<String>? onChanged;
-
-  /// Validateur pour le champ numéro
   final String? Function(String?)? validator;
 
   const PhoneInputField({
@@ -63,7 +54,7 @@ class _PhoneInputFieldState extends State<PhoneInputField> {
     final selected = await showModalBottomSheet<CountryDialCode>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: const Color(0x00000000),
+      backgroundColor: Colors.transparent,
       builder: (ctx) => _CountryPickerSheet(
         currentCode: _selectedCountry.code,
       ),
@@ -80,23 +71,19 @@ class _PhoneInputFieldState extends State<PhoneInputField> {
     final isDark = theme.brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context)!;
 
-    final borderColor = isDark ? AppColors.white12 : AppColors.mist;
+    final borderColor = isDark ? AppColors.darkBorder : AppColors.mist;
     final fillColor = isDark ? AppColors.darkCard : AppColors.white;
     final textColor = isDark ? AppColors.white : AppColors.ink;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          l10n.phoneLabel,
-          style: const TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 1.8,
-            color: AppColors.gold,
-          ),
+          l10n.phoneLabel.toUpperCase(),
+          style: AppTextStyles.labelUppercase,
         ),
-        const SizedBox(height: 8),
+        AppDimensions.vGapSm,
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -104,11 +91,11 @@ class _PhoneInputFieldState extends State<PhoneInputField> {
             GestureDetector(
               onTap: _selectCountry,
               child: Container(
-                height: 52,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
+                height: AppDimensions.inputHeight,
+                padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingSm),
                 decoration: BoxDecoration(
                   color: fillColor,
-                  border: Border.all(color: borderColor),
+                  border: Border.all(color: borderColor, width: AppDimensions.borderThin),
                   borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
                 ),
                 child: Row(
@@ -116,28 +103,27 @@ class _PhoneInputFieldState extends State<PhoneInputField> {
                   children: [
                     Text(
                       _selectedCountry.flag,
-                      style: const TextStyle(fontSize: 20),
+                      style: AppTextStyles.titleMedium,
                     ),
-                    const SizedBox(width: 6),
+                    AppDimensions.hGapXs,
                     Text(
                       _selectedCountry.dialCode,
-                      style: TextStyle(
+                      style: AppTextStyles.bodyMedium.copyWith(
                         color: textColor,
-                        fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(width: 4),
-                    Icon(
+                    AppDimensions.hGapXs,
+                    const Icon(
                       Icons.arrow_drop_down,
                       color: AppColors.gold,
-                      size: 20,
+                      size: AppDimensions.iconSizeMd,
                     ),
                   ],
                 ),
               ),
             ),
-            const SizedBox(width: 8),
+            AppDimensions.hGapSm,
 
             // ── Champ numéro local ──
             Expanded(
@@ -147,36 +133,34 @@ class _PhoneInputFieldState extends State<PhoneInputField> {
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'[\d\s\-]')),
                 ],
-                style: TextStyle(
+                style: AppTextStyles.bodyMedium.copyWith(
                   color: textColor,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w300,
                 ),
                 decoration: InputDecoration(
                   hintText: l10n.phoneNumberHint,
-                  hintStyle: TextStyle(
-                    color: isDark ? AppColors.white38 : AppColors.inkMuted,
-                    fontSize: 13,
+                  hintStyle: AppTextStyles.bodySmall.copyWith(
+                    color: isDark ? AppColors.overlayDarkMedium : AppColors.inkMuted,
                   ),
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.spacingMd,
+                    vertical: AppDimensions.spacingMd,
+                  ),
                   fillColor: fillColor,
                   filled: true,
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: borderColor),
+                    borderSide: BorderSide(color: borderColor, width: AppDimensions.borderThin),
                     borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        const BorderSide(color: AppColors.gold, width: 1.2),
+                    borderSide: const BorderSide(color: AppColors.gold, width: AppDimensions.borderMedium),
                     borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
                   ),
                   errorBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: AppColors.statusError),
+                    borderSide: const BorderSide(color: AppColors.statusError, width: AppDimensions.borderThin),
                     borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
                   ),
                   focusedErrorBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: AppColors.statusError, width: 1.2),
+                    borderSide: const BorderSide(color: AppColors.statusError, width: AppDimensions.borderMedium),
                     borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
                   ),
                 ),
@@ -230,8 +214,7 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context)!;
-    final bgColor =
-        isDark ? AppColors.ink : AppColors.fog;
+    final bgColor = isDark ? AppColors.darkCard : AppColors.fog;
 
     return DraggableScrollableSheet(
       initialChildSize: 0.75,
@@ -241,66 +224,66 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
         return Container(
           decoration: BoxDecoration(
             color: bgColor,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(AppDimensions.radiusLg)),
           ),
           child: Column(
             children: [
               // Poignée
               Container(
-                margin: const EdgeInsets.only(top: 12, bottom: 8),
-                width: 40,
-                height: 4,
+                margin: const EdgeInsets.only(top: AppDimensions.spacingSm, bottom: AppDimensions.spacingXs),
+                width: AppDimensions.buttonHeightSm,
+                height: AppDimensions.borderThick * 2,
                 decoration: BoxDecoration(
                   color: AppColors.inkMuted,
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(AppDimensions.radiusXs),
                 ),
               ),
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppDimensions.spacingMd,
+                  vertical: AppDimensions.spacingSm,
+                ),
                 child: Text(
                   l10n.selectCountryDialCode,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+                  style: AppTextStyles.titleMedium.copyWith(
                     color: isDark ? AppColors.white : AppColors.ink,
                   ),
                 ),
               ),
               // Barre de recherche
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppDimensions.spacingMd,
+                  vertical: AppDimensions.spacingXs,
+                ),
                 child: TextField(
                   controller: _searchController,
                   onChanged: _filter,
-                  style: TextStyle(
+                  style: AppTextStyles.bodyMedium.copyWith(
                     color: isDark ? AppColors.white : AppColors.ink,
-                    fontSize: 14,
                   ),
                   decoration: InputDecoration(
                     hintText: l10n.searchCountry,
-                    hintStyle: const TextStyle(color: AppColors.inkMuted, fontSize: 13),
-                    prefixIcon: const Icon(Icons.search,
-                        color: AppColors.gold, size: 20),
+                    hintStyle: AppTextStyles.bodySmall.copyWith(color: AppColors.inkMuted),
+                    prefixIcon: const Icon(Icons.search, color: AppColors.gold, size: AppDimensions.iconSizeMd),
                     contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 10),
-                    fillColor: isDark ? AppColors.darkCard : AppColors.white,
+                      horizontal: AppDimensions.spacingMd,
+                      vertical: AppDimensions.spacingSm,
+                    ),
+                    fillColor: isDark ? AppColors.darkElevated : AppColors.white,
                     filled: true,
                     enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: isDark ? AppColors.white12 : AppColors.mist),
+                      borderSide: BorderSide(color: isDark ? AppColors.darkBorder : AppColors.mist),
                       borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                          color: AppColors.gold, width: 1.2),
+                      borderSide: const BorderSide(color: AppColors.gold, width: AppDimensions.borderMedium),
                       borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 4),
+              AppDimensions.vGapXs,
               // Liste
               Expanded(
                 child: ListView.builder(
@@ -313,51 +296,41 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
                       onTap: () => Navigator.of(context).pop(country),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 14),
+                          horizontal: AppDimensions.spacingLg,
+                          vertical: AppDimensions.spacingSm,
+                        ),
                         decoration: BoxDecoration(
-                          color: isSelected
-                              ? AppColors.gold.withValues(alpha: 0.08)
-                              : null,
+                          color: isSelected ? AppColors.gold.withValues(alpha: isDark ? 0.18 : 0.08) : null,
                           border: Border(
                             bottom: BorderSide(
-                              color: isDark
-                                  ? AppColors.white10
-                                  : AppColors.mist,
-                              width: 0.5,
+                              color: isDark ? AppColors.darkBorder : AppColors.mist,
+                              width: AppDimensions.borderHair,
                             ),
                           ),
                         ),
                         child: Row(
                           children: [
-                            Text(country.flag,
-                                style: const TextStyle(fontSize: 22)),
-                            const SizedBox(width: 14),
+                            Text(country.flag, style: AppTextStyles.titleLarge),
+                            AppDimensions.hGapMd,
                             Expanded(
                               child: Text(
                                 country.name,
-                                style: TextStyle(
-                                  color: isDark
-                                      ? AppColors.white
-                                      : AppColors.ink,
-                                  fontSize: 14,
-                                  fontWeight: isSelected
-                                      ? FontWeight.w600
-                                      : FontWeight.w400,
+                                style: AppTextStyles.bodyMedium.copyWith(
+                                  color: isDark ? AppColors.white : AppColors.ink,
+                                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                                 ),
                               ),
                             ),
                             Text(
                               country.dialCode,
-                              style: TextStyle(
+                              style: AppTextStyles.bodyMedium.copyWith(
                                 color: AppColors.gold,
-                                fontSize: 13,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
                             if (isSelected) ...[
-                              const SizedBox(width: 8),
-                              const Icon(Icons.check,
-                                  color: AppColors.gold, size: 18),
+                              AppDimensions.hGapSm,
+                              const Icon(Icons.check, color: AppColors.gold, size: AppDimensions.iconSizeSm),
                             ],
                           ],
                         ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
 
-/// Carte avec image hero, dégradé sombre et contenu en overlay.
+/// Carte avec image hero, dégradé sombre et contenu en overlay avec support Dark Mode.
 class SraImageCard extends StatelessWidget {
   final String imageUrl;
   final double height;
@@ -13,7 +13,7 @@ class SraImageCard extends StatelessWidget {
   const SraImageCard({
     super.key,
     required this.imageUrl,
-    this.height = 200,
+    this.height = AppDimensions.responsiveCardMainExtent,
     this.overlayContent,
     this.badge,
     this.onTap,
@@ -53,11 +53,11 @@ class SraImageCard extends StatelessWidget {
             ),
             // Dégradé sombre bas pour lisibilité
             Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Color(0x00000000),
-                    Color(0xCC000000),
+                    Colors.transparent,
+                    AppColors.darkSurface.withValues(alpha: 0.85),
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,

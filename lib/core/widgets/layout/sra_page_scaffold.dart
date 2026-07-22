@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
 
-/// Scaffold de page SRA Hotel — fond cohérent, AppBar, padding uniforme.
+/// Scaffold de page SRA Hotel — fond cohérent, AppBar, padding uniforme avec support Dark Mode.
 ///
 /// Toutes les pages doivent utiliser ce scaffold (ou équivalent) en lieu et
 /// place d'un Scaffold nu, afin d'assurer le fond, les paddings et l'AppBar
@@ -86,7 +86,7 @@ class SraPageScaffold extends StatelessWidget {
               leading: leading,
               actions: [
                 ...?actions,
-                const SizedBox(width: AppDimensions.spacingSm),
+                AppDimensions.hGapSm,
               ],
             )
           : null,

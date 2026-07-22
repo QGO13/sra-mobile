@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
-import 'package:sra_hotel/core/widgets/widgets.dart';
+import 'package:sra_hotel/core/widgets/display/sra_logo.dart';
 
-/// AppBar personnalisée SRA Hotel — style prestige, support logo et dark mode.
+/// AppBar personnalisée SRA Hotel — style prestige avec support logo et dark mode.
 class SraAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
   final Widget? titleWidget;
@@ -34,7 +34,7 @@ class SraAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: titleWidget ??
           (showLogo
-              ? const SraLogo(height: 28)
+              ? const SraLogo(height: AppDimensions.iconSizeXl)
               : (title != null
                   ? Text(
                       title!,
@@ -49,7 +49,7 @@ class SraAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: AppDimensions.cardElevation,
       leading: leading,
       actions: actions != null
-          ? [...actions!, const SizedBox(width: AppDimensions.spacingSm)]
+          ? [...actions!, AppDimensions.hGapSm]
           : null,
     );
   }

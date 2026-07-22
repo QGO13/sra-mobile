@@ -1,26 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
 
-/// Modal confirmation dialog for destructive actions (delete, remove, etc.).
-///
-/// Returns `true` when the user confirms, `false` when they cancel or
-/// dismiss the dialog.
-///
-/// Usage:
-/// ```dart
-/// final confirmed = await ConfirmDeleteDialog.show(
-///   context,
-///   title: 'Supprimer la réservation',
-///   message: 'Cette action est irréversible. Voulez-vous continuer ?',
-/// );
-/// if (confirmed) { ... }
-/// ```
+/// Modal confirmation dialog for destructive actions (delete, remove, etc.) avec support Dark Mode.
 class ConfirmDeleteDialog {
-  // Private constructor — only the static [show] factory is public.
   const ConfirmDeleteDialog._();
 
-  /// Shows a confirmation [AlertDialog] and returns `true` if the user
-  /// pressed the destructive action button, `false` otherwise.
   static Future<bool> show(
     BuildContext context, {
     required String title,
@@ -29,22 +13,34 @@ class ConfirmDeleteDialog {
     String? cancelLabel,
     bool isDestructive = true,
   }) async {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     final result = await showDialog<bool>(
       context: context,
       barrierDismissible: true,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.darkCard : AppColors.surfaceLight,
-          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+          backgroundColor: isDark ? AppColors.darkCard : AppColors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppDimensions.radiusLg),
+            side: BorderSide(
+              color: isDark ? AppColors.darkBorder : AppColors.mist,
+              width: AppDimensions.borderThin,
+            ),
+          ),
           // ── Title ──────────────────────────────────────────────────────
           title: Text(
             title,
-            style: AppTextStyles.titleMedium,
+            style: AppTextStyles.titleMedium.copyWith(
+              color: isDark ? AppColors.white : AppColors.ink,
+            ),
           ),
           // ── Body ───────────────────────────────────────────────────────
           content: Text(
             message,
-            style: AppTextStyles.bodyMedium,
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: isDark ? AppColors.overlayDarkMedium : AppColors.inkSoft,
+            ),
           ),
           // ── Actions ────────────────────────────────────────────────────
           actions: [
@@ -73,7 +69,6 @@ class ConfirmDeleteDialog {
       },
     );
 
-    // If the dialog is dismissed by tapping the barrier, result is null → false.
     return result ?? false;
   }
 }

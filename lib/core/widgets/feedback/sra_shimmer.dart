@@ -17,7 +17,7 @@ class SraShimmer extends StatefulWidget {
   const SraShimmer.card({
     Key? key,
     double width = double.infinity,
-    double height = 180,
+    double height = AppDimensions.responsiveCardMainExtent,
   }) : this(
           key: key,
           width: width,
@@ -28,7 +28,7 @@ class SraShimmer extends StatefulWidget {
   const SraShimmer.line({
     Key? key,
     double width = double.infinity,
-    double height = 16,
+    double height = AppDimensions.iconSizeSm,
   }) : this(
           key: key,
           width: width,

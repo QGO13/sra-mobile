@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
 
-/// ListTile SRA Hotel — style luxe avec conteneur doré pour l'icône.
+/// ListTile SRA Hotel — style luxe avec conteneur doré pour l'icône et support Dark Mode.
 class SraListTile extends StatelessWidget {
   final String title;
   final String? subtitle;
@@ -29,10 +29,10 @@ class SraListTile extends StatelessWidget {
     Widget? leading = leadingWidget;
     if (leading == null && leadingIcon != null) {
       leading = Container(
-        width: AppDimensions.avatarSizeSm + 8,
-        height: AppDimensions.avatarSizeSm + 8,
+        width: AppDimensions.buttonHeightSm,
+        height: AppDimensions.buttonHeightSm,
         decoration: BoxDecoration(
-          color: AppColors.gold.withValues(alpha: 0.1),
+          color: AppColors.gold.withValues(alpha: isDark ? 0.18 : 0.1),
           borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
         ),
         child: Icon(
@@ -63,7 +63,7 @@ class SraListTile extends StatelessWidget {
               ? Text(
                   subtitle!,
                   style: AppTextStyles.bodySmall.copyWith(
-                    color: AppColors.inkMuted,
+                    color: isDark ? AppColors.overlayDarkMedium : AppColors.inkMuted,
                   ),
                 )
               : null,
@@ -82,7 +82,7 @@ class SraListTile extends StatelessWidget {
             height: 1,
             thickness: AppDimensions.borderHair,
             color: isDark ? AppColors.darkBorder : AppColors.mist,
-            indent: leading != null ? 64 : AppDimensions.spacingMd,
+            indent: leading != null ? AppDimensions.avatarSizeLg : AppDimensions.spacingMd,
             endIndent: AppDimensions.spacingMd,
           ),
       ],

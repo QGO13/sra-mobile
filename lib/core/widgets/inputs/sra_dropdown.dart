@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
 
+/// Champ déroulant SRA Hotel avec support Dark Mode et 6 règles strictes.
 class SraDropdown extends StatelessWidget {
   final String label;
   final String? value;
@@ -29,65 +30,60 @@ class SraDropdown extends StatelessWidget {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           label.toUpperCase(),
-          style: const TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 1.8,
-            color: AppColors.gold,
-          ),
+          style: AppTextStyles.labelUppercase,
         ),
-        const SizedBox(height: 8),
+        AppDimensions.vGapSm,
         DropdownButtonFormField<String>(
           initialValue: value,
           onChanged: onChanged,
           validator: validator,
-          dropdownColor: isDark ? AppColors.ink : AppColors.white,
-          menuMaxHeight: 300,
+          dropdownColor: isDark ? AppColors.darkCard : AppColors.white,
+          menuMaxHeight: AppDimensions.responsiveCardMaxExtent,
           iconEnabledColor: AppColors.gold,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w300,
+          style: AppTextStyles.bodyMedium.copyWith(
             color: isDark ? AppColors.white : AppColors.ink,
           ),
           decoration: InputDecoration(
             hintText: placeholder,
-            hintStyle: TextStyle(
-              color: isDark ? AppColors.white38 : Colors.black38,
-              fontSize: 13,
-              fontWeight: FontWeight.w300,
+            hintStyle: AppTextStyles.bodySmall.copyWith(
+              color: AppColors.inkMuted,
             ),
             fillColor: isDark ? AppColors.darkCard : AppColors.white,
             filled: true,
             prefixIcon: prefixIcon,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: AppDimensions.spacingMd,
+              vertical: AppDimensions.spacingMd,
+            ),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: isDark ? AppColors.white12 : AppColors.mist,
-                width: 1.0,
+                color: isDark ? AppColors.darkBorder : AppColors.mist,
+                width: AppDimensions.borderThin,
               ),
               borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: const BorderSide(
                 color: AppColors.gold,
-                width: 1.2,
+                width: AppDimensions.borderMedium,
               ),
               borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
             ),
             errorBorder: OutlineInputBorder(
               borderSide: const BorderSide(
                 color: AppColors.statusError,
-                width: 1.0,
+                width: AppDimensions.borderThin,
               ),
               borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderSide: const BorderSide(
                 color: AppColors.statusError,
-                width: 1.2,
+                width: AppDimensions.borderMedium,
               ),
               borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
             ),

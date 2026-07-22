@@ -15,6 +15,7 @@ export 'inputs/media_uploader_box.dart';
 // ── Cartes ───────────────────────────────────────────────────────────────────
 export 'cards/sra_card.dart';
 export 'cards/sra_image_card.dart';
+export 'cards/kpi_card.dart';
 
 // ── Affichage & Typographie ──────────────────────────────────────────────────
 export 'display/sra_avatar.dart';
@@ -36,6 +37,7 @@ export 'layout/sra_app_bar.dart';
 export 'layout/sra_bottom_nav.dart';
 export 'layout/sra_page_scaffold.dart';
 export 'layout/responsive_list_grid_view.dart';
+export 'layout/luxe_data_grid.dart';
 
 // ── Feedback & États ────────────────────────────────────────────────────────
 export 'feedback/empty_state_view.dart';

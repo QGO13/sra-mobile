@@ -19,6 +19,7 @@ class LoadingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final content = Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -35,10 +36,12 @@ class LoadingWidget extends StatelessWidget {
         ),
         // ── Label ─────────────────────────────────────────────────────────
         if (label != null) ...[
-          const SizedBox(height: AppDimensions.spacingMd),
+          AppDimensions.vGapMd,
           Text(
             label!,
-            style: AppTextStyles.bodySmall,
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: isDark ? AppColors.overlayDarkMedium : AppColors.inkMuted,
+            ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -48,7 +51,7 @@ class LoadingWidget extends StatelessWidget {
     if (!overlay) {
       return Center(
         child: Padding(
-          padding: const EdgeInsets.all(AppDimensions.spacingXl),
+          padding: AppDimensions.paddingXlAll,
           child: content,
         ),
       );

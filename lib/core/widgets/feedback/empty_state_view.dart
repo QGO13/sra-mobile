@@ -1,21 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
+import 'package:sra_hotel/core/widgets/buttons/sra_button.dart';
 
-/// Widget état vide SRA Hotel — icône, titre, sous-titre, action optionnelle.
+/// Vue d'état vide Luxe ("Gold Empty State") — Icône Or, titre, sous-titre et action optionnelle.
 ///
-/// ```dart
-/// EmptyStateView(
-///   icon: Icons.hotel_outlined,
-///   title: 'Aucune chambre',
-///   subtitle: 'Aucune chambre ne correspond à vos critères.',
-/// )
-/// EmptyStateView(
-///   icon: Icons.receipt_long_outlined,
-///   title: 'Aucune réservation',
-///   actionLabel: 'Réserver maintenant',
-///   onAction: () => context.go('/rooms'),
-/// )
-/// ```
+/// Alignée sur `GoldEmptyState.tsx` de design SRAh avec support Dark Mode.
 class EmptyStateView extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -34,6 +23,8 @@ class EmptyStateView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -42,63 +33,56 @@ class EmptyStateView extends StatelessWidget {
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // ── Icône dans cercle doré semi-transparent ───────────────────
+            // ── Icône dans cercle Or avec double bordure luxe ─────────────
             Container(
-              width: AppDimensions.avatarSizeLg + AppDimensions.spacingLg,
-              height: AppDimensions.avatarSizeLg + AppDimensions.spacingLg,
+              width: AppDimensions.logoSize,
+              height: AppDimensions.logoSize,
               decoration: BoxDecoration(
-                color: AppColors.gold.withValues(alpha: 0.08),
+                color: AppColors.gold.withValues(alpha: isDark ? 0.12 : 0.08),
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: AppColors.gold.withValues(alpha: 0.2),
-                  width: AppDimensions.borderThin,
+                  color: AppColors.gold.withValues(alpha: isDark ? 0.6 : 0.4),
+                  width: AppDimensions.borderMedium,
                 ),
               ),
-              child: Icon(
-                icon,
-                size: AppDimensions.iconSizeXl,
-                color: AppColors.gold.withValues(alpha: 0.6),
+              child: Center(
+                child: Icon(
+                  icon,
+                  size: AppDimensions.iconSizeXl,
+                  color: AppColors.gold,
+                ),
               ),
             ),
-            const SizedBox(height: AppDimensions.spacingLg),
-            // ── Titre ─────────────────────────────────────────────────────
+            AppDimensions.vGapLg,
+            // ── Titre (Playfair Display) ──────────────────────────────────
             Text(
               title,
-              style: AppTextStyles.titleMedium,
+              style: AppTextStyles.titleLarge.copyWith(
+                color: isDark ? AppColors.white : AppColors.ink,
+              ),
               textAlign: TextAlign.center,
             ),
-            // ── Sous-titre ────────────────────────────────────────────────
+            // ── Sous-titre (Raleway) ─────────────────────────────────────
             if (subtitle != null) ...[
-              const SizedBox(height: AppDimensions.spacingSm),
+              AppDimensions.vGapSm,
               Text(
                 subtitle!,
-                style: AppTextStyles.bodySmall,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: isDark ? AppColors.overlayDarkMedium : AppColors.inkMuted,
+                ),
                 textAlign: TextAlign.center,
               ),
             ],
-            // ── Action ────────────────────────────────────────────────────
+            // ── Bouton d'action ──────────────────────────────────────────
             if (actionLabel != null && onAction != null) ...[
-              const SizedBox(height: AppDimensions.spacingXl),
-              SizedBox(
-                width: 220,
-                child: ElevatedButton(
-                  onPressed: onAction,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.gold,
-                    foregroundColor: AppColors.white,
-                    elevation: AppDimensions.cardElevation,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppDimensions.radiusFull),
-                    ),
-                  ),
-                  child: Text(
-                    actionLabel!.toUpperCase(),
-                    style: AppTextStyles.buttonLabelSm.copyWith(
-                      color: AppColors.white,
-                    ),
-                  ),
-                ),
+              AppDimensions.vGapXl,
+              SraButton(
+                label: actionLabel!,
+                onPressed: onAction,
+                fullWidth: false,
+                small: true,
               ),
             ],
           ],

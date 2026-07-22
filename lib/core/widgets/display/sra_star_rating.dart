@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
 
-/// Affichage d'étoiles d'évaluation SRA Hotel — étoiles dorées.
+/// Affichage d'étoiles d'évaluation SRA Hotel — étoiles dorées avec support Dark Mode.
 class SraStarRating extends StatelessWidget {
   final double rating;
   final int maxStars;
@@ -18,6 +18,8 @@ class SraStarRating extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -42,11 +44,11 @@ class SraStarRating extends StatelessWidget {
           }),
         ),
         if (reviewCount != null) ...[
-          const SizedBox(width: AppDimensions.spacingXs),
+          AppDimensions.hGapXs,
           Text(
             '($reviewCount)',
             style: AppTextStyles.bodySmall.copyWith(
-              color: AppColors.inkMuted,
+              color: isDark ? AppColors.overlayDarkMedium : AppColors.inkMuted,
               fontSize: size * 0.75,
             ),
           ),

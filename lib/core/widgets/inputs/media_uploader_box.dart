@@ -6,7 +6,9 @@ import 'package:file_picker/file_picker.dart' show FilePicker, FileType;
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
+import 'package:sra_hotel/core/widgets/feedback/loading_widget.dart';
 
+/// Boîte de téléversement et glisser-déposer de média Luxe avec support Dark Mode.
 class MediaUploaderBox extends StatefulWidget {
   final String? initialImageUrl;
   final Function(XFile? file) onFileSelected;
@@ -16,7 +18,7 @@ class MediaUploaderBox extends StatefulWidget {
     super.key,
     this.initialImageUrl,
     required this.onFileSelected,
-    this.height = 180,
+    this.height = AppDimensions.responsiveCardMainExtent,
   });
 
   @override
@@ -31,7 +33,6 @@ class _MediaUploaderBoxState extends State<MediaUploaderBox> {
   Future<void> _pickImage() async {
     try {
       if (kIsWeb || Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
-        // Use FilePicker on Web/Desktop for better stability
         final result = await FilePicker.pickFiles(
           type: FileType.image,
         );
@@ -58,7 +59,6 @@ class _MediaUploaderBoxState extends State<MediaUploaderBox> {
           widget.onFileSelected(_selectedFile);
         }
       } else {
-        // Use ImagePicker on Mobile
         final XFile? image = await _picker.pickImage(
           source: ImageSource.gallery,
           imageQuality: 85,
@@ -96,7 +96,7 @@ class _MediaUploaderBoxState extends State<MediaUploaderBox> {
             if (snapshot.hasData) {
               return Image.memory(snapshot.data!, fit: BoxFit.cover);
             }
-            return const Center(child: CircularProgressIndicator());
+            return const LoadingWidget();
           },
         );
       } else {
@@ -110,28 +110,24 @@ class _MediaUploaderBoxState extends State<MediaUploaderBox> {
         imageUrl: widget.initialImageUrl!,
         fit: BoxFit.cover,
         placeholder: (context, url) => Container(
-          color: isDark ? AppColors.darkCard : AppColors.surfaceLight,
+          color: isDark ? AppColors.darkCard : AppColors.white,
           child: const Center(
-            child: SizedBox(
-              width: 30,
-              height: 30,
-              child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.gold),
-            ),
+            child: LoadingWidget(),
           ),
         ),
         errorWidget: (context, url, error) => const Center(
-          child: Icon(Icons.broken_image_outlined, color: AppColors.statusError),
+          child: Icon(Icons.broken_image_outlined, color: AppColors.statusError, size: AppDimensions.iconSizeXl),
         ),
       );
     } else {
-      previewWidget = const SizedBox();
+      previewWidget = const SizedBox.shrink();
     }
 
     final hasImage = _selectedFile != null || (widget.initialImageUrl != null && widget.initialImageUrl!.isNotEmpty);
 
-    Widget content = DropTarget(
-      onDragEntered: (detail) => setState(() => _isDragging = true),
-      onDragExited: (detail) => setState(() => _isDragging = false),
+    return DropTarget(
+      onDragEntered: (_) => setState(() => _isDragging = true),
+      onDragExited: (_) => setState(() => _isDragging = false),
       onDragDone: (detail) {
         if (detail.files.isNotEmpty) {
           setState(() {
@@ -141,27 +137,35 @@ class _MediaUploaderBoxState extends State<MediaUploaderBox> {
         }
       },
       child: InkWell(
+        borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
         onTap: _pickImage,
         child: Container(
           height: widget.height,
           decoration: BoxDecoration(
             color: _isDragging
-                ? (isDark ? AppColors.darkCard.withValues(alpha: 0.8) : AppColors.gold.withValues(alpha: 0.1))
-                : (isDark ? AppColors.darkCard : AppColors.surfaceLight),
+                ? (isDark ? AppColors.darkCard : AppColors.gold.withValues(alpha: 0.1))
+                : (isDark ? AppColors.darkCard : AppColors.white),
+            borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
             border: Border.all(
               color: _isDragging
                   ? AppColors.gold
-                  : (isDark ? AppColors.overlayDark : AppColors.mist),
-              width: _isDragging ? 2.0 : 1.0,
+                  : (isDark ? AppColors.darkBorder : AppColors.mist),
+              width: _isDragging ? AppDimensions.borderMedium : AppDimensions.borderThin,
             ),
           ),
           child: Stack(
             fit: StackFit.expand,
             children: [
               if (hasImage) ...[
-                previewWidget,
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+                  child: previewWidget,
+                ),
                 Container(
-                  color: AppColors.ink.withValues(alpha: 0.35),
+                  decoration: BoxDecoration(
+                    color: AppColors.darkSurface.withValues(alpha: 0.35),
+                    borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+                  ),
                 ),
                 Positioned(
                   top: AppDimensions.spacingSm,
@@ -169,12 +173,12 @@ class _MediaUploaderBoxState extends State<MediaUploaderBox> {
                   child: Row(
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.rotate_left, color: AppColors.white),
+                        icon: const Icon(Icons.rotate_left, color: AppColors.white, size: AppDimensions.iconSizeLg),
                         onPressed: _pickImage,
                         tooltip: "Remplacer l'image",
                       ),
                       IconButton(
-                        icon: const Icon(Icons.delete_outline, color: AppColors.statusError),
+                        icon: const Icon(Icons.delete_outline, color: AppColors.statusError, size: AppDimensions.iconSizeLg),
                         onPressed: _clearImage,
                         tooltip: "Supprimer l'image",
                       ),
@@ -187,10 +191,10 @@ class _MediaUploaderBoxState extends State<MediaUploaderBox> {
                   children: [
                     Icon(
                       Icons.cloud_upload_outlined,
-                      size: 40,
+                      size: AppDimensions.iconSizeXl * 1.25,
                       color: _isDragging ? AppColors.gold : AppColors.inkMuted,
                     ),
-                    const SizedBox(height: AppDimensions.spacingSm),
+                    AppDimensions.vGapSm,
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMd),
                       child: Text(
@@ -198,9 +202,8 @@ class _MediaUploaderBoxState extends State<MediaUploaderBox> {
                             ? "Déposez l'image ici..."
                             : "Glissez-déposez une image ou cliquez pour parcourir",
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: AppTextStyles.bodySmall.copyWith(
                           color: _isDragging ? AppColors.gold : AppColors.inkMuted,
-                          fontSize: 13,
                         ),
                       ),
                     ),
@@ -212,7 +215,5 @@ class _MediaUploaderBoxState extends State<MediaUploaderBox> {
         ),
       ),
     );
-
-    return content;
   }
 }

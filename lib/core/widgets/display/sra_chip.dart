@@ -55,7 +55,7 @@ class SraChip extends StatelessWidget {
                     ? AppColors.white
                     : (isDark ? AppColors.white : AppColors.inkSoft),
               ),
-              const SizedBox(width: AppDimensions.spacingXs),
+              AppDimensions.hGapXs,
             ],
             Text(
               label,

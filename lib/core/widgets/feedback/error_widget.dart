@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
+import 'package:sra_hotel/core/widgets/buttons/sra_button.dart';
 
-/// Widget d'erreur SRA Hotel — icône, message, retry optionnel.
-///
-/// ```dart
-/// SraErrorWidget(message: 'Connexion impossible')
-/// SraErrorWidget(message: 'Erreur réseau', onRetry: () => bloc.retry())
-/// ```
+/// Widget d'erreur SRA Hotel — icône, message, retry optionnel avec support Dark Mode.
 class SraErrorWidget extends StatelessWidget {
   final String message;
   final String? title;
@@ -23,6 +19,8 @@ class SraErrorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -37,7 +35,7 @@ class SraErrorWidget extends StatelessWidget {
               width: AppDimensions.avatarSizeLg,
               height: AppDimensions.avatarSizeLg,
               decoration: BoxDecoration(
-                color: AppColors.statusError.withValues(alpha: 0.1),
+                color: AppColors.statusError.withValues(alpha: isDark ? 0.2 : 0.1),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -46,51 +44,35 @@ class SraErrorWidget extends StatelessWidget {
                 size: AppDimensions.iconSizeXl,
               ),
             ),
-            const SizedBox(height: AppDimensions.spacingMd),
+            AppDimensions.vGapMd,
             // ── Titre ─────────────────────────────────────────────────────
             if (title != null) ...[
               Text(
                 title!,
-                style: AppTextStyles.titleSmall,
+                style: AppTextStyles.titleSmall.copyWith(
+                  color: isDark ? AppColors.white : AppColors.ink,
+                ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: AppDimensions.spacingXs),
+              AppDimensions.vGapXs,
             ],
             // ── Message ───────────────────────────────────────────────────
             Text(
               message,
-              style: AppTextStyles.bodySmall,
+              style: AppTextStyles.bodySmall.copyWith(
+                color: isDark ? AppColors.overlayDarkMedium : AppColors.inkMuted,
+              ),
               textAlign: TextAlign.center,
             ),
             // ── Bouton retry ──────────────────────────────────────────────
             if (onRetry != null) ...[
-              const SizedBox(height: AppDimensions.spacingLg),
-              SizedBox(
-                width: 180,
-                child: OutlinedButton.icon(
-                  onPressed: onRetry,
-                  icon: const Icon(
-                    Icons.refresh_rounded,
-                    size: AppDimensions.iconSizeSm,
-                    color: AppColors.gold,
-                  ),
-                  label: Text(
-                    retryLabel.toUpperCase(),
-                    style: AppTextStyles.buttonLabelSm.copyWith(
-                      color: AppColors.gold,
-                    ),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.gold,
-                    side: const BorderSide(
-                      color: AppColors.gold,
-                      width: AppDimensions.borderMedium,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppDimensions.radiusFull),
-                    ),
-                  ),
-                ),
+              AppDimensions.vGapLg,
+              SraButton.secondary(
+                label: retryLabel,
+                onPressed: onRetry,
+                icon: Icons.refresh_rounded,
+                fullWidth: false,
+                small: true,
               ),
             ],
           ],

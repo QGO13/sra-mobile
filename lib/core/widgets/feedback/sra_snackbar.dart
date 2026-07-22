@@ -2,11 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
 
 /// Helper SnackBar SRA Hotel — toast uniforme, zéro valeur codée en dur.
-///
-/// ```dart
-/// SraSnackbar.show(context, message: 'Réservation confirmée !', type: SraSnackbarType.success)
-/// SraSnackbar.show(context, message: 'Erreur réseau', type: SraSnackbarType.error)
-/// ```
 enum SraSnackbarType { success, error, warning, info }
 
 class SraSnackbar {
@@ -62,7 +57,7 @@ class SraSnackbar {
           content: Row(
             children: [
               Icon(icon, color: accentColor, size: AppDimensions.iconSizeMd),
-              const SizedBox(width: AppDimensions.spacingMd),
+              AppDimensions.hGapMd,
               Expanded(
                 child: Text(
                   message,

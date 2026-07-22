@@ -173,7 +173,7 @@ class _SraButtonState extends State<SraButton> {
           boxShadow: [shadow],
         ),
         child: Material(
-          color: const Color(0x00000000),
+          color: Colors.transparent,
           borderRadius: BorderRadius.circular(AppDimensions.radiusFull),
           child: InkWell(
             borderRadius: BorderRadius.circular(AppDimensions.radiusFull),
@@ -287,7 +287,7 @@ class _SraButtonState extends State<SraButton> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(widget.icon, size: AppDimensions.iconSizeSm, color: fgColor),
-        const SizedBox(width: AppDimensions.spacingSm),
+        AppDimensions.hGapSm,
         label,
       ],
     );

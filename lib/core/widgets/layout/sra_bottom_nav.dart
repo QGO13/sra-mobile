@@ -16,7 +16,7 @@ class SraBottomNavItem {
   });
 }
 
-/// Navigation inférieure SRA Hotel — indicateur doré animé + badges.
+/// Navigation inférieure SRA Hotel — indicateur doré animé + badges avec support Dark Mode.
 class SraBottomNav extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
@@ -68,23 +68,23 @@ class SraBottomNav extends StatelessWidget {
                       ),
                       if (item.badgeText != null)
                         Positioned(
-                          right: -8,
-                          top: -4,
+                          right: -AppDimensions.spacingSm,
+                          top: -AppDimensions.spacingXs,
                           child: Container(
-                            padding: const EdgeInsets.all(2),
+                            padding: const EdgeInsets.all(AppDimensions.borderThick),
                             decoration: const BoxDecoration(
                               color: AppColors.statusError,
                               shape: BoxShape.circle,
                             ),
                             constraints: const BoxConstraints(
-                              minWidth: 14,
-                              minHeight: 14,
+                              minWidth: AppDimensions.iconSizeSm,
+                              minHeight: AppDimensions.iconSizeSm,
                             ),
                             child: Text(
                               item.badgeText!,
                               style: AppTextStyles.labelUppercase.copyWith(
                                 color: AppColors.white,
-                                fontSize: 8,
+                                fontSize: AppDimensions.spacingSm,
                               ),
                               textAlign: TextAlign.center,
                             ),
@@ -92,20 +92,20 @@ class SraBottomNav extends StatelessWidget {
                         ),
                     ],
                   ),
-                  const SizedBox(height: AppDimensions.spacingXs),
+                  AppDimensions.vGapXs,
                   Text(
                     item.label,
                     style: AppTextStyles.buttonLabelSm.copyWith(
                       color: color,
-                      fontSize: 9,
+                      fontSize: AppDimensions.spacingSm + 1,
                       fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  AppDimensions.vGapXs,
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
-                    height: 2,
-                    width: isSelected ? 16 : 0,
+                    height: AppDimensions.borderThick,
+                    width: isSelected ? AppDimensions.iconSizeSm : 0,
                     decoration: BoxDecoration(
                       color: AppColors.gold,
                       borderRadius: BorderRadius.circular(AppDimensions.radiusFull),

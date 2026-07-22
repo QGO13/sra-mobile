@@ -1,17 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
 
-/// En-tête de section SRA Hotel — titre Playfair + label uppercase or + action.
-///
-/// ```dart
-/// SraSectionHeader(title: 'Chambres disponibles')
-/// SraSectionHeader(
-///   label: 'RÉSUMÉ',
-///   title: 'Votre séjour',
-///   trailingLabel: 'Voir tout',
-///   onTrailingTap: () => context.push('/rooms'),
-/// )
-/// ```
+/// En-tête de section SRA Hotel — titre Playfair + label uppercase or + action avec support Dark Mode.
 class SraSectionHeader extends StatelessWidget {
   final String? label;
   final String title;
@@ -32,6 +22,8 @@ class SraSectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Padding(
       padding: padding ?? EdgeInsets.zero,
       child: Row(
@@ -45,14 +37,24 @@ class SraSectionHeader extends StatelessWidget {
                 // ── Label uppercase doré ──────────────────────────────────
                 if (label != null) ...[
                   Text(label!.toUpperCase(), style: AppTextStyles.labelUppercase),
-                  const SizedBox(height: AppDimensions.spacingXs),
+                  AppDimensions.vGapXs,
                 ],
                 // ── Titre Playfair Display ────────────────────────────────
-                Text(title, style: AppTextStyles.titleLarge),
+                Text(
+                  title,
+                  style: AppTextStyles.titleLarge.copyWith(
+                    color: isDark ? AppColors.white : AppColors.ink,
+                  ),
+                ),
                 // ── Sous-titre optionnel ──────────────────────────────────
                 if (subtitle != null) ...[
-                  const SizedBox(height: AppDimensions.spacingXs),
-                  Text(subtitle!, style: AppTextStyles.bodySmall),
+                  AppDimensions.vGapXs,
+                  Text(
+                    subtitle!,
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: isDark ? AppColors.overlayDarkMedium : AppColors.inkMuted,
+                    ),
+                  ),
                 ],
               ],
             ),
@@ -70,7 +72,7 @@ class SraSectionHeader extends StatelessWidget {
                       color: AppColors.gold,
                     ),
                   ),
-                  const SizedBox(width: AppDimensions.spacingXs),
+                  AppDimensions.hGapXs,
                   const Icon(
                     Icons.arrow_forward_ios_rounded,
                     size: AppDimensions.iconSizeSm,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
 
+/// Logo officiel SRA Hotel avec fallback typographique Or (Playfair Display) et support Dark Mode.
 class SraLogo extends StatelessWidget {
   final double size;
   final double iconSize;
@@ -10,8 +10,8 @@ class SraLogo extends StatelessWidget {
     super.key,
     double? size,
     double? height,
-    this.iconSize = 60.0,
-  }) : size = size ?? height ?? 120.0;
+    this.iconSize = AppDimensions.avatarSizeLg,
+  }) : size = size ?? height ?? AppDimensions.logoSize * 1.5;
 
   @override
   Widget build(BuildContext context) {
@@ -37,43 +37,39 @@ class SraLogo extends StatelessWidget {
                 alignment: Alignment.center,
                 child: Text(
                   "SR",
-                  style: GoogleFonts.cormorantGaramond(
+                  style: AppTextStyles.displayMedium.copyWith(
                     color: AppColors.white,
                     fontSize: size * 0.3,
-                    fontWeight: FontWeight.w500,
                     fontStyle: FontStyle.italic,
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
+              AppDimensions.vGapSm,
               Text(
                 "SWEET • REST",
-                style: GoogleFonts.cormorantGaramond(
-                  fontSize: 16,
+                style: AppTextStyles.titleMedium.copyWith(
                   fontWeight: FontWeight.w600,
                   letterSpacing: 2.0,
                   color: AppColors.gold,
                 ),
               ),
-              const SizedBox(height: 2),
+              AppDimensions.vGapXs,
               Text(
                 "APARTHOTEL",
-                style: GoogleFonts.cormorantGaramond(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w400,
+                style: AppTextStyles.labelUppercase.copyWith(
                   letterSpacing: 3.0,
-                  color: isDark ? AppColors.overlayDarkMedium : AppColors.ink.withValues(alpha: 0.6),
+                  color: isDark ? AppColors.overlayDarkMedium : AppColors.inkMuted,
                 ),
               ),
-              const SizedBox(height: 8),
+              AppDimensions.vGapXs,
               const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.star_rate_rounded, color: AppColors.gold, size: 10),
-                  SizedBox(width: 4),
-                  Icon(Icons.star_rate_rounded, color: AppColors.gold, size: 10),
-                  SizedBox(width: 4),
-                  Icon(Icons.star_rate_rounded, color: AppColors.gold, size: 10),
+                  Icon(Icons.star_rate_rounded, color: AppColors.gold, size: AppDimensions.iconSizeSm),
+                  AppDimensions.hGapXs,
+                  Icon(Icons.star_rate_rounded, color: AppColors.gold, size: AppDimensions.iconSizeSm),
+                  AppDimensions.hGapXs,
+                  Icon(Icons.star_rate_rounded, color: AppColors.gold, size: AppDimensions.iconSizeSm),
                 ],
               ),
             ],
@@ -83,4 +79,3 @@ class SraLogo extends StatelessWidget {
     );
   }
 }
-

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
-import 'package:sra_hotel/core/widgets/widgets.dart';
+import 'package:sra_hotel/core/widgets/buttons/sra_button.dart';
 
 /// Boîte de dialogue modale SRA Hotel — style luxe avec support dark mode.
 class SraDialog extends StatelessWidget {
@@ -80,7 +80,7 @@ class SraDialog extends StatelessWidget {
                   color: isDanger ? AppColors.statusError : AppColors.gold,
                 ),
               ),
-              const SizedBox(height: AppDimensions.spacingMd),
+              AppDimensions.vGapMd,
             ],
             Text(
               title,
@@ -89,7 +89,7 @@ class SraDialog extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: AppDimensions.spacingSm),
+            AppDimensions.vGapSm,
             Text(
               content,
               style: AppTextStyles.bodyMedium.copyWith(
@@ -97,7 +97,7 @@ class SraDialog extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: AppDimensions.spacingXl),
+            AppDimensions.vGapXl,
             Row(
               children: [
                 if (secondaryButtonLabel != null) ...[
@@ -108,7 +108,7 @@ class SraDialog extends StatelessWidget {
                       small: true,
                     ),
                   ),
-                  const SizedBox(width: AppDimensions.spacingMd),
+                  AppDimensions.hGapMd,
                 ],
                 Expanded(
                   child: isDanger

@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
 
-/// Badge de statut SRA Hotel — affichage sémantique cohérent.
+/// Badge de statut SRA Hotel — affichage sémantique (StatusPill) réutilisable.
 ///
-/// ```dart
-/// SraStatusBadge.success(label: 'Payé')
-/// SraStatusBadge.error(label: 'Annulé')
-/// SraStatusBadge.warning(label: 'En attente')
-/// SraStatusBadge.info(label: 'Confirmé')
-/// SraStatusBadge.custom(label: 'À nettoyer', color: AppColors.statusToClean)
-/// ```
+/// Alignée sur `StatusPill.tsx` de design SRAh avec support Dark Mode.
 enum SraStatusType { success, error, warning, info, custom }
 
 class SraStatusBadge extends StatelessWidget {
@@ -63,16 +57,18 @@ class SraStatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final color = _color;
+
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppDimensions.spacingMd,
         vertical: AppDimensions.spacingXs,
       ),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
+        color: color.withValues(alpha: isDark ? 0.2 : 0.12),
         borderRadius: BorderRadius.circular(AppDimensions.radiusFull),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
+        border: Border.all(color: color.withValues(alpha: isDark ? 0.45 : 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -83,7 +79,7 @@ class SraStatusBadge extends StatelessWidget {
               height: AppDimensions.spacingSm,
               decoration: BoxDecoration(color: color, shape: BoxShape.circle),
             ),
-            const SizedBox(width: AppDimensions.spacingXs),
+            AppDimensions.hGapXs,
           ],
           Text(
             label,

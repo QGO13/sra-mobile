@@ -41,23 +41,28 @@ class _DemoAccountsBannerState extends State<DemoAccountsBanner> {
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.gold.withValues(alpha: 0.08),
+        color: AppColors.gold.withValues(alpha: isDark ? 0.12 : 0.08),
+        borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
         border: Border.all(
-          color: AppColors.gold.withValues(alpha: 0.3),
-          width: 1.0,
+          color: AppColors.gold.withValues(alpha: isDark ? 0.4 : 0.3),
+          width: AppDimensions.borderThin,
         ),
       ),
       child: Column(
         children: [
           // Header Toggle button
           InkWell(
+            borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
             onTap: () {
               setState(() {
                 _isExpanded = !_isExpanded;
               });
             },
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppDimensions.spacingMd,
+                vertical: AppDimensions.spacingSm,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -66,24 +71,19 @@ class _DemoAccountsBannerState extends State<DemoAccountsBanner> {
                       const Icon(
                         Icons.info_outline,
                         color: AppColors.gold,
-                        size: 16,
+                        size: AppDimensions.iconSizeSm,
                       ),
-                      const SizedBox(width: 8),
+                      AppDimensions.hGapSm,
                       Text(
                         "COMPTES DE DÉMONSTRATION",
-                        style: TextStyle(
-                          fontSize: 10.5,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 1.2,
-                          color: AppColors.gold,
-                        ),
+                        style: AppTextStyles.labelUppercase,
                       ),
                     ],
                   ),
                   Icon(
                     _isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                     color: AppColors.gold,
-                    size: 16,
+                    size: AppDimensions.iconSizeSm,
                   ),
                 ],
               ),
@@ -93,21 +93,22 @@ class _DemoAccountsBannerState extends State<DemoAccountsBanner> {
           // Expanded contents
           if (_isExpanded) ...[
             Container(
-              padding: const EdgeInsets.all(12.0),
-              color: isDark ? Colors.black12 : AppColors.white24,
+              padding: AppDimensions.paddingSmAll,
+              color: isDark ? AppColors.darkElevated : AppColors.white24,
               child: Column(
                 children: _accounts.map((acc) {
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
+                    padding: const EdgeInsets.only(bottom: AppDimensions.spacingSm),
                     child: InkWell(
                       onTap: () => widget.onSelect(acc.email, acc.password),
                       child: Container(
-                        padding: const EdgeInsets.all(10.0),
+                        padding: AppDimensions.paddingSmAll,
                         decoration: BoxDecoration(
                           color: isDark ? AppColors.darkCard : AppColors.white,
+                          borderRadius: BorderRadius.circular(AppDimensions.radiusXs),
                           border: Border.all(
-                            color: isDark ? AppColors.white12 : AppColors.mist,
-                            width: 1.0,
+                            color: isDark ? AppColors.darkBorder : AppColors.mist,
+                            width: AppDimensions.borderThin,
                           ),
                         ),
                         child: Row(
@@ -118,17 +119,15 @@ class _DemoAccountsBannerState extends State<DemoAccountsBanner> {
                               children: [
                                 Text(
                                   acc.role,
-                                  style: TextStyle(
-                                    fontSize: 12,
+                                  style: AppTextStyles.bodyMedium.copyWith(
                                     fontWeight: FontWeight.w600,
                                     color: isDark ? AppColors.white : AppColors.ink,
                                   ),
                                 ),
-                                const SizedBox(height: 2),
+                                AppDimensions.vGapXs,
                                 Text(
                                   acc.email,
-                                  style: const TextStyle(
-                                    fontSize: 10.5,
+                                  style: AppTextStyles.bodySmall.copyWith(
                                     color: AppColors.inkMuted,
                                   ),
                                 ),
@@ -136,9 +135,7 @@ class _DemoAccountsBannerState extends State<DemoAccountsBanner> {
                             ),
                             Text(
                               acc.password,
-                              style: const TextStyle(
-                                fontSize: 11,
-                                fontFamily: 'monospace',
+                              style: AppTextStyles.monospace.copyWith(
                                 color: AppColors.gold,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -157,4 +154,3 @@ class _DemoAccountsBannerState extends State<DemoAccountsBanner> {
     );
   }
 }
-

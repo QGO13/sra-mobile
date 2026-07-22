@@ -171,6 +171,32 @@ class AppDimensions {
   static const double breakpointSm = 480.0;
   static const double breakpointMd = 600.0;
   static const double breakpointLg = 1024.0;
+
+  // ── Gaps réutilisables (Vertical & Horizontal) ────────────────────────────
+  static const SizedBox gapXs  = SizedBox(height: spacingXs, width: spacingXs);
+  static const SizedBox gapSm  = SizedBox(height: spacingSm, width: spacingSm);
+  static const SizedBox gapMd  = SizedBox(height: spacingMd, width: spacingMd);
+  static const SizedBox gapLg  = SizedBox(height: spacingLg, width: spacingLg);
+  static const SizedBox gapXl  = SizedBox(height: spacingXl, width: spacingXl);
+
+  static const SizedBox vGapXs = SizedBox(height: spacingXs);
+  static const SizedBox vGapSm = SizedBox(height: spacingSm);
+  static const SizedBox vGapMd = SizedBox(height: spacingMd);
+  static const SizedBox vGapLg = SizedBox(height: spacingLg);
+  static const SizedBox vGapXl = SizedBox(height: spacingXl);
+
+  static const SizedBox hGapXs = SizedBox(width: spacingXs);
+  static const SizedBox hGapSm = SizedBox(width: spacingSm);
+  static const SizedBox hGapMd = SizedBox(width: spacingMd);
+  static const SizedBox hGapLg = SizedBox(width: spacingLg);
+  static const SizedBox hGapXl = SizedBox(width: spacingXl);
+
+  // ── Paddings réutilisables ────────────────────────────────────────────────
+  static const EdgeInsets paddingXsAll = EdgeInsets.all(spacingXs);
+  static const EdgeInsets paddingSmAll = EdgeInsets.all(spacingSm);
+  static const EdgeInsets paddingMdAll = EdgeInsets.all(spacingMd);
+  static const EdgeInsets paddingLgAll = EdgeInsets.all(spacingLg);
+  static const EdgeInsets paddingXlAll = EdgeInsets.all(spacingXl);
 }
 
 // =============================================================================

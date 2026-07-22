@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sra_hotel/core/error/error_handler.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
-import 'package:sra_hotel/core/widgets/widgets.dart';
+import 'package:sra_hotel/core/widgets/buttons/sra_button.dart';
 import 'package:sra_hotel/l10n/app_localizations.dart';
 
 /// Centred, premium error-state view displayed when a data-fetch or operation fails.
@@ -66,7 +66,7 @@ class ErrorStateView extends StatelessWidget {
             children: [
               // ── Icon Container with subtle glow/background ──────────────
               Container(
-                padding: const EdgeInsets.all(AppDimensions.spacingMd),
+                padding: AppDimensions.paddingMdAll,
                 decoration: BoxDecoration(
                   color: isConnectionError
                       ? AppColors.gold.withValues(alpha: 0.08)
@@ -75,13 +75,13 @@ class ErrorStateView extends StatelessWidget {
                 ),
                 child: Icon(
                   errorIcon,
-                  size: 56.0,
+                  size: AppDimensions.avatarSizeLg,
                   color: isConnectionError
                       ? AppColors.gold
                       : AppColors.statusError,
                 ),
               ),
-              const SizedBox(height: AppDimensions.spacingMd + 4),
+              AppDimensions.vGapLg,
               // ── Title ─────────────────────────────────────────────────────
               Text(
                 errorTitle,
@@ -91,7 +91,7 @@ class ErrorStateView extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: AppDimensions.spacingSm),
+              AppDimensions.vGapSm,
               // ── Subtitle / Details ────────────────────────────────────────
               ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 320),
@@ -106,15 +106,19 @@ class ErrorStateView extends StatelessWidget {
               ),
               // ── Retry button ──────────────────────────────────────────────
               if (onRetry != null) ...[
-                const SizedBox(height: AppDimensions.spacingLg),
+                AppDimensions.vGapLg,
                 isConnectionError
                     ? SraButton.secondary(
                         onPressed: onRetry,
                         label: retryLabel ?? l10n.errorRetryButton,
+                        fullWidth: false,
+                        small: true,
                       )
                     : SraButton.danger(
                         onPressed: onRetry,
                         label: retryLabel ?? l10n.errorRetryButton,
+                        fullWidth: false,
+                        small: true,
                       ),
               ],
             ],

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
 
-/// Champ de saisie SRA Hotel — zéro valeur codée en dur.
+/// Champ de saisie SRA Hotel — zéro valeur codée en dur avec support Dark Mode.
 ///
 /// ```dart
 /// SraInput(controller: _ctrl, label: 'Email', placeholder: 'contact@email.com')
@@ -62,7 +62,7 @@ class SraInput extends StatelessWidget {
         // ── Label uppercase or ──────────────────────────────────────────────
         if (label != null) ...[
           Text(label!.toUpperCase(), style: AppTextStyles.labelUppercase),
-          const SizedBox(height: AppDimensions.spacingSm),
+          AppDimensions.vGapSm,
         ],
         // ── Champ de saisie ─────────────────────────────────────────────────
         TextFormField(

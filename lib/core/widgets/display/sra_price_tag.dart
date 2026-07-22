@@ -3,7 +3,7 @@ import 'package:sra_hotel/core/theme/app_theme.dart';
 
 enum SraPriceSize { small, medium, large }
 
-/// Tag de prix SRA Hotel — typographie Playfair Display avec formatage automatique.
+/// Tag de prix SRA Hotel — typographie Playfair Display avec formatage automatique et support Dark Mode.
 class SraPriceTag extends StatelessWidget {
   final double amount;
   final String currency;
@@ -68,15 +68,15 @@ class SraPriceTag extends StatelessWidget {
     switch (size) {
       case SraPriceSize.small:
         priceStyle = AppTextStyles.priceSmall.copyWith(color: textColor);
-        suffixStyle = AppTextStyles.bodySmall.copyWith(color: AppColors.inkMuted);
+        suffixStyle = AppTextStyles.bodySmall.copyWith(color: isDark ? AppColors.overlayDarkMedium : AppColors.inkMuted);
         break;
       case SraPriceSize.medium:
         priceStyle = AppTextStyles.priceMedium.copyWith(color: textColor);
-        suffixStyle = AppTextStyles.bodyMedium.copyWith(color: AppColors.inkMuted);
+        suffixStyle = AppTextStyles.bodyMedium.copyWith(color: isDark ? AppColors.overlayDarkMedium : AppColors.inkMuted);
         break;
       case SraPriceSize.large:
         priceStyle = AppTextStyles.priceLarge.copyWith(color: textColor);
-        suffixStyle = AppTextStyles.bodyMedium.copyWith(color: AppColors.inkMuted);
+        suffixStyle = AppTextStyles.bodyMedium.copyWith(color: isDark ? AppColors.overlayDarkMedium : AppColors.inkMuted);
         break;
     }
 
@@ -86,10 +86,10 @@ class SraPriceTag extends StatelessWidget {
       textBaseline: TextBaseline.alphabetic,
       children: [
         Text(_formattedAmount, style: priceStyle),
-        const SizedBox(width: AppDimensions.spacingXs),
+        AppDimensions.hGapXs,
         Text(currency, style: priceStyle.copyWith(fontSize: priceStyle.fontSize! * 0.7)),
         if (period != null) ...[
-          const SizedBox(width: AppDimensions.spacingXs),
+          AppDimensions.hGapXs,
           Text(period!, style: suffixStyle),
         ],
       ],
