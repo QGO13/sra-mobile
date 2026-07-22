@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sra_hotel/l10n/app_localizations.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
-import 'package:sra_hotel/core/widgets/sra_button.dart';
+import 'package:sra_hotel/core/widgets/widgets.dart';
 import 'package:sra_hotel/features/client_booking/domain/entities/booking_room_type.dart';
 
 class DateSelectorWidget extends StatefulWidget {

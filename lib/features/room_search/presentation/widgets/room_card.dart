@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sra_hotel/core/config/feature_flags.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
-import 'package:sra_hotel/core/widgets/sra_button.dart';
+import 'package:sra_hotel/core/widgets/widgets.dart';
 import 'package:sra_hotel/features/room_search/domain/entities/room_entity.dart';
 import 'package:sra_hotel/core/network/api_client.dart';
 import 'package:sra_hotel/injection_container.dart' as di;

@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:sra_hotel/core/routes/app_routes.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
-import 'package:sra_hotel/core/widgets/language_selector.dart';
-import 'package:sra_hotel/core/widgets/loading_indicator.dart';
-import 'package:sra_hotel/core/widgets/sra_button.dart';
-import 'package:sra_hotel/core/widgets/sra_logo.dart';
-import 'package:sra_hotel/core/widgets/sra_input.dart';
+import 'package:sra_hotel/core/widgets/widgets.dart';
 import 'package:sra_hotel/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:sra_hotel/features/auth/presentation/bloc/auth_event.dart';
 import 'package:sra_hotel/features/auth/presentation/bloc/auth_state.dart';
 import 'package:sra_hotel/l10n/app_localizations.dart';
 import 'package:sra_hotel/main.dart';
 
+/// Page de connexion SRA Hotel — Pixel-Perfect reproduction du design Next.js React.
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -24,7 +22,8 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _obscurePassword = true;
+  bool _showPassword = false;
+  String? _errorMessage;
 
   @override
   void dispose() {
@@ -34,27 +33,46 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _submit() {
-    if (_formKey.currentState?.validate() ?? false) {
-      context.read<AuthBloc>().add(
-        LoginSubmitted(
-          login: _emailController.text.trim(),
-          password: _passwordController.text,
-        ),
-      );
+    if (_emailController.text.trim().isEmpty || _passwordController.text.isEmpty) {
+      setState(() => _errorMessage = 'Veuillez remplir tous les champs.');
+      return;
     }
+    setState(() => _errorMessage = null);
+
+    context.read<AuthBloc>().add(
+      LoginSubmitted(
+        login: _emailController.text.trim(),
+        password: _passwordController.text,
+      ),
+    );
+  }
+
+  void _selectDemoAccount(String email, String password) {
+    setState(() {
+      _emailController.text = email;
+      _passwordController.text = password;
+      _errorMessage = null;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final currentLocale = Localizations.localeOf(context);
 
+    final bgPage = isDark ? AppColors.darkSurface : AppColors.fog;
+    final bgCard = isDark ? AppColors.darkCard : AppColors.white;
+    final borderCard = isDark ? AppColors.darkBorder : const Color(0x17212222);
+    final textMain = isDark ? AppColors.white : AppColors.ink;
+    final textMuted = isDark ? AppColors.overlayDarkMedium : const Color(0xFF6B6C6C);
+    final inputBg = isDark ? AppColors.darkElevated : AppColors.white;
+    final inputBorder = isDark ? AppColors.darkBorder : const Color(0x1F212222);
+
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+      backgroundColor: bgPage,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: const Color(0x00000000),
         elevation: 0,
         actions: [
           LanguageSelector(
@@ -63,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
               MyApp.setLocale(context, newLocale);
             },
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppDimensions.spacingMd),
         ],
       ),
       body: BlocListener<AuthBloc, AuthState>(
@@ -71,163 +89,252 @@ class _LoginPageState extends State<LoginPage> {
           if (state is Authenticated) {
             final role = state.user.role.toLowerCase();
             if (role.contains('admin')) {
-              Navigator.of(
-                context,
-              ).pushReplacementNamed(AppRoutes.backofficeAdmin);
+              Navigator.of(context).pushReplacementNamed(AppRoutes.backofficeAdmin);
             } else if (role.contains('reception')) {
-              Navigator.of(
-                context,
-              ).pushReplacementNamed(AppRoutes.backofficeReception);
+              Navigator.of(context).pushReplacementNamed(AppRoutes.backofficeReception);
             } else {
               Navigator.of(context).pushReplacementNamed(AppRoutes.home);
             }
           } else if (state is AuthFailure) {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: Colors.redAccent,
-                content: Text(
-                  state.message,
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ),
-            );
+            setState(() {
+              _errorMessage = state.message.isNotEmpty
+                  ? state.message
+                  : 'Identifiants incorrects. Utilisez un des comptes de démo ci-dessous.';
+            });
           }
         },
         child: SafeArea(
           child: Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(
-                horizontal: 24.0,
-                vertical: 16.0,
+                horizontal: AppDimensions.spacingLg,
+                vertical: AppDimensions.spacingXl,
               ),
               child: Container(
-                constraints: const BoxConstraints(maxWidth: 460),
+                constraints: const BoxConstraints(maxWidth: 480),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Brand Header
-                    const SraLogo(size: 100),
-                    const SizedBox(height: 20),
+                    // ── Logo Next.js (160px max width) ──────────────────────
+                    Center(
+                      child: Image.network(
+                        "https://sra-hotel.com/media/logo-SweetRestAparthotel_color.png",
+                        width: 160,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) =>
+                            const SraLogo(size: 80),
+                      ),
+                    ),
+                    const SizedBox(height: AppDimensions.spacingLg),
+
+                    // ── Titre Serif Playfair Display + Sous-titre ────────────
                     Text(
                       localizations.welcomeBack,
                       textAlign: TextAlign.center,
-                      style: theme.textTheme.displayMedium?.copyWith(
-                        fontSize: 24,
+                      style: GoogleFonts.playfairDisplay(
+                        fontSize: 32,
                         fontWeight: FontWeight.w400,
-                        color: isDark
-                            ? Colors.white
-                            : AppColors.imperialNightBlue,
+                        color: textMain,
+                        height: 1.2,
                       ),
                     ),
                     const SizedBox(height: 6),
                     Text(
                       localizations.loginSubtitle,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 13, color: Colors.grey),
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Demo Accounts banner widget
-                    //DemoAccountsBanner(onSelect: _selectDemoAccount),
-                    //const SizedBox(height: 24),
-
-                    // Form container Card style matching the Web V2
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 32,
+                      style: GoogleFonts.raleway(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w300,
+                        color: textMuted,
+                        height: 1.6,
                       ),
+                    ),
+                    const SizedBox(height: AppDimensions.spacingLg),
+
+                    // ── Comptes de Démonstration Banner (Accordéon Next.js) ──
+                    DemoAccountsBanner(onSelect: _selectDemoAccount),
+                    const SizedBox(height: AppDimensions.spacingLg),
+
+                    // ── Card du Formulaire (Flat Luxury Design Next.js) ──────
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(40, 44, 40, 38),
                       decoration: BoxDecoration(
-                        color: isDark
-                            ? AppColors.deepBlue
-                            : Colors.white,
-                        borderRadius: BorderRadius.circular(AppDimensions.radiusLg),
-                        border: Border.all(
-                          color: isDark ? Colors.white10 : AppColors.softGrey,
-                          width: 1.0,
-                        ),
-                        boxShadow: const [AppShadows.shadowCard],
+                        color: bgCard,
+                        border: Border.all(color: borderCard, width: 1.0),
+                        boxShadow: const [AppShadows.card],
                       ),
                       child: Form(
                         key: _formKey,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            // Email SraInput
-                            SraInput(
+                            // ── Champ Email ──────────────────────────────────
+                            Text(
+                              "EMAIL *",
+                              style: GoogleFonts.raleway(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 2.0,
+                                color: AppColors.gold,
+                              ),
+                            ),
+                            const SizedBox(height: AppDimensions.spacingSm),
+                            TextFormField(
                               controller: _emailController,
-                              label: localizations.email,
-                              placeholder: "contact@email.com",
                               keyboardType: TextInputType.emailAddress,
-                              prefixIcon: const Icon(
-                                Icons.email_outlined,
-                                size: 18,
-                                color: AppColors.champagneGold,
+                              style: GoogleFonts.raleway(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w300,
+                                color: textMain,
                               ),
-                              validator: (value) {
-                                if (value == null || value.trim().isEmpty) {
-                                  return 'Veuillez saisir votre adresse email';
-                                }
-                                if (!RegExp(
-                                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                                ).hasMatch(value.trim())) {
-                                  return 'Veuillez saisir une adresse email valide';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 20),
-
-                            // Password SraInput
-                            SraInput(
-                              controller: _passwordController,
-                              label: localizations.password,
-                              placeholder: "••••••••",
-                              obscureText: _obscurePassword,
-                              prefixIcon: const Icon(
-                                Icons.lock_outline,
-                                size: 18,
-                                color: AppColors.champagneGold,
-                              ),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _obscurePassword
-                                      ? Icons.visibility_off_outlined
-                                      : Icons.visibility_outlined,
-                                  color: AppColors.champagneGold,
-                                  size: 18,
+                              decoration: InputDecoration(
+                                hintText: "contact@email.com",
+                                hintStyle: GoogleFonts.raleway(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w300,
+                                  color: textMuted,
                                 ),
-                                onPressed: () {
-                                  setState(() {
-                                    _obscurePassword = !_obscurePassword;
-                                  });
-                                },
+                                filled: true,
+                                fillColor: inputBg,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 18,
+                                  vertical: 14,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: inputBorder, width: 1.0),
+                                  borderRadius: BorderRadius.zero,
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: AppColors.gold, width: 1.5),
+                                  borderRadius: BorderRadius.zero,
+                                ),
                               ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Veuillez saisir votre mot de passe';
-                                }
-                                if (value.length < 6) {
-                                  return 'Le mot de passe doit comporter au moins 6 caractères';
-                                }
-                                return null;
-                              },
                             ),
-                            const SizedBox(height: 32),
+                            const SizedBox(height: AppDimensions.spacingLg),
 
-                            // Submit Button
+                            // ── Champ Mot de passe ───────────────────────────
+                            Text(
+                              "MOT DE PASSE *",
+                              style: GoogleFonts.raleway(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 2.0,
+                                color: AppColors.gold,
+                              ),
+                            ),
+                            const SizedBox(height: AppDimensions.spacingSm),
+                            TextFormField(
+                              controller: _passwordController,
+                              obscureText: !_showPassword,
+                              style: GoogleFonts.raleway(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w300,
+                                color: textMain,
+                              ),
+                              decoration: InputDecoration(
+                                hintText: "••••••••",
+                                hintStyle: GoogleFonts.raleway(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w300,
+                                  color: textMuted,
+                                ),
+                                filled: true,
+                                fillColor: inputBg,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 18,
+                                  vertical: 14,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: inputBorder, width: 1.0),
+                                  borderRadius: BorderRadius.zero,
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: AppColors.gold, width: 1.5),
+                                  borderRadius: BorderRadius.zero,
+                                ),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _showPassword
+                                        ? Icons.visibility_off_outlined
+                                        : Icons.visibility_outlined,
+                                    color: textMuted,
+                                    size: 16,
+                                  ),
+                                  onPressed: () {
+                                    setState(() => _showPassword = !_showPassword);
+                                  },
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: AppDimensions.spacingLg),
+
+                            // ── Message d'erreur sémantique Next.js ──────────
+                            if (_errorMessage != null) ...[
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 11,
+                                ),
+                                decoration: const BoxDecoration(
+                                  color: Color(0x14E05555),
+                                  border: Border(
+                                    left: BorderSide(
+                                      color: Color(0xFFE05555),
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                ),
+                                child: Text(
+                                  _errorMessage!,
+                                  style: GoogleFonts.raleway(
+                                    fontSize: 13.5,
+                                    fontWeight: FontWeight.w400,
+                                    color: const Color(0xFFC0392B),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: AppDimensions.spacingLg),
+                            ],
+
+                            // ── Bouton de connexion Next.js (Se Connecter) ──
                             BlocBuilder<AuthBloc, AuthState>(
                               builder: (context, state) {
-                                if (state is AuthLoading) {
-                                  return const LoadingIndicator(
-                                    color: AppColors.champagneGold,
-                                  );
-                                }
-                                return SraButton(
-                                  onPressed: _submit,
-                                  label: localizations.login,
+                                final isLoading = state is AuthLoading;
+
+                                return SizedBox(
+                                  height: AppDimensions.buttonHeight,
+                                  child: ElevatedButton(
+                                    onPressed: isLoading ? null : _submit,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColors.gold,
+                                      foregroundColor: AppColors.white,
+                                      elevation: 0,
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.zero,
+                                      ),
+                                    ),
+                                    child: isLoading
+                                        ? const SizedBox(
+                                            width: 20,
+                                            height: 20,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                              valueColor: AlwaysStoppedAnimation<Color>(
+                                                AppColors.white,
+                                              ),
+                                            ),
+                                          )
+                                        : Text(
+                                            "SE CONNECTER",
+                                            style: GoogleFonts.raleway(
+                                              fontSize: 11.5,
+                                              fontWeight: FontWeight.w600,
+                                              letterSpacing: 1.8,
+                                              color: AppColors.white,
+                                            ),
+                                          ),
+                                  ),
                                 );
                               },
                             ),
@@ -236,17 +343,50 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
 
-                    const SizedBox(height: 24),
-                    // Navigation links
-                    Wrap(
-                      alignment: WrapAlignment.center,
-                      crossAxisAlignment: WrapCrossAlignment.center,
+                    const SizedBox(height: AppDimensions.spacingLg),
+
+                    // ── Séparateur "OU" Next.js ──────────────────────────────
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 1,
+                            color: borderCard,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            "OU",
+                            style: GoogleFonts.raleway(
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 1.0,
+                              color: const Color(0xFFBBBCC1),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            height: 1,
+                            color: borderCard,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: AppDimensions.spacingLg),
+
+                    // ── Lien Créer un compte ─────────────────────────────────
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "${localizations.noAccountYet} ",
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Colors.grey,
+                          "Pas encore de compte ? ",
+                          style: GoogleFonts.raleway(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w300,
+                            color: textMuted,
                           ),
                         ),
                         GestureDetector(
@@ -254,31 +394,36 @@ class _LoginPageState extends State<LoginPage> {
                             Navigator.of(context).pushNamed(AppRoutes.register);
                           },
                           child: Text(
-                            localizations.createAccount,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: AppColors.champagneGold,
+                            "Créer un compte",
+                            style: GoogleFonts.raleway(
+                              fontSize: 14,
                               fontWeight: FontWeight.w500,
+                              color: AppColors.gold,
                             ),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
-                    /*Center(
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pushReplacementNamed(AppRoutes.welcome);
+
+                    const SizedBox(height: AppDimensions.spacingXl),
+
+                    // ── Bouton Retour à l'accueil ────────────────────────────
+                    Center(
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pushReplacementNamed(AppRoutes.home);
                         },
                         child: Text(
-                          "← ${localizations.backToHome}",
-                          style: const TextStyle(
+                          "← Retour à l'accueil",
+                          style: GoogleFonts.raleway(
                             fontSize: 12.5,
-                            color: Colors.grey,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 0.5,
+                            color: const Color(0xFFBBBCC1),
                           ),
                         ),
                       ),
-                    ),*/
+                    ),
                   ],
                 ),
               ),

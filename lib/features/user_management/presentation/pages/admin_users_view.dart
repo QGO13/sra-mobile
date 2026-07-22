@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
-import 'package:sra_hotel/core/widgets/empty_state_view.dart';
-import 'package:sra_hotel/core/widgets/error_state_view.dart';
-import 'package:sra_hotel/core/widgets/loading_indicator.dart';
-import 'package:sra_hotel/core/widgets/responsive_list_grid_view.dart';
-import 'package:sra_hotel/core/widgets/sra_button.dart';
-import 'package:sra_hotel/core/widgets/sra_input.dart';
-import 'package:sra_hotel/core/widgets/sra_dropdown.dart';
+import 'package:sra_hotel/core/widgets/widgets.dart';
 import 'package:sra_hotel/features/user_management/domain/entities/staff_user.dart';
 import 'package:sra_hotel/features/user_management/presentation/bloc/user_bloc.dart';
 import 'package:sra_hotel/features/user_management/presentation/bloc/user_event.dart';

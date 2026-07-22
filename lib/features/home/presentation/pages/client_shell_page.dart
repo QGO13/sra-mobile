@@ -15,7 +15,7 @@ import 'package:sra_hotel/features/cart/presentation/pages/cart_page.dart';
 import 'package:sra_hotel/features/cart/presentation/bloc/cart_bloc.dart';
 import 'package:sra_hotel/features/cart/presentation/bloc/cart_state.dart';
 import 'package:sra_hotel/features/settings/presentation/pages/settings_page.dart';
-import 'package:sra_hotel/core/widgets/confirm_delete_dialog.dart';
+import 'package:sra_hotel/core/widgets/widgets.dart';
 import 'package:sra_hotel/injection_container.dart' as di;
 import 'package:sra_hotel/l10n/app_localizations.dart';
 

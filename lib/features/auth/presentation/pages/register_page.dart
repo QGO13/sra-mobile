@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:sra_hotel/core/routes/app_routes.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
-import 'package:sra_hotel/core/widgets/loading_indicator.dart';
-import 'package:sra_hotel/core/widgets/sra_button.dart';
-import 'package:sra_hotel/core/widgets/sra_logo.dart';
-import 'package:sra_hotel/core/widgets/sra_input.dart';
-import 'package:sra_hotel/core/widgets/sra_dropdown.dart';
-import 'package:sra_hotel/core/widgets/phone_input_field.dart';
-import 'package:sra_hotel/core/constants/countries.dart';
+import 'package:sra_hotel/core/widgets/widgets.dart';
 import 'package:sra_hotel/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:sra_hotel/features/auth/presentation/bloc/auth_event.dart';
 import 'package:sra_hotel/features/auth/presentation/bloc/auth_state.dart';
-import 'package:sra_hotel/l10n/app_localizations.dart';
 
+/// Page d'inscription SRA Hotel — Pixel-Perfect reproduction du design Next.js React.
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
@@ -23,389 +18,462 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
-  final String _profileType = 'Particulier'; // 'Particulier', 'Corporate', 'Agence'
 
-  // Text Controllers
+  final _prenomController = TextEditingController();
+  final _nomController = TextEditingController();
   final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
   final _phoneController = TextEditingController();
-  String _fullPhoneNumber = '';
-  String? _selectedCountry;
-  final _addressController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmController = TextEditingController();
 
-  // Particulier Specific Controllers
-  final _lastNameController = TextEditingController();
-  final _firstNameController = TextEditingController();
-  String _selectedGender = 'M';
-
-  // Company Specific Controllers
-  final _companyNameController = TextEditingController();
-
-  bool _obscurePassword = true;
+  bool _showPassword = false;
+  bool _showConfirm = false;
+  String? _errorMessage;
 
   @override
   void dispose() {
+    _prenomController.dispose();
+    _nomController.dispose();
     _emailController.dispose();
-    _passwordController.dispose();
     _phoneController.dispose();
-    _addressController.dispose();
-    _lastNameController.dispose();
-    _firstNameController.dispose();
-    _companyNameController.dispose();
+    _passwordController.dispose();
+    _confirmController.dispose();
     super.dispose();
   }
 
   void _submit() {
-    if (_formKey.currentState?.validate() ?? false) {
-      final email = _emailController.text.trim();
-      final password = _passwordController.text;
-      // Le numéro complet (indicatif + numéro local) est construit par PhoneInputField
-      final phone = _fullPhoneNumber.isNotEmpty
-          ? _fullPhoneNumber
-          : _phoneController.text.trim();
-      final country = _selectedCountry ?? '';
-      final address = _addressController.text.trim();
+    final prenom = _prenomController.text.trim();
+    final nom = _nomController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    final confirm = _confirmController.text;
+    final phone = _phoneController.text.trim();
 
-      if (_profileType == 'Particulier') {
-        context.read<AuthBloc>().add(
-          RegisterParticulierSubmitted(
-            email: email,
-            password: password,
-            nom: _lastNameController.text.trim(),
-            prenoms: _firstNameController.text.trim(),
-            telephone: phone,
-            sexe: _selectedGender,
-            pays: country,
-            adresse: address,
-          ),
-        );
-      } else {
-        final isAgence = _profileType == 'Agence';
-        context.read<AuthBloc>().add(
-          RegisterCompanySubmitted(
-            email: email,
-            password: password,
-            companyName: _companyNameController.text.trim(),
-            telephone: phone,
-            pays: country,
-            adresse: address,
-            isExterne: isAgence,
-          ),
-        );
-      }
+    if (prenom.isEmpty || nom.isEmpty || email.isEmpty || password.isEmpty) {
+      setState(() => _errorMessage = 'Veuillez remplir tous les champs obligatoires.');
+      return;
     }
+    if (password.length < 6) {
+      setState(() => _errorMessage = 'Le mot de passe doit contenir au moins 6 caractères.');
+      return;
+    }
+    if (password != confirm) {
+      setState(() => _errorMessage = 'Les mots de passe ne correspondent pas.');
+      return;
+    }
+
+    setState(() => _errorMessage = null);
+
+    context.read<AuthBloc>().add(
+      RegisterParticulierSubmitted(
+        email: email,
+        password: password,
+        nom: nom,
+        prenoms: prenom,
+        telephone: phone,
+        sexe: 'M',
+        pays: '',
+        adresse: '',
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final bgPage = isDark ? AppColors.darkSurface : AppColors.fog;
+    final bgCard = isDark ? AppColors.darkCard : AppColors.white;
+    final borderCard = isDark ? AppColors.darkBorder : const Color(0x17212222);
+    final textMain = isDark ? AppColors.white : AppColors.ink;
+    final textMuted = isDark ? AppColors.overlayDarkMedium : const Color(0xFF6B6C6C);
+    final inputBg = isDark ? AppColors.darkElevated : AppColors.white;
+    final inputBorder = isDark ? AppColors.darkBorder : const Color(0x1F212222);
+
+    final password = _passwordController.text;
+    final confirm = _confirmController.text;
+    final isLengthOk = password.length >= 6;
+    final hasDigit = RegExp(r'\d').hasMatch(password);
+    final isConfirmOk = confirm.isNotEmpty && password == confirm;
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+      backgroundColor: bgPage,
       appBar: AppBar(
-        title: Text(localizations.createAccount),
-        backgroundColor: Colors.transparent,
+        backgroundColor: const Color(0x00000000),
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.champagneGold),
+          icon: const Icon(Icons.arrow_back_rounded, color: AppColors.gold),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is Authenticated) {
-            Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.search, (route) => false);
-          } else if (state is AuthFailure) {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: Colors.redAccent,
-                content: Text(
-                  state.message,
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ),
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              AppRoutes.home,
+              (route) => false,
             );
+          } else if (state is AuthFailure) {
+            setState(() => _errorMessage = state.message);
           }
         },
         child: SafeArea(
           child: Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppDimensions.spacingLg,
+                vertical: AppDimensions.spacingXl,
+              ),
               child: Container(
-                constraints: const BoxConstraints(maxWidth: 800),
+                constraints: const BoxConstraints(maxWidth: 520),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const SraLogo(size: 80),
-                    const SizedBox(height: 16),
+                    // ── Logo Next.js ────────────────────────────────────────
+                    Center(
+                      child: Image.network(
+                        "https://sra-hotel.com/media/logo-SweetRestAparthotel_color.png",
+                        width: 160,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) =>
+                            const SraLogo(size: 80),
+                      ),
+                    ),
+                    const SizedBox(height: AppDimensions.spacingLg),
+
+                    // ── Titre & Sous-titre Next.js ──────────────────────────
                     Text(
-                      localizations.welcomeBack,
+                      "Créer votre compte",
                       textAlign: TextAlign.center,
-                      style: theme.textTheme.displayMedium?.copyWith(
-                        fontSize: 22,
+                      style: GoogleFonts.playfairDisplay(
+                        fontSize: 32,
                         fontWeight: FontWeight.w400,
-                        color: isDark ? Colors.white : AppColors.imperialNightBlue,
+                        color: textMain,
+                        height: 1.2,
                       ),
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      localizations.joinSlogan,
+                      "Rejoignez Sweet Rest Aparthotel",
                       textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 13, color: Colors.grey),
+                      style: GoogleFonts.raleway(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w300,
+                        color: textMuted,
+                        height: 1.6,
+                      ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppDimensions.spacingLg),
 
-                    // Profile type selection hidden - physically forced to 'Particulier' (Personne physique)
-                    const SizedBox.shrink(),
-                    const SizedBox(height: 12),
-
-                    // Form container Card style matching the Web
+                    // ── Card du Formulaire (Flat Luxury Design Next.js) ──────
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                      padding: const EdgeInsets.fromLTRB(40, 44, 40, 38),
                       decoration: BoxDecoration(
-                        color: isDark ? AppColors.deepBlue : Colors.white,
-                        borderRadius: BorderRadius.circular(AppDimensions.radiusLg),
-                        border: Border.all(
-                          color: isDark ? Colors.white10 : AppColors.softGrey,
-                          width: 1.0,
-                        ),
-                        boxShadow: const [AppShadows.shadowCard],
+                        color: bgCard,
+                        border: Border.all(color: borderCard, width: 1.0),
+                        boxShadow: const [AppShadows.card],
                       ),
                       child: Form(
                         key: _formKey,
                         child: LayoutBuilder(
                           builder: (context, constraints) {
-                            final isWide = constraints.maxWidth >= 550;
+                            final isWide = constraints.maxWidth >= 440;
 
-                            Widget buildEmailField() => SraInput(
-                              controller: _emailController,
-                              label: localizations.email,
-                              placeholder: "contact@email.com",
-                              keyboardType: TextInputType.emailAddress,
-                              prefixIcon: const Icon(Icons.email_outlined, size: 18, color: AppColors.champagneGold),
-                              validator: (value) {
-                                if (value == null || value.trim().isEmpty) {
-                                  return 'Veuillez saisir votre adresse email';
-                                }
-                                if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value.trim())) {
-                                  return 'Veuillez saisir une adresse email valide';
-                                }
-                                return null;
-                              },
-                            );
-
-                            Widget buildPasswordField() => SraInput(
-                              controller: _passwordController,
-                              label: localizations.password,
-                              placeholder: "••••••••",
-                              obscureText: _obscurePassword,
-                              prefixIcon: const Icon(Icons.lock_outline, size: 18, color: AppColors.champagneGold),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-                                  color: AppColors.champagneGold,
-                                  size: 18,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _obscurePassword = !_obscurePassword;
-                                  });
-                                },
+                            Widget buildLabel(String label) => Text(
+                              label.toUpperCase(),
+                              style: GoogleFonts.raleway(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 2.0,
+                                color: AppColors.gold,
                               ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Veuillez saisir votre mot de passe';
-                                }
-                                if (value.length < 6) {
-                                  return 'Le mot de passe doit comporter au moins 6 caractères';
-                                }
-                                return null;
-                              },
                             );
 
-                            Widget buildLastNameField() => SraInput(
-                              controller: _lastNameController,
-                              label: localizations.lastNameLabel,
-                              placeholder: "Traoré",
-                              prefixIcon: const Icon(Icons.person_outline, size: 18, color: AppColors.champagneGold),
-                              validator: (value) =>
-                                  (value == null || value.trim().isEmpty) ? 'Veuillez saisir votre nom' : null,
-                            );
-
-                            Widget buildFirstNameField() => SraInput(
-                              controller: _firstNameController,
-                              label: localizations.firstNameLabel,
-                              placeholder: "Koffi",
-                              prefixIcon: const Icon(Icons.person_outline, size: 18, color: AppColors.champagneGold),
-                              validator: (value) =>
-                                  (value == null || value.trim().isEmpty) ? 'Veuillez saisir votre prénom' : null,
-                            );
-
-                            Widget buildGenderField() => SraDropdown(
-                              label: localizations.genderLabel,
-                              value: _selectedGender,
-                              placeholder: "",
-                              items: const ['M', 'F'],
-                              itemLabels: {
-                                'M': localizations.maleGender,
-                                'F': localizations.femaleGender,
-                              },
-                              prefixIcon: const Icon(Icons.wc_outlined, size: 18, color: AppColors.champagneGold),
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedGender = value ?? 'M';
-                                });
-                              },
-                            );
-
-                            Widget buildCompanyField() => SraInput(
-                              controller: _companyNameController,
-                              label: localizations.companyNameLabel,
-                              placeholder: "SRA Enterprise SA",
-                              prefixIcon: const Icon(Icons.business_outlined, size: 18, color: AppColors.champagneGold),
-                              validator: (value) =>
-                                  (value == null || value.trim().isEmpty) ? 'Veuillez saisir la raison sociale' : null,
-                            );
-
-                            Widget buildPhoneField() => PhoneInputField(
-                              numberController: _phoneController,
-                              initialCountryCode: 'CI',
-                              onChanged: (fullNumber) {
-                                setState(() => _fullPhoneNumber = fullNumber);
-                              },
-                              validator: (value) =>
-                                  (value == null || value.trim().isEmpty)
-                                      ? 'Veuillez saisir votre numéro de téléphone'
-                                      : null,
-                            );
-
-                            Widget buildCountryField() => SraDropdown(
-                              value: _selectedCountry,
-                              items: Countries.list,
-                              label: localizations.countryLabel,
-                              placeholder: "Sélectionnez votre pays",
-                              prefixIcon: const Icon(Icons.flag_outlined, size: 18, color: AppColors.champagneGold),
-                              validator: (value) =>
-                                  (value == null || value.trim().isEmpty) ? 'Veuillez choisir votre pays' : null,
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedCountry = value;
-                                });
-                              },
-                            );
-
-                            Widget buildAddressField() => SraInput(
-                              controller: _addressController,
-                              label: localizations.physicalAddressLabel,
-                              placeholder: "Abidjan, Cocody Mermoz",
-                              maxLines: 2,
-                              prefixIcon: const Icon(Icons.location_on_outlined, size: 18, color: AppColors.champagneGold),
-                              validator: (value) =>
-                                  (value == null || value.trim().isEmpty) ? 'Veuillez saisir votre adresse' : null,
-                            );
-
-                            if (isWide) {
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(child: buildEmailField()),
-                                      const SizedBox(width: 16),
-                                      Expanded(child: buildPasswordField()),
-                                    ],
+                            InputDecoration buildInputDecoration(String hint) =>
+                                InputDecoration(
+                                  hintText: hint,
+                                  hintStyle: GoogleFonts.raleway(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w300,
+                                    color: textMuted,
                                   ),
-                                  const SizedBox(height: 16),
-                                  if (_profileType == 'Particulier') ...[
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(child: buildLastNameField()),
-                                        const SizedBox(width: 16),
-                                        Expanded(child: buildFirstNameField()),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 16),
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(child: buildGenderField()),
-                                        const SizedBox(width: 16),
-                                        Expanded(child: buildPhoneField()),
-                                      ],
-                                    ),
-                                  ] else ...[
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(child: buildCompanyField()),
-                                        const SizedBox(width: 16),
-                                        Expanded(child: buildPhoneField()),
-                                      ],
-                                    ),
-                                  ],
-                                  const SizedBox(height: 16),
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(child: buildCountryField()),
-                                      const SizedBox(width: 16),
-                                      Expanded(child: buildAddressField()),
-                                    ],
+                                  filled: true,
+                                  fillColor: inputBg,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 18,
+                                    vertical: 14,
                                   ),
-                                  const SizedBox(height: 32),
-                                  BlocBuilder<AuthBloc, AuthState>(
-                                    builder: (context, state) {
-                                      if (state is AuthLoading) {
-                                        return const LoadingIndicator(color: AppColors.champagneGold);
-                                      }
-                                      return SraButton(
-                                        onPressed: _submit,
-                                        label: localizations.createProfileButton,
-                                      );
-                                    },
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: inputBorder,
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.zero,
                                   ),
-                                ],
-                              );
-                            }
+                                  focusedBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: AppColors.gold,
+                                      width: 1.5,
+                                    ),
+                                    borderRadius: BorderRadius.zero,
+                                  ),
+                                );
 
-                            // Mobile (narrow layout)
+                            Widget buildPrenomField() => Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                buildLabel("PRÉNOM *"),
+                                const SizedBox(height: AppDimensions.spacingSm),
+                                TextFormField(
+                                  controller: _prenomController,
+                                  style: GoogleFonts.raleway(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w300,
+                                    color: textMain,
+                                  ),
+                                  decoration: buildInputDecoration("Jean-Marc"),
+                                ),
+                              ],
+                            );
+
+                            Widget buildNomField() => Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                buildLabel("NOM *"),
+                                const SizedBox(height: AppDimensions.spacingSm),
+                                TextFormField(
+                                  controller: _nomController,
+                                  style: GoogleFonts.raleway(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w300,
+                                    color: textMain,
+                                  ),
+                                  decoration: buildInputDecoration("Kouassi"),
+                                ),
+                              ],
+                            );
+
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                buildEmailField(),
-                                const SizedBox(height: 16),
-                                buildPasswordField(),
-                                const SizedBox(height: 16),
-                                if (_profileType == 'Particulier') ...[
-                                  buildLastNameField(),
-                                  const SizedBox(height: 16),
-                                  buildFirstNameField(),
-                                  const SizedBox(height: 16),
-                                  buildGenderField(),
-                                ] else ...[
-                                  buildCompanyField(),
+                                // Nom / Prénom Row
+                                if (isWide)
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(child: buildPrenomField()),
+                                      const SizedBox(width: AppDimensions.spacingMd),
+                                      Expanded(child: buildNomField()),
+                                    ],
+                                  )
+                                else ...[
+                                  buildPrenomField(),
+                                  const SizedBox(height: AppDimensions.spacingMd),
+                                  buildNomField(),
                                 ],
-                                const SizedBox(height: 16),
-                                buildPhoneField(),
-                                const SizedBox(height: 16),
-                                buildCountryField(),
-                                const SizedBox(height: 16),
-                                buildAddressField(),
-                                const SizedBox(height: 32),
+
+                                const SizedBox(height: AppDimensions.spacingMd),
+
+                                // Email
+                                buildLabel("EMAIL *"),
+                                const SizedBox(height: AppDimensions.spacingSm),
+                                TextFormField(
+                                  controller: _emailController,
+                                  keyboardType: TextInputType.emailAddress,
+                                  style: GoogleFonts.raleway(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w300,
+                                    color: textMain,
+                                  ),
+                                  decoration: buildInputDecoration("contact@email.com"),
+                                ),
+
+                                const SizedBox(height: AppDimensions.spacingMd),
+
+                                // Téléphone
+                                buildLabel("TÉLÉPHONE"),
+                                const SizedBox(height: AppDimensions.spacingSm),
+                                TextFormField(
+                                  controller: _phoneController,
+                                  keyboardType: TextInputType.phone,
+                                  style: GoogleFonts.raleway(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w300,
+                                    color: textMain,
+                                  ),
+                                  decoration: buildInputDecoration("+225 01 50 67 86 95"),
+                                ),
+
+                                const SizedBox(height: AppDimensions.spacingMd),
+
+                                // Mot de passe
+                                buildLabel("MOT DE PASSE *"),
+                                const SizedBox(height: AppDimensions.spacingSm),
+                                TextFormField(
+                                  controller: _passwordController,
+                                  obscureText: !_showPassword,
+                                  onChanged: (_) => setState(() {}),
+                                  style: GoogleFonts.raleway(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w300,
+                                    color: textMain,
+                                  ),
+                                  decoration: buildInputDecoration("••••••••").copyWith(
+                                    suffixIcon: IconButton(
+                                      icon: Icon(
+                                        _showPassword
+                                            ? Icons.visibility_off_outlined
+                                            : Icons.visibility_outlined,
+                                        color: textMuted,
+                                        size: 16,
+                                      ),
+                                      onPressed: () {
+                                        setState(() => _showPassword = !_showPassword);
+                                      },
+                                    ),
+                                  ),
+                                ),
+
+                                const SizedBox(height: AppDimensions.spacingMd),
+
+                                // Confirmer mot de passe
+                                buildLabel("CONFIRMER LE MOT DE PASSE *"),
+                                const SizedBox(height: AppDimensions.spacingSm),
+                                TextFormField(
+                                  controller: _confirmController,
+                                  obscureText: !_showConfirm,
+                                  onChanged: (_) => setState(() {}),
+                                  style: GoogleFonts.raleway(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w300,
+                                    color: textMain,
+                                  ),
+                                  decoration: buildInputDecoration("••••••••").copyWith(
+                                    suffixIcon: IconButton(
+                                      icon: Icon(
+                                        _showConfirm
+                                            ? Icons.visibility_off_outlined
+                                            : Icons.visibility_outlined,
+                                        color: textMuted,
+                                        size: 16,
+                                      ),
+                                      onPressed: () {
+                                        setState(() => _showConfirm = !_showConfirm);
+                                      },
+                                    ),
+                                  ),
+                                ),
+
+                                // ── Password Strength Panel (Next.js) ────────
+                                if (password.isNotEmpty) ...[
+                                  const SizedBox(height: AppDimensions.spacingMd),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 12,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: isDark
+                                          ? AppColors.darkElevated
+                                          : AppColors.fog,
+                                      border: const Border(
+                                        left: BorderSide(
+                                          color: Color(0x66C5985B),
+                                          width: 2.0,
+                                        ),
+                                      ),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        _buildStrengthItem(
+                                          "Au moins 6 caractères",
+                                          isLengthOk,
+                                        ),
+                                        const SizedBox(height: 6),
+                                        _buildStrengthItem(
+                                          "Contient un chiffre",
+                                          hasDigit,
+                                        ),
+                                        const SizedBox(height: 6),
+                                        _buildStrengthItem(
+                                          "Mots de passe identiques",
+                                          isConfirmOk,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+
+                                const SizedBox(height: AppDimensions.spacingLg),
+
+                                // ── Message d'erreur ─────────────────────────
+                                if (_errorMessage != null) ...[
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 14,
+                                      vertical: 11,
+                                    ),
+                                    decoration: const BoxDecoration(
+                                      color: Color(0x14E05555),
+                                      border: Border(
+                                        left: BorderSide(
+                                          color: Color(0xFFE05555),
+                                          width: 2.0,
+                                        ),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      _errorMessage!,
+                                      style: GoogleFonts.raleway(
+                                        fontSize: 13.5,
+                                        fontWeight: FontWeight.w400,
+                                        color: const Color(0xFFC0392B),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: AppDimensions.spacingLg),
+                                ],
+
+                                // ── Bouton Créer mon compte ──────────────────
                                 BlocBuilder<AuthBloc, AuthState>(
                                   builder: (context, state) {
-                                    if (state is AuthLoading) {
-                                      return const LoadingIndicator(color: AppColors.champagneGold);
-                                    }
-                                    return SraButton(
-                                      onPressed: _submit,
-                                      label: localizations.createProfileButton,
+                                    final isLoading = state is AuthLoading;
+
+                                    return SizedBox(
+                                      height: AppDimensions.buttonHeight,
+                                      child: ElevatedButton(
+                                        onPressed: isLoading ? null : _submit,
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: AppColors.gold,
+                                          foregroundColor: AppColors.white,
+                                          elevation: 0,
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.zero,
+                                          ),
+                                        ),
+                                        child: isLoading
+                                            ? const SizedBox(
+                                                width: 20,
+                                                height: 20,
+                                                child: CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                                    AppColors.white,
+                                                  ),
+                                                ),
+                                              )
+                                            : Text(
+                                                "CRÉER MON COMPTE",
+                                                style: GoogleFonts.raleway(
+                                                  fontSize: 11.5,
+                                                  fontWeight: FontWeight.w600,
+                                                  letterSpacing: 1.8,
+                                                  color: AppColors.white,
+                                                ),
+                                              ),
+                                      ),
                                     );
                                   },
                                 ),
@@ -415,31 +483,80 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 24),
-                    // Go back
+
+                    const SizedBox(height: AppDimensions.spacingLg),
+
+                    // ── Séparateur "OU" Next.js ──────────────────────────────
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(height: 1, color: borderCard),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            "OU",
+                            style: GoogleFonts.raleway(
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 1.0,
+                              color: const Color(0xFFBBBCC1),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(height: 1, color: borderCard),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: AppDimensions.spacingLg),
+
+                    // ── Lien Se connecter ────────────────────────────────────
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "${localizations.alreadyHaveAccount} ",
-                          style: const TextStyle(fontSize: 13, color: Colors.grey),
+                          "Déjà un compte ? ",
+                          style: GoogleFonts.raleway(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w300,
+                            color: textMuted,
+                          ),
                         ),
                         GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
+                          onTap: () => Navigator.of(context).pop(),
                           child: Text(
-                            localizations.login,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: AppColors.champagneGold,
+                            "Se connecter",
+                            style: GoogleFonts.raleway(
+                              fontSize: 14,
                               fontWeight: FontWeight.w500,
+                              color: AppColors.gold,
                             ),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 24),
+
+                    const SizedBox(height: AppDimensions.spacingXl),
+
+                    // ── Bouton Retour à l'accueil ────────────────────────────
+                    Center(
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+                        },
+                        child: Text(
+                          "← Retour à l'accueil",
+                          style: GoogleFonts.raleway(
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 0.5,
+                            color: const Color(0xFFBBBCC1),
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -447,6 +564,27 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildStrengthItem(String label, bool isOk) {
+    return Row(
+      children: [
+        Icon(
+          Icons.check_circle_outline_rounded,
+          size: 14,
+          color: isOk ? const Color(0xFF2D7A4F) : const Color(0xFFD0D0D0),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          label,
+          style: GoogleFonts.raleway(
+            fontSize: 12.5,
+            fontWeight: FontWeight.w400,
+            color: isOk ? const Color(0xFF2D7A4F) : const Color(0xFF6B6C6C),
+          ),
+        ),
+      ],
     );
   }
 }

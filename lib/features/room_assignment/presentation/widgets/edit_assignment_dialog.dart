@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
-import 'package:sra_hotel/core/widgets/sra_button.dart';
-import 'package:sra_hotel/core/widgets/sra_input.dart';
+import 'package:sra_hotel/core/widgets/widgets.dart';
 import 'package:sra_hotel/features/reservation_management/domain/entities/booking.dart';
 import 'package:sra_hotel/features/reservation_management/domain/entities/booking_line.dart';
 import 'package:sra_hotel/features/room_management/domain/entities/room.dart';

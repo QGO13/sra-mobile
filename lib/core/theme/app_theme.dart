@@ -7,52 +7,108 @@ import 'package:google_fonts/google_fonts.dart';
 // Theme.of(context).colorScheme.
 // =============================================================================
 class AppColors {
-  // --- Palette de marque SRA V2 ---
-  static const Color imperialNightBlue = Color(0xFF1A1A1A); // Anthracite — fond dark, texte principal
-  static const Color deepBlue          = Color(0xFF242322); // Anthracite Soft — surfaces secondaires dark
-  static const Color champagneGold     = Color(0xFFD4AF37); // Gold 1 — accent prestige
-  static const Color lightGold         = Color(0xFFAA7C11); // Gold 2 — accent prestige plus sombre
-  static const Color ecruWhite         = Color(0xFFFAF8F5); // Cream/Fog — fond light
-  static const Color softGrey          = Color(0xFFEDE9E2); // Mist — bordures fines 1px
-  static const Color anthracite        = Color(0xFF1A1A1A); // Texte principal
-  static const Color bronze            = Color(0xFF8C6221); // Bronze Satiné — sous-titres, bordures décoratives
+  // ── Palette de marque SRA V2 (alignée Next.js) ────────────────────────────
 
-  // --- Dégradé Or Prestige V2 ---
-  static const List<Color> goldGradientColors = [Color(0xFFD4AF37), Color(0xFFAA7C11)];
+  /// Or cuivré principal — boutons, accents, icônes actives (#C5985B)
+  static const Color gold      = Color(0xFFC5985B);
+
+  /// Or clair — hover, variantes légères (#DDB87C)
+  static const Color goldLight2 = Color(0xFFDDB87C);
+
+  /// Or sombre — pressed, dégradé bas (#8F6B36)
+  static const Color goldDark  = Color(0xFF8F6B36);
+
+  /// Fond global pages — mode light (#F7F5F1)
+  static const Color fog       = Color(0xFFF7F5F1);
+
+  /// Surfaces secondaires, séparateurs — mode light (#EDE9E2)
+  static const Color mist      = Color(0xFFEDE9E2);
+
+  /// Blanc pur — cartes, inputs
+  static const Color white     = Color(0xFFFFFFFF);
+
+  /// Texte principal — mode light (#212222)
+  static const Color ink       = Color(0xFF212222);
+
+  /// Texte secondaire titres — mode light (#3A3B3B)
+  static const Color inkSoft   = Color(0xFF3A3B3B);
+
+  /// Texte désactivé, hints, labels gris (#6B6C6C)
+  static const Color inkMuted  = Color(0xFF6B6C6C);
+
+  /// Fond dark principal (scaffold) (#1A1A1A)
+  static const Color darkSurface  = Color(0xFF1A1A1A);
+
+  /// Fond dark secondaire (cartes, inputs) (#242322)
+  static const Color darkCard     = Color(0xFF242322);
+
+  /// Fond dark tertiaire (sections imbriquées) (#2E2C2A)
+  static const Color darkElevated = Color(0xFF2E2C2A);
+
+  /// Bordures dark (#3A3836)
+  static const Color darkBorder   = Color(0xFF3A3836);
+
+  // ── Dégradés ──────────────────────────────────────────────────────────────
   static const LinearGradient goldGradient = LinearGradient(
-    colors: goldGradientColors,
+    colors: [gold, goldDark],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  // --- Statuts sémantiques (remplacent Colors.green, Colors.red, etc.) ---
-  static const Color statusSuccess = Color(0xFF22C55E); // Propre / Validé / Payé
-  static const Color statusError   = Color(0xFFEF4444); // Erreur / Annulé / À nettoyer
-  static const Color statusWarning = Color(0xFFF97316); // Avertissement / En attente
-  static const Color statusInfo    = Color(0xFF3B82F6); // Info / Confirmé / Réservé
-  static const Color textMuted     = Color(0xFF9CA3AF); // Texte secondaire / labels gris
+  static const List<Color> goldGradientColors = [gold, goldDark];
 
-  // --- Statuts chambre (existants — conservés) ---
-  static const Color statusToClean   = Color(0xFFE53E3E); // Rouge — À nettoyer
-  static const Color statusCleaned   = Color(0xFFED8936); // Orange — Nettoyage en cours
-  static const Color statusConfirmed = Color(0xFF3182CE); // Bleu — Confirmé
-  static const Color statusReady     = Color(0xFF38A169); // Vert — Prête / Libre
+  // ── Statuts sémantiques ───────────────────────────────────────────────────
+  static const Color statusSuccess = Color(0xFF22C55E);
+  static const Color statusError   = Color(0xFFEF4444);
+  static const Color statusWarning = Color(0xFFF97316);
+  static const Color statusInfo    = Color(0xFF3B82F6);
 
-  // --- Couleurs paiement mobile money ---
-  static const Color paymentMTN    = Color(0xFFFFCC00); // MTN Mobile Money
-  static const Color paymentMoov   = Color(0xFF00A2E8); // Moov Money
-  static const Color paymentOrange = Color(0xFFFF6600); // Orange Money
-  static const Color paymentWave   = Color(0xFF1D9BF0); // Wave
+  // ── Statuts chambre ───────────────────────────────────────────────────────
+  static const Color statusToClean   = Color(0xFFE53E3E);
+  static const Color statusCleaned   = Color(0xFFED8936);
+  static const Color statusConfirmed = Color(0xFF3182CE);
+  static const Color statusReady     = Color(0xFF38A169);
 
-  // --- Surfaces adaptatives (utiles pour dark/light sans Colors.white/black) ---
-  static const Color surfaceLight     = Color(0xFFFFFFFF);
-  static const Color surfaceDark      = Color(0xFF1A1A1A);
-  static const Color overlayLight     = Color(0x1A000000); // Colors.black12
-  static const Color overlayDark      = Color(0x1AFFFFFF); // Colors.white12
-  static const Color overlayDarkMedium = Color(0x3DFFFFFF); // Colors.white24
-  static const Color textOnGold       = Color(0xFFFFFFFF);
-  static const Color textOnDark       = Color(0xFFFFFFFF);
-  static const Color textOnLight      = Color(0xFF1A1A1A);
+  // ── Couleurs paiement mobile money ────────────────────────────────────────
+  static const Color paymentMTN    = Color(0xFFFFCC00);
+  static const Color paymentMoov   = Color(0xFF00A2E8);
+  static const Color paymentOrange = Color(0xFFFF6600);
+  static const Color paymentWave   = Color(0xFF1D9BF0);
+
+  // ── Surfaces adaptatives ──────────────────────────────────────────────────
+  static const Color surfaceLight      = white;
+  static const Color surfaceDark       = darkSurface;
+  static const Color overlayLight      = Color(0x1A000000);
+  static const Color overlayDark       = Color(0x1AFFFFFF);
+  static const Color overlayDarkMedium = Color(0x3DFFFFFF);
+  static const Color textOnGold        = white;
+  static const Color textOnDark        = white;
+  static const Color textOnLight       = ink;
+
+  static const Color white10 = Color(0x1AFFFFFF);
+  static const Color white12 = Color(0x1FFFFFFF);
+  static const Color white24 = Color(0x3DFFFFFF);
+  static const Color white38 = Color(0x62FFFFFF);
+
+  // ── Aliases retro-compatibilité (NE PAS UTILISER dans le nouveau code) ────
+  // ignore: non_constant_identifier_names
+  static const Color imperialNightBlue = darkSurface;
+  // ignore: non_constant_identifier_names
+  static const Color deepBlue          = darkCard;
+  // ignore: non_constant_identifier_names
+  static const Color champagneGold     = gold;
+  // ignore: non_constant_identifier_names
+  static const Color lightGold         = goldDark;
+  // ignore: non_constant_identifier_names
+  static const Color ecruWhite         = fog;
+  // ignore: non_constant_identifier_names
+  static const Color softGrey          = mist;
+  // ignore: non_constant_identifier_names
+  static const Color anthracite        = ink;
+  // ignore: non_constant_identifier_names
+  static const Color bronze            = goldDark;
+  // ignore: non_constant_identifier_names
+  static const Color textMuted         = inkMuted;
 }
 
 // =============================================================================
@@ -60,7 +116,7 @@ class AppColors {
 // utiliser de valeurs numériques brutes dans les pages et widgets.
 // =============================================================================
 class AppDimensions {
-  // --- Espacements verticaux / horizontaux ---
+  // ── Espacements ───────────────────────────────────────────────────────────
   static const double spacingXs  = 4.0;
   static const double spacingSm  = 8.0;
   static const double spacingMd  = 16.0;
@@ -68,160 +124,197 @@ class AppDimensions {
   static const double spacingXl  = 32.0;
   static const double spacingXxl = 48.0;
 
-  // --- Rayons de bordure (BorderRadius.circular) ---
-  static const double radiusNone = 0.0;   // Design flat luxury (défaut SRA)
-  static const double radiusXs   = 2.0;
-  static const double radiusSm   = 10.0;  // V2 adouci pour inputs
-  static const double radiusMd   = 18.0;  // V2 adouci pour cartes moyennes (paniers, etc.)
-  static const double radiusLg   = 28.0;  // V2 adouci pour grandes cartes et formulaires
-  static const double radiusXl   = 32.0;
-  static const double radiusFull = 999.0; // V2 pour boutons pilules
+  // ── Rayons de bordure ─────────────────────────────────────────────────────
+  static const double radiusNone = 0.0;
+  static const double radiusXs   = 4.0;
+  static const double radiusSm   = 10.0;
+  static const double radiusMd   = 18.0;
+  static const double radiusLg   = 24.0;
+  static const double radiusXl   = 28.0;
+  static const double radiusXxl  = 32.0;
+  static const double radiusFull = 999.0;
 
-  // --- Épaisseurs de bordure ---
+  // ── Épaisseurs de bordure ─────────────────────────────────────────────────
+  static const double borderHair   = 0.5;
   static const double borderThin   = 1.0;
   static const double borderMedium = 1.5;
   static const double borderThick  = 2.0;
 
-  // --- Composants UI ---
-  static const double inputHeight  = 52.0;
-  static const double buttonHeight = 48.0;
-  static const double iconSizeSm   = 16.0;
-  static const double iconSizeMd   = 20.0;
-  static const double iconSizeLg   = 24.0;
-  static const double logoSize     = 80.0;
-  static const double avatarSize   = 48.0;
+  // ── Composants UI ─────────────────────────────────────────────────────────
+  static const double inputHeight      = 52.0;
+  static const double buttonHeight     = 50.0;
+  static const double buttonHeightSm   = 40.0;
+  static const double iconSizeSm       = 16.0;
+  static const double iconSizeMd       = 20.0;
+  static const double iconSizeLg       = 24.0;
+  static const double iconSizeXl       = 32.0;
+  static const double logoSize         = 80.0;
+  static const double avatarSizeSm     = 32.0;
+  static const double avatarSizeMd     = 48.0;
+  static const double avatarSizeLg     = 64.0;
+  static const double avatarSize       = 48.0;
+  static const double bottomNavHeight  = 64.0;
+  static const double appBarHeight     = 56.0;
 
-  // --- Mise en page ---
-  static const double formMaxWidth    = 500.0;
-  static const double sidebarWidth    = 240.0;
-  static const double cardElevation   = 0.0; // Design flat luxury
-  static const double responsiveCardMaxExtent = 480.0;
+  // ── Mise en page ──────────────────────────────────────────────────────────
+  static const double formMaxWidth             = 500.0;
+  static const double sidebarWidth             = 240.0;
+  static const double cardElevation            = 0.0;
+  static const double responsiveCardMaxExtent  = 480.0;
   static const double responsiveCardMainExtent = 200.0;
-  static const double pagePaddingH    = spacingLg; // Padding horizontal des pages
-  static const double pagePaddingV    = spacingMd; // Padding vertical des pages
+  static const double pagePaddingH             = spacingLg;
+  static const double pagePaddingV             = spacingMd;
+  static const double cardPaddingH             = spacingMd;
+  static const double cardPaddingV             = spacingMd;
 
-  // --- Breakpoints responsive ---
-  static const double breakpointMd   = 600.0;  // Tablette
-  static const double breakpointLg   = 1024.0; // Bureau / Web
+  // ── Breakpoints responsive ────────────────────────────────────────────────
+  static const double breakpointSm = 480.0;
+  static const double breakpointMd = 600.0;
+  static const double breakpointLg = 1024.0;
 }
 
 // =============================================================================
-// APP SHADOWS — Ombres portées réutilisables (V2 Design System). Évite de 
-// hardcoder des BoxShadow dans les pages et widgets.
+// APP SHADOWS — Ombres portées réutilisables. Ne jamais hardcoder BoxShadow.
 // =============================================================================
 class AppShadows {
-  // Ombre standard pour les cartes blanches sur fond crème
-  static const BoxShadow shadowCard = BoxShadow(
-    color: Color(0x591A1A1A), // 35% opacity of #1A1A1A
-    offset: Offset(0, 14),
-    blurRadius: 34,
-    spreadRadius: -18,
+  /// Ombre standard pour les cartes blanches sur fond crème
+  static const BoxShadow card = BoxShadow(
+    color: Color(0x24212222), offset: Offset(0, 8),
+    blurRadius: 24, spreadRadius: -4,
   );
 
-  // Ombre plus diffuse pour les grandes sections ou les formulaires
-  static const BoxShadow shadowSoft = BoxShadow(
-    color: Color(0x401A1A1A), // 25% opacity of #1A1A1A
-    offset: Offset(0, 20),
-    blurRadius: 50,
-    spreadRadius: -20,
+  /// Ombre douce pour les grandes sections
+  static const BoxShadow soft = BoxShadow(
+    color: Color(0x14212222), offset: Offset(0, 16),
+    blurRadius: 40, spreadRadius: -8,
   );
 
-  // Ombre dorée incandescente (Boutons dorés)
-  static const BoxShadow shadowGold = BoxShadow(
-    color: Color(0x8CAA7C11), // 55% opacity of #AA7C11
-    offset: Offset(0, 10),
-    blurRadius: 24,
-    spreadRadius: -8,
+  /// Ombre dorée incandescente — boutons gold
+  static const BoxShadow gold = BoxShadow(
+    color: Color(0x6E8F6B36), offset: Offset(0, 8),
+    blurRadius: 20, spreadRadius: -4,
   );
 
-  // Ombre dorée incandescente réduite (Boutons dorés désactivés)
-  static const BoxShadow shadowGoldDisabled = BoxShadow(
-    color: Color(0x26AA7C11), // 15% opacity of #AA7C11
-    offset: Offset(0, 8),
-    blurRadius: 20,
-    spreadRadius: -6,
+  /// Ombre dorée réduite — état disabled
+  static const BoxShadow goldDisabled = BoxShadow(
+    color: Color(0x268F6B36), offset: Offset(0, 4),
+    blurRadius: 12, spreadRadius: -2,
   );
+
+  /// Ombre flottante — FAB, modales
+  static const BoxShadow floating = BoxShadow(
+    color: Color(0x30212222), offset: Offset(0, 12),
+    blurRadius: 32, spreadRadius: -6,
+  );
+
+  // ── Aliases retro-compatibilité ───────────────────────────────────────────
+  static const BoxShadow shadowCard         = card;
+  static const BoxShadow shadowSoft         = soft;
+  static const BoxShadow shadowGold         = gold;
+  static const BoxShadow shadowGoldDisabled = goldDisabled;
 }
 
 // =============================================================================
-// APP TEXT STYLES — Styles typographiques réutilisables. Évite les appels
-// GoogleFonts.* directs dans les widgets. Préférer Theme.of(context).textTheme
-// quand possible, sinon utiliser ces constantes.
+// APP TEXT STYLES — Styles typographiques réutilisables.
+// RÈGLE : Ne jamais appeler GoogleFonts.* directement dans les widgets/pages.
+//         Polices : Playfair Display (titres serif) + Raleway (corps sans-serif).
 // =============================================================================
 class AppTextStyles {
-  // --- Titres (Cormorant Garamond V2) ---
-  static TextStyle get displayLarge => GoogleFonts.cormorantGaramond(
-    fontSize: 32,
-    fontWeight: FontWeight.bold,
-    color: AppColors.anthracite,
+  // ── Titres display (Playfair Display — prestige, serif) ───────────────────
+
+  static TextStyle get displayXl => GoogleFonts.playfairDisplay(
+    fontSize: 40, fontWeight: FontWeight.w700, color: AppColors.ink, height: 1.15,
   );
 
-  static TextStyle get displayMedium => GoogleFonts.cormorantGaramond(
-    fontSize: 24,
-    fontWeight: FontWeight.bold,
-    color: AppColors.anthracite,
+  static TextStyle get displayLarge => GoogleFonts.playfairDisplay(
+    fontSize: 32, fontWeight: FontWeight.w700, color: AppColors.ink, height: 1.2,
   );
 
-  static TextStyle get titleLarge => GoogleFonts.cormorantGaramond(
-    fontSize: 20,
-    fontWeight: FontWeight.w600,
-    color: AppColors.anthracite,
+  static TextStyle get displayMedium => GoogleFonts.playfairDisplay(
+    fontSize: 26, fontWeight: FontWeight.w600, color: AppColors.ink, height: 1.25,
   );
 
-  static TextStyle get titleMedium => GoogleFonts.cormorantGaramond(
-    fontSize: 16,
-    fontWeight: FontWeight.w500,
+  static TextStyle get displaySmall => GoogleFonts.playfairDisplay(
+    fontSize: 22, fontWeight: FontWeight.w600, color: AppColors.ink, height: 1.3,
   );
 
-  // --- Corps (Montserrat V2) ---
-  static TextStyle get bodyLarge => GoogleFonts.montserrat(
-    fontSize: 16,
-    fontWeight: FontWeight.w400,
+  // ── Titres section (Playfair Display) ─────────────────────────────────────
+
+  static TextStyle get titleLarge => GoogleFonts.playfairDisplay(
+    fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.ink, height: 1.35,
   );
 
-  static TextStyle get bodyMedium => GoogleFonts.montserrat(
-    fontSize: 14,
-    fontWeight: FontWeight.w300,
+  static TextStyle get titleMedium => GoogleFonts.playfairDisplay(
+    fontSize: 17, fontWeight: FontWeight.w500, color: AppColors.ink, height: 1.35,
   );
 
-  static TextStyle get bodySmall => GoogleFonts.montserrat(
-    fontSize: 12,
-    fontWeight: FontWeight.w300,
-    color: AppColors.textMuted,
+  static TextStyle get titleSmall => GoogleFonts.playfairDisplay(
+    fontSize: 15, fontWeight: FontWeight.w500, color: AppColors.ink, height: 1.4,
   );
 
-  // --- Labels majuscules (style SRA V2) ---
-  static TextStyle get labelUppercase => GoogleFonts.montserrat(
-    fontSize: 10,
-    fontWeight: FontWeight.w600,
-    letterSpacing: 1.8,
-    color: AppColors.champagneGold,
+  // ── Corps de texte (Raleway — modernité, lisibilité) ──────────────────────
+
+  static TextStyle get bodyLarge => GoogleFonts.raleway(
+    fontSize: 16, fontWeight: FontWeight.w400, color: AppColors.ink, height: 1.6,
   );
 
-  static TextStyle get labelMuted => GoogleFonts.montserrat(
-    fontSize: 11,
-    fontWeight: FontWeight.w400,
-    color: AppColors.textMuted,
+  static TextStyle get bodyMedium => GoogleFonts.raleway(
+    fontSize: 14, fontWeight: FontWeight.w300, color: AppColors.inkSoft, height: 1.6,
   );
 
-  // --- Monospace (pour codes, numéros de référence, factures) ---
+  static TextStyle get bodySmall => GoogleFonts.raleway(
+    fontSize: 12, fontWeight: FontWeight.w300, color: AppColors.inkMuted, height: 1.5,
+  );
+
+  // ── Labels (Raleway — UI, formulaires) ────────────────────────────────────
+
+  /// Label uppercase doré — titres de champs, SectionHeader
+  static TextStyle get labelUppercase => GoogleFonts.raleway(
+    fontSize: 10, fontWeight: FontWeight.w600,
+    letterSpacing: 1.8, color: AppColors.gold, height: 1.2,
+  );
+
+  /// Label muted — sous-titres de section, méta-données
+  static TextStyle get labelMuted => GoogleFonts.raleway(
+    fontSize: 11, fontWeight: FontWeight.w400, color: AppColors.inkMuted, height: 1.4,
+  );
+
+  /// Label standard — tags, chips
+  static TextStyle get labelNormal => GoogleFonts.raleway(
+    fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.inkSoft, height: 1.4,
+  );
+
+  // ── Boutons (Raleway — uppercase, serré) ──────────────────────────────────
+
+  static TextStyle get buttonLabel => GoogleFonts.raleway(
+    fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1.6, height: 1.2,
+  );
+
+  static TextStyle get buttonLabelSm => GoogleFonts.raleway(
+    fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 1.4, height: 1.2,
+  );
+
+  // ── Prix (Playfair Display — prestige) ────────────────────────────────────
+
+  static TextStyle get priceLarge => GoogleFonts.playfairDisplay(
+    fontSize: 28, fontWeight: FontWeight.w700, color: AppColors.ink, height: 1.1,
+  );
+
+  static TextStyle get priceMedium => GoogleFonts.playfairDisplay(
+    fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.ink, height: 1.2,
+  );
+
+  static TextStyle get priceSmall => GoogleFonts.playfairDisplay(
+    fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.ink, height: 1.3,
+  );
+
+  // ── Monospace (codes, références, factures) ───────────────────────────────
   static const TextStyle monospace = TextStyle(
-    fontFamily: 'monospace',
-    fontSize: 12,
-    fontWeight: FontWeight.w400,
+    fontFamily: 'monospace', fontSize: 12, fontWeight: FontWeight.w400,
   );
 
   static const TextStyle monospaceLg = TextStyle(
-    fontFamily: 'monospace',
-    fontSize: 14,
-    fontWeight: FontWeight.w500,
-  );
-
-  // --- Boutons ---
-  static TextStyle get buttonLabel => GoogleFonts.montserrat(
-    fontSize: 12,
-    fontWeight: FontWeight.w600,
-    letterSpacing: 1.4,
+    fontFamily: 'monospace', fontSize: 14, fontWeight: FontWeight.w500,
   );
 }
 
@@ -233,60 +326,127 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      primaryColor: AppColors.champagneGold,
+      primaryColor: AppColors.gold,
       colorScheme: const ColorScheme.light(
-        primary: AppColors.champagneGold,
-        secondary: AppColors.lightGold,
-        surface: AppColors.surfaceLight,
-        onPrimary: AppColors.textOnGold,
-        onSecondary: AppColors.textOnLight,
-        error: AppColors.statusError,
-        outline: AppColors.softGrey,
-        surfaceContainerHighest: AppColors.ecruWhite,
+        primary:                 AppColors.gold,
+        onPrimary:               AppColors.white,
+        secondary:               AppColors.goldDark,
+        onSecondary:             AppColors.white,
+        surface:                 AppColors.white,
+        onSurface:               AppColors.ink,
+        surfaceContainerHighest: AppColors.fog,
+        error:                   AppColors.statusError,
+        onError:                 AppColors.white,
+        outline:                 AppColors.mist,
       ),
-      scaffoldBackgroundColor: AppColors.ecruWhite,
-      textTheme: GoogleFonts.montserratTextTheme(
-        ThemeData.light().textTheme,
-      ).copyWith(
-        displayLarge: AppTextStyles.displayLarge,
+      scaffoldBackgroundColor: AppColors.fog,
+      textTheme: GoogleFonts.ralewayTextTheme(ThemeData.light().textTheme).copyWith(
+        displayLarge:  AppTextStyles.displayLarge,
         displayMedium: AppTextStyles.displayMedium,
-        titleLarge: AppTextStyles.titleLarge,
+        displaySmall:  AppTextStyles.displaySmall,
+        titleLarge:    AppTextStyles.titleLarge,
+        titleMedium:   AppTextStyles.titleMedium,
+        titleSmall:    AppTextStyles.titleSmall,
+        bodyLarge:     AppTextStyles.bodyLarge,
+        bodyMedium:    AppTextStyles.bodyMedium,
+        bodySmall:     AppTextStyles.bodySmall,
+        labelLarge:    AppTextStyles.buttonLabel,
+        labelSmall:    AppTextStyles.labelUppercase,
       ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.surfaceLight,
-        foregroundColor: AppColors.imperialNightBlue,
-        elevation: AppDimensions.cardElevation,
-        iconTheme: IconThemeData(color: AppColors.champagneGold),
+        backgroundColor:  AppColors.white,
+        foregroundColor:  AppColors.ink,
+        elevation:        AppDimensions.cardElevation,
+        centerTitle:      false,
+        iconTheme:        IconThemeData(color: AppColors.gold),
+        actionsIconTheme: IconThemeData(color: AppColors.gold),
       ),
       dividerTheme: const DividerThemeData(
-        color: AppColors.softGrey,
-        thickness: AppDimensions.borderThin,
+        color: AppColors.mist, thickness: AppDimensions.borderHair,
       ),
       inputDecorationTheme: InputDecorationTheme(
+        filled: true, fillColor: AppColors.white,
+        labelStyle: AppTextStyles.labelUppercase,
+        hintStyle: GoogleFonts.raleway(
+          fontSize: 13, fontWeight: FontWeight.w300, color: AppColors.inkMuted,
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppDimensions.spacingMd, vertical: AppDimensions.spacingMd,
+        ),
         border: OutlineInputBorder(
-          borderSide: const BorderSide(color: AppColors.softGrey),
+          borderSide: const BorderSide(color: AppColors.mist),
           borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
         ),
         enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: AppColors.softGrey, width: AppDimensions.borderThin),
+          borderSide: const BorderSide(color: AppColors.mist, width: AppDimensions.borderThin),
           borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: AppColors.champagneGold, width: AppDimensions.borderMedium),
+          borderSide: const BorderSide(color: AppColors.gold, width: AppDimensions.borderMedium),
           borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
         ),
-        filled: true,
-        fillColor: AppColors.surfaceLight,
-        labelStyle: AppTextStyles.labelUppercase,
+        errorBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: AppColors.statusError, width: AppDimensions.borderThin),
+          borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: AppColors.statusError, width: AppDimensions.borderMedium),
+          borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+        ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.champagneGold,
-          foregroundColor: AppColors.textOnGold,
+          backgroundColor: AppColors.gold,
+          foregroundColor: AppColors.white,
+          minimumSize: const Size(double.infinity, AppDimensions.buttonHeight),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusFull)),
+          elevation: AppDimensions.cardElevation,
+          textStyle: AppTextStyles.buttonLabel,
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.gold,
+          side: const BorderSide(color: AppColors.gold, width: AppDimensions.borderMedium),
           minimumSize: const Size(double.infinity, AppDimensions.buttonHeight),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusFull)),
           textStyle: AppTextStyles.buttonLabel,
         ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: AppColors.gold, textStyle: AppTextStyles.buttonLabel,
+        ),
+      ),
+      cardTheme: CardThemeData(
+        color: AppColors.white, elevation: AppDimensions.cardElevation,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusLg)),
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: AppColors.mist, selectedColor: AppColors.gold,
+        labelStyle: AppTextStyles.labelNormal,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusFull)),
+      ),
+      iconTheme:        const IconThemeData(color: AppColors.inkSoft, size: AppDimensions.iconSizeLg),
+      primaryIconTheme: const IconThemeData(color: AppColors.gold,    size: AppDimensions.iconSizeLg),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: AppColors.darkCard,
+        contentTextStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.white),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusMd)),
+        behavior: SnackBarBehavior.floating,
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: AppColors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusXl)),
+        titleTextStyle:   AppTextStyles.titleLarge,
+        contentTextStyle: AppTextStyles.bodyMedium,
+      ),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor:     AppColors.white,
+        selectedItemColor:   AppColors.gold,
+        unselectedItemColor: AppColors.inkMuted,
+        elevation:           0,
+        type:                BottomNavigationBarType.fixed,
       ),
     );
   }
@@ -295,60 +455,127 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      primaryColor: AppColors.champagneGold,
+      primaryColor: AppColors.gold,
       colorScheme: const ColorScheme.dark(
-        primary: AppColors.champagneGold,
-        secondary: AppColors.lightGold,
-        surface: AppColors.surfaceDark,
-        onPrimary: AppColors.textOnLight,
-        onSecondary: AppColors.textOnDark,
-        error: AppColors.statusError,
-        outline: AppColors.deepBlue,
-        surfaceContainerHighest: AppColors.deepBlue,
+        primary:                 AppColors.gold,
+        onPrimary:               AppColors.white,
+        secondary:               AppColors.goldDark,
+        onSecondary:             AppColors.white,
+        surface:                 AppColors.darkCard,
+        onSurface:               AppColors.white,
+        surfaceContainerHighest: AppColors.darkElevated,
+        error:                   AppColors.statusError,
+        onError:                 AppColors.white,
+        outline:                 AppColors.darkBorder,
       ),
-      scaffoldBackgroundColor: AppColors.imperialNightBlue,
-      textTheme: GoogleFonts.montserratTextTheme(
-        ThemeData.dark().textTheme,
-      ).copyWith(
-        displayLarge: AppTextStyles.displayLarge.copyWith(color: AppColors.champagneGold),
-        displayMedium: AppTextStyles.displayMedium.copyWith(color: AppColors.champagneGold),
-        titleLarge: AppTextStyles.titleLarge.copyWith(color: AppColors.champagneGold),
+      scaffoldBackgroundColor: AppColors.darkSurface,
+      textTheme: GoogleFonts.ralewayTextTheme(ThemeData.dark().textTheme).copyWith(
+        displayLarge:  AppTextStyles.displayLarge.copyWith(color: AppColors.gold),
+        displayMedium: AppTextStyles.displayMedium.copyWith(color: AppColors.gold),
+        displaySmall:  AppTextStyles.displaySmall.copyWith(color: AppColors.goldLight2),
+        titleLarge:    AppTextStyles.titleLarge.copyWith(color: AppColors.white),
+        titleMedium:   AppTextStyles.titleMedium.copyWith(color: AppColors.white),
+        titleSmall:    AppTextStyles.titleSmall.copyWith(color: AppColors.white),
+        bodyLarge:     AppTextStyles.bodyLarge.copyWith(color: AppColors.white),
+        bodyMedium:    AppTextStyles.bodyMedium.copyWith(color: AppColors.overlayDarkMedium),
+        bodySmall:     AppTextStyles.bodySmall.copyWith(color: AppColors.inkMuted),
+        labelLarge:    AppTextStyles.buttonLabel,
+        labelSmall:    AppTextStyles.labelUppercase,
       ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.imperialNightBlue,
-        foregroundColor: AppColors.champagneGold,
-        elevation: AppDimensions.cardElevation,
-        iconTheme: IconThemeData(color: AppColors.champagneGold),
+        backgroundColor:  AppColors.darkCard,
+        foregroundColor:  AppColors.gold,
+        elevation:        AppDimensions.cardElevation,
+        centerTitle:      false,
+        iconTheme:        IconThemeData(color: AppColors.gold),
+        actionsIconTheme: IconThemeData(color: AppColors.gold),
       ),
       dividerTheme: const DividerThemeData(
-        color: AppColors.deepBlue,
-        thickness: AppDimensions.borderThin,
+        color: AppColors.darkBorder, thickness: AppDimensions.borderHair,
       ),
       inputDecorationTheme: InputDecorationTheme(
+        filled: true, fillColor: AppColors.darkCard,
+        labelStyle: AppTextStyles.labelUppercase,
+        hintStyle: GoogleFonts.raleway(
+          fontSize: 13, fontWeight: FontWeight.w300, color: AppColors.inkMuted,
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppDimensions.spacingMd, vertical: AppDimensions.spacingMd,
+        ),
         border: OutlineInputBorder(
-          borderSide: const BorderSide(color: AppColors.deepBlue),
+          borderSide: const BorderSide(color: AppColors.darkBorder),
           borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
         ),
         enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: AppColors.deepBlue, width: AppDimensions.borderThin),
+          borderSide: const BorderSide(color: AppColors.darkBorder, width: AppDimensions.borderThin),
           borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: AppColors.champagneGold, width: AppDimensions.borderMedium),
+          borderSide: const BorderSide(color: AppColors.gold, width: AppDimensions.borderMedium),
           borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
         ),
-        filled: true,
-        fillColor: AppColors.deepBlue,
-        labelStyle: AppTextStyles.labelUppercase,
+        errorBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: AppColors.statusError, width: AppDimensions.borderThin),
+          borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: AppColors.statusError, width: AppDimensions.borderMedium),
+          borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+        ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.champagneGold,
-          foregroundColor: AppColors.textOnLight,
+          backgroundColor: AppColors.gold,
+          foregroundColor: AppColors.white,
+          minimumSize: const Size(double.infinity, AppDimensions.buttonHeight),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusFull)),
+          elevation: AppDimensions.cardElevation,
+          textStyle: AppTextStyles.buttonLabel,
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.gold,
+          side: const BorderSide(color: AppColors.gold, width: AppDimensions.borderMedium),
           minimumSize: const Size(double.infinity, AppDimensions.buttonHeight),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusFull)),
           textStyle: AppTextStyles.buttonLabel,
         ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: AppColors.gold, textStyle: AppTextStyles.buttonLabel,
+        ),
+      ),
+      cardTheme: CardThemeData(
+        color: AppColors.darkCard, elevation: AppDimensions.cardElevation,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusLg)),
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: AppColors.darkElevated, selectedColor: AppColors.gold,
+        labelStyle: AppTextStyles.labelNormal.copyWith(color: AppColors.white),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusFull)),
+      ),
+      iconTheme:        const IconThemeData(color: AppColors.overlayDarkMedium, size: AppDimensions.iconSizeLg),
+      primaryIconTheme: const IconThemeData(color: AppColors.gold,              size: AppDimensions.iconSizeLg),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: AppColors.darkElevated,
+        contentTextStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.white),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusMd)),
+        behavior: SnackBarBehavior.floating,
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: AppColors.darkCard,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusXl)),
+        titleTextStyle:   AppTextStyles.titleLarge.copyWith(color: AppColors.white),
+        contentTextStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.overlayDarkMedium),
+      ),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor:     AppColors.darkCard,
+        selectedItemColor:   AppColors.gold,
+        unselectedItemColor: AppColors.inkMuted,
+        elevation:           0,
+        type:                BottomNavigationBarType.fixed,
       ),
     );
   }

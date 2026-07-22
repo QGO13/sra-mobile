@@ -3,19 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
-import 'package:sra_hotel/core/widgets/empty_state_view.dart';
-import 'package:sra_hotel/core/widgets/error_state_view.dart';
-import 'package:sra_hotel/core/widgets/loading_indicator.dart';
-import 'package:sra_hotel/core/widgets/media_uploader_box.dart';
-import 'package:sra_hotel/core/widgets/responsive_list_grid_view.dart';
-import 'package:sra_hotel/core/widgets/sra_button.dart';
-import 'package:sra_hotel/core/widgets/sra_input.dart';
+import 'package:sra_hotel/core/widgets/widgets.dart';
 import 'package:sra_hotel/features/room_management/domain/entities/room_type.dart';
 import 'package:sra_hotel/features/room_management/presentation/bloc/room_bloc.dart';
 import 'package:sra_hotel/features/room_management/presentation/bloc/room_event.dart';
 import 'package:sra_hotel/features/room_management/presentation/bloc/room_state.dart';
 import 'package:sra_hotel/l10n/app_localizations.dart';
-import 'package:sra_hotel/core/widgets/confirm_delete_dialog.dart';
 
 class AdminRoomTypesView extends StatelessWidget {
   const AdminRoomTypesView({super.key});

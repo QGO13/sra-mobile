@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sra_hotel/core/routes/app_routes.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
-import 'package:sra_hotel/core/widgets/empty_state_view.dart';
-import 'package:sra_hotel/core/widgets/sra_button.dart';
+import 'package:sra_hotel/core/widgets/widgets.dart';
 import 'package:sra_hotel/features/cart/presentation/bloc/cart_bloc.dart';
 import 'package:sra_hotel/features/cart/presentation/bloc/cart_event.dart';
 import 'package:sra_hotel/features/cart/presentation/bloc/cart_state.dart';
 import 'package:sra_hotel/features/cart/presentation/widgets/cart_item_card.dart';
 import 'package:sra_hotel/l10n/app_localizations.dart';
-import 'package:sra_hotel/core/widgets/confirm_delete_dialog.dart';
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
@@ -32,7 +30,6 @@ class CartPage extends StatelessWidget {
               onAction: () {
                 Navigator.of(context).pushNamed(AppRoutes.search);
               },
-              isOutlined: false,
             );
           }
 

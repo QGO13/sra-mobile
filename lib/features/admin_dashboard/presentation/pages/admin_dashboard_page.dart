@@ -5,7 +5,7 @@ import 'package:sra_hotel/core/theme/app_theme.dart';
 import 'package:sra_hotel/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:sra_hotel/features/auth/presentation/bloc/auth_event.dart';
 import 'package:sra_hotel/features/auth/presentation/bloc/auth_state.dart';
-import 'package:sra_hotel/core/widgets/confirm_delete_dialog.dart';
+import 'package:sra_hotel/core/widgets/widgets.dart';
 import 'package:sra_hotel/features/backoffice_kpis/presentation/bloc/kpi_bloc.dart';
 import 'package:sra_hotel/features/backoffice_kpis/presentation/bloc/kpi_event.dart';
 import 'package:sra_hotel/features/backoffice_kpis/presentation/pages/admin_kpis_view.dart';

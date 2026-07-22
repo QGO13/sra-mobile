@@ -2,19 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
-import 'package:sra_hotel/core/widgets/empty_state_view.dart';
-import 'package:sra_hotel/core/widgets/error_state_view.dart';
-import 'package:sra_hotel/core/widgets/loading_indicator.dart';
-import 'package:sra_hotel/core/widgets/responsive_list_grid_view.dart';
-import 'package:sra_hotel/core/widgets/sra_button.dart';
-import 'package:sra_hotel/core/widgets/sra_input.dart';
-import 'package:sra_hotel/core/widgets/sra_dropdown.dart';
+import 'package:sra_hotel/core/widgets/widgets.dart';
 import 'package:sra_hotel/features/service_management/domain/entities/hotel_service.dart';
 import 'package:sra_hotel/features/service_management/presentation/bloc/service_bloc.dart';
 import 'package:sra_hotel/features/service_management/presentation/bloc/service_event.dart';
 import 'package:sra_hotel/features/service_management/presentation/bloc/service_state.dart';
 import 'package:sra_hotel/l10n/app_localizations.dart';
-import 'package:sra_hotel/core/widgets/confirm_delete_dialog.dart';
 
 class AdminServicesView extends StatelessWidget {
   const AdminServicesView({super.key});

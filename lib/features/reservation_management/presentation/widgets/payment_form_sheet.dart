@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
-import 'package:sra_hotel/core/widgets/sra_button.dart';
-import 'package:sra_hotel/core/widgets/sra_input.dart';
-import 'package:sra_hotel/core/widgets/sra_dropdown.dart';
+import 'package:sra_hotel/core/widgets/widgets.dart';
 import 'package:sra_hotel/l10n/app_localizations.dart';
 
 class PaymentFormSheet extends StatefulWidget {

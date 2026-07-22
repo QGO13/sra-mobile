@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
-import 'package:sra_hotel/core/widgets/error_state_view.dart';
-import 'package:sra_hotel/core/widgets/loading_indicator.dart';
+import 'package:sra_hotel/core/widgets/widgets.dart';
 import 'package:sra_hotel/features/reservation_management/domain/entities/booking.dart';
 import 'package:sra_hotel/features/room_management/domain/entities/room.dart';
 import 'package:sra_hotel/features/room_assignment/presentation/bloc/room_assignment_bloc.dart';
