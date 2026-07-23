@@ -26,7 +26,7 @@ class AdminKpisView extends StatelessWidget {
     return BlocBuilder<KpiBloc, KpiState>(
       builder: (context, state) {
         if (state is KpiLoading || state is KpiInitial) {
-          return const Center(child: LoadingIndicator(color: AppColors.champagneGold));
+          return const LoadingWidget();
         } else if (state is KpiFailure) {
           return ErrorStateView(
             message: state.error,

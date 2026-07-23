@@ -50,7 +50,7 @@ class HomePage extends StatelessWidget {
         },
         builder: (context, state) {
           if (state is AuthLoading) {
-            return const LoadingIndicator();
+            return const LoadingWidget();
           }
 
           if (state is Authenticated) {

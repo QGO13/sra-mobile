@@ -94,7 +94,7 @@ class _AdminBookingsViewState extends State<AdminBookingsView> {
     return BlocBuilder<AdminBookingBloc, AdminBookingState>(
       builder: (context, state) {
         if (state is AdminBookingLoading || state is AdminBookingInitial) {
-          return const Center(child: LoadingIndicator(color: AppColors.champagneGold));
+          return const LoadingWidget();
         } else if (state is AdminBookingFailure) {
           return ErrorStateView(
             message: state.error,

@@ -21,7 +21,7 @@ class ClientProfilePage extends StatelessWidget {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
         if (state is AuthLoading) {
-          return const Center(child: LoadingIndicator(color: AppColors.champagneGold));
+          return const LoadingWidget();
         }
 
         if (state is Authenticated) {

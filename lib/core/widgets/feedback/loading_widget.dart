@@ -26,12 +26,10 @@ class LoadingWidget extends StatelessWidget {
       children: [
         // ── Spinner doré ──────────────────────────────────────────────────
         SizedBox(
-          width: AppDimensions.iconSizeXl,
-          height: AppDimensions.iconSizeXl,
-          child: CircularProgressIndicator(
-            strokeWidth: AppDimensions.borderThick,
-            valueColor: const AlwaysStoppedAnimation<Color>(AppColors.gold),
-            backgroundColor: AppColors.gold.withValues(alpha: 0.15),
+          width: AppDimensions.loadingIcon,
+          height: AppDimensions.loadingIcon,
+          child: Image.asset(
+            "assets/images/logo.gif",
           ),
         ),
         // ── Label ─────────────────────────────────────────────────────────

@@ -26,7 +26,7 @@ class AdminServicesView extends StatelessWidget {
     return BlocBuilder<ServiceBloc, ServiceState>(
       builder: (context, state) {
         if (state is ServiceLoading || state is ServiceInitial) {
-          return const Center(child: LoadingIndicator(color: AppColors.champagneGold));
+          return const LoadingWidget();
         } else if (state is ServiceFailure) {
           return ErrorStateView(
             message: state.error,

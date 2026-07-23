@@ -181,16 +181,7 @@ class SraWelcomePage extends StatelessWidget {
                   }
                 },
                 builder: (context, state) {
-                  return const Column(
-                    children: [
-                      LoadingIndicator(color: AppColors.champagneGold),
-                      SizedBox(height: 20),
-                      Text(
-                        "Initialisation de la session...",
-                        style: TextStyle(color: Colors.white60, fontSize: 15),
-                      ),
-                    ],
-                  );
+                  return const LoadingWidget(label: "Initialisation de la session...");
                 },
               ),
               const SizedBox(height: 48),

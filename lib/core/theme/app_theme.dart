@@ -156,6 +156,7 @@ class AppDimensions {
   static const double avatarSize       = 48.0;
   static const double bottomNavHeight  = 64.0;
   static const double appBarHeight     = 56.0;
+  static const double loadingIcon      = 250.0;
 
   // ── Mise en page ──────────────────────────────────────────────────────────
   static const double formMaxWidth             = 500.0;

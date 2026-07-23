@@ -25,7 +25,7 @@ class AdminInvoicesView extends StatelessWidget {
     return BlocBuilder<InvoiceBloc, InvoiceState>(
       builder: (context, state) {
         if (state is InvoiceLoading || state is InvoiceInitial) {
-          return const Center(child: LoadingIndicator(color: AppColors.champagneGold));
+          return const LoadingWidget();
         } else if (state is InvoiceFailure) {
           return ErrorStateView(
             message: state.error,

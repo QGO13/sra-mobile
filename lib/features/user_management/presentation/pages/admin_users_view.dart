@@ -35,7 +35,7 @@ class _AdminUsersViewState extends State<AdminUsersView> {
     return BlocBuilder<UserBloc, UserState>(
       builder: (context, state) {
         if (state is UserLoading || state is UserInitial) {
-          return const Center(child: LoadingIndicator(color: AppColors.champagneGold));
+          return const LoadingWidget();
         } else if (state is UserFailure) {
           return ErrorStateView(
             message: state.error,

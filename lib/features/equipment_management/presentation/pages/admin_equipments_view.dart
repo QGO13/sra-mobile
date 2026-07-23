@@ -40,7 +40,7 @@ class _AdminEquipmentsViewState extends State<AdminEquipmentsView> {
     return BlocBuilder<EquipmentBloc, EquipmentState>(
       builder: (context, state) {
         if (state is EquipmentLoading || state is EquipmentInitial) {
-          return const Center(child: LoadingIndicator(color: AppColors.champagneGold));
+          return const LoadingWidget();
         } else if (state is EquipmentFailure) {
           return ErrorStateView(
             message: state.error,

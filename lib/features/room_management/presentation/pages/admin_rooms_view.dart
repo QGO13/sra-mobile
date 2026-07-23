@@ -35,7 +35,7 @@ class _AdminRoomsViewState extends State<AdminRoomsView> {
     return BlocBuilder<RoomBloc, RoomState>(
       builder: (context, state) {
         if (state is RoomLoading || state is RoomInitial) {
-          return const Center(child: LoadingIndicator(color: AppColors.champagneGold));
+          return const LoadingWidget();
         } else if (state is RoomFailure) {
           return ErrorStateView(
             message: state.error,

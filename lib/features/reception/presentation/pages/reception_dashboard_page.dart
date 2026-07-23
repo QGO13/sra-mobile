@@ -117,7 +117,7 @@ class _ReceptionDashboardPageState extends State<ReceptionDashboardPage> with Si
         },
         builder: (context, state) {
           if (state is ReceptionLoading || state is ReceptionInitial) {
-            return const Center(child: LoadingIndicator(color: AppColors.champagneGold));
+            return const LoadingWidget();
           } else if (state is ReceptionFailure) {
             return ErrorStateView(
               message: state.error,

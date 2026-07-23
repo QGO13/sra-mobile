@@ -85,9 +85,7 @@ class _RoomAssignmentDashboardPageState extends State<RoomAssignmentDashboardPag
         },
         builder: (context, state) {
           if (state is RoomAssignmentLoading || state is RoomAssignmentInitial) {
-            return const Center(
-              child: LoadingIndicator(color: AppColors.champagneGold),
-            );
+            return const LoadingWidget();
           } else if (state is RoomAssignmentError && state is! RoomAssignmentLoaded) {
             return ErrorStateView(
               message: state.message,
@@ -105,7 +103,7 @@ class _RoomAssignmentDashboardPageState extends State<RoomAssignmentDashboardPag
               // Retrieve from Bloc's getAssignmentDataUseCase cached values if possible,
               // or we wait for Loaded to rebuild. In this architecture, BLoC triggers LoadRoomAssignmentDataEvent
               // right after ActionSuccess, so this is transient. Let's show a loader or simple sizebox.
-              return const Center(child: LoadingIndicator(color: AppColors.champagneGold));
+              return const LoadingWidget();
             }
 
             return TabBarView(
