@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sra_hotel/core/error/error_handler.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
 import 'package:sra_hotel/core/widgets/widgets.dart';
-import 'package:sra_hotel/main.dart';
+import 'package:sra_hotel/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:sra_hotel/features/auth/presentation/bloc/auth_state.dart';
+import 'package:sra_hotel/l10n/app_localizations.dart';
 
-/// Page de changement de mot de passe — Reproduction Pixel-Perfect de `ChangePasswordPage.tsx`.
+/// Page de modification du mot de passe — Reproduction Pixel-Perfect avec `AuthShell`.
 class ChangePasswordPage extends StatefulWidget {
   const ChangePasswordPage({super.key});
 
@@ -12,212 +16,216 @@ class ChangePasswordPage extends StatefulWidget {
 }
 
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
-  final _currentController = TextEditingController();
-  final _newController = TextEditingController();
-  final _confirmController = TextEditingController();
-
+  final _formKey = GlobalKey<FormState>();
+  final _currentPasswordController = TextEditingController();
+  final _newPasswordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
   String? _errorMessage;
 
   @override
   void dispose() {
-    _currentController.dispose();
-    _newController.dispose();
-    _confirmController.dispose();
+    _currentPasswordController.dispose();
+    _newPasswordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
   void _submit() {
-    if (_currentController.text.length < 6 || _newController.text.length < 8) {
-      setState(() => _errorMessage = 'Votre nouveau mot de passe doit compter au moins 8 caractères.');
+    final l10n = AppLocalizations.of(context)!;
+    final current = _currentPasswordController.text;
+    final newPass = _newPasswordController.text;
+    final confirm = _confirmPasswordController.text;
+
+    if (current.isEmpty || newPass.isEmpty || confirm.isEmpty) {
+      setState(() => _errorMessage = l10n.fillAllFields);
       return;
     }
-    if (_newController.text != _confirmController.text) {
-      setState(() => _errorMessage = 'La confirmation ne correspond pas au nouveau mot de passe.');
+    if (newPass.length < 6) {
+      setState(() => _errorMessage = l10n.newPasswordTooShort);
       return;
     }
-    setState(() {
-      _errorMessage = null;
-    });
+    if (newPass != confirm) {
+      setState(() => _errorMessage = l10n.passwordsDoNotMatch);
+      return;
+    }
+
+    setState(() => _errorMessage = null);
     SraSnackbar.show(
       context,
-      message: 'Votre mot de passe a été mis à jour avec succès.',
+      message: l10n.passwordChangedSuccess,
       type: SraSnackbarType.success,
     );
+    Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final currentLocale = Localizations.localeOf(context);
+    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.inkMuted;
+    final cardBg = isDark ? AppColors.darkCard : AppColors.white;
+    final cardBorder = isDark ? AppColors.darkBorder : AppColors.mist;
 
-    final bgPage = isDark ? AppColors.darkSurface : AppColors.fog;
-    final textMuted = isDark ? AppColors.overlayDarkMedium : AppColors.inkMuted;
-
-    return Scaffold(
-      backgroundColor: bgPage,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: [
-          LanguageSelector(
-            currentLocale: currentLocale,
-            onLocaleChanged: (newLocale) {
-              MyApp.setLocale(context, newLocale);
-            },
+    return AuthShell(
+      child: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthFailure) {
+            setState(() {
+              _errorMessage = ErrorMapper.getSubtitle(state.message, l10n);
+            });
+          }
+        },
+        child: Container(
+          padding: const EdgeInsets.all(AppDimensions.spacingXl),
+          decoration: BoxDecoration(
+            color: cardBg,
+            borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+            border: Border.all(color: cardBorder, width: AppDimensions.borderThin),
+            boxShadow: const [AppShadows.card],
           ),
-          AppDimensions.hGapMd,
-        ],
-      ),
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppDimensions.spacingLg,
-              vertical: AppDimensions.spacingXl,
-            ),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 480),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SraLogo(height: AppDimensions.avatarSizeLg * 1.5),
-                  AppDimensions.vGapLg,
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: AppColors.gold.withValues(alpha: isDark ? 0.2 : 0.16),
+                    borderRadius: BorderRadius.circular(AppDimensions.radiusXs),
+                  ),
+                  child: const Icon(
+                    Icons.vpn_key_outlined,
+                    color: AppColors.gold,
+                    size: AppDimensions.iconSizeLg,
+                  ),
+                ),
+                AppDimensions.vGapMd,
 
-                  Center(
-                    child: Container(
-                      width: AppDimensions.avatarSizeLg,
-                      height: AppDimensions.avatarSizeLg,
-                      decoration: BoxDecoration(
-                        color: AppColors.gold.withValues(alpha: isDark ? 0.2 : 0.12),
-                        shape: BoxShape.circle,
+                Text(
+                  l10n.resetHeader,
+                  style: AppTextStyles.labelUppercase.copyWith(
+                    color: AppColors.gold,
+                    letterSpacing: 2.0,
+                  ),
+                ),
+                AppDimensions.vGapXs,
+
+                Text(
+                  l10n.password,
+                  style: AppTextStyles.displayMedium.copyWith(
+                    fontSize: 34,
+                    height: 1.1,
+                    color: isDark ? AppColors.white : AppColors.ink,
+                  ),
+                ),
+                AppDimensions.vGapXs,
+
+                Text(
+                  l10n.changePasswordSubtitle,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: textMuted,
+                  ),
+                ),
+                AppDimensions.vGapLg,
+
+                SraInput(
+                  label: l10n.currentPasswordRequired,
+                  placeholder: "••••••••",
+                  controller: _currentPasswordController,
+                  obscureText: true,
+                  prefixIcon: const Icon(
+                    Icons.lock_outline_rounded,
+                    color: AppColors.gold,
+                    size: AppDimensions.iconSizeMd,
+                  ),
+                ),
+                AppDimensions.vGapLg,
+
+                SraInput(
+                  label: l10n.newPasswordRequired,
+                  placeholder: "••••••••",
+                  controller: _newPasswordController,
+                  obscureText: true,
+                  prefixIcon: const Icon(
+                    Icons.lock_outline_rounded,
+                    color: AppColors.gold,
+                    size: AppDimensions.iconSizeMd,
+                  ),
+                ),
+                AppDimensions.vGapLg,
+
+                SraInput(
+                  label: l10n.confirmNewPasswordRequired,
+                  placeholder: "••••••••",
+                  controller: _confirmPasswordController,
+                  obscureText: true,
+                  prefixIcon: const Icon(
+                    Icons.lock_outline_rounded,
+                    color: AppColors.gold,
+                    size: AppDimensions.iconSizeMd,
+                  ),
+                ),
+                AppDimensions.vGapLg,
+
+                if (_errorMessage != null) ...[
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppDimensions.spacingSm,
+                      vertical: AppDimensions.spacingXs,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.statusError.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(AppDimensions.radiusXs),
+                      border: Border.all(
+                        color: AppColors.statusError,
+                        width: AppDimensions.borderThin,
                       ),
-                      child: const Icon(
-                        Icons.key_rounded,
-                        color: AppColors.gold,
-                        size: AppDimensions.iconSizeXl,
-                      ),
                     ),
-                  ),
-                  AppDimensions.vGapLg,
-
-                  Text(
-                    "SÉCURITÉ DU COMPTE",
-                    textAlign: TextAlign.center,
-                    style: AppTextStyles.labelUppercase.copyWith(
-                      color: AppColors.gold,
-                    ),
-                  ),
-                  AppDimensions.vGapXs,
-                  Text(
-                    "Changez votre mot de passe.",
-                    textAlign: TextAlign.center,
-                    style: AppTextStyles.displayMedium.copyWith(
-                      color: isDark ? AppColors.white : AppColors.ink,
-                    ),
-                  ),
-                  AppDimensions.vGapXs,
-                  Text(
-                    "Choisissez un mot de passe unique pour sécuriser vos accès.",
-                    textAlign: TextAlign.center,
-                    style: AppTextStyles.bodyMedium.copyWith(
-                      color: textMuted,
-                    ),
-                  ),
-                  AppDimensions.vGapLg,
-
-                  SraCard(
-                    padding: const EdgeInsets.all(AppDimensions.spacingXl),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SraInput(
-                          label: "MOT DE PASSE ACTUEL *",
-                          placeholder: "••••••••",
-                          controller: _currentController,
-                          obscureText: true,
-                          prefixIcon: const Icon(
-                            Icons.lock_outline_rounded,
-                            color: AppColors.gold,
-                            size: AppDimensions.iconSizeMd,
-                          ),
-                        ),
-                        AppDimensions.vGapLg,
-
-                        SraInput(
-                          label: "NOUVEAU MOT DE PASSE *",
-                          placeholder: "8 caractères minimum",
-                          controller: _newController,
-                          obscureText: true,
-                          prefixIcon: const Icon(
-                            Icons.key_rounded,
-                            color: AppColors.gold,
-                            size: AppDimensions.iconSizeMd,
-                          ),
-                        ),
-                        AppDimensions.vGapLg,
-
-                        SraInput(
-                          label: "CONFIRMER LE NOUVEAU MOT DE PASSE *",
-                          placeholder: "••••••••",
-                          controller: _confirmController,
-                          obscureText: true,
-                          prefixIcon: const Icon(
-                            Icons.key_rounded,
-                            color: AppColors.gold,
-                            size: AppDimensions.iconSizeMd,
-                          ),
-                        ),
-                        AppDimensions.vGapLg,
-
-                        if (_errorMessage != null) ...[
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppDimensions.spacingSm,
-                              vertical: AppDimensions.spacingXs,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.statusError.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(AppDimensions.radiusXs),
-                              border: Border.all(
-                                color: AppColors.statusError,
-                                width: AppDimensions.borderThin,
-                              ),
-                            ),
-                            child: Text(
-                              _errorMessage!,
-                              style: AppTextStyles.bodySmall.copyWith(
-                                color: AppColors.statusError,
-                              ),
-                            ),
-                          ),
-                          AppDimensions.vGapLg,
-                        ],
-
-                        SraButton(
-                          label: "METTRE À JOUR LE MOT DE PASSE",
-                          onPressed: _submit,
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  AppDimensions.vGapLg,
-
-                  Center(
-                    child: GestureDetector(
-                      onTap: () => Navigator.of(context).pop(),
-                      child: Text(
-                        "← Se connecter",
-                        style: AppTextStyles.bodyMedium.copyWith(
-                          color: AppColors.gold,
-                          fontWeight: FontWeight.w600,
-                        ),
+                    child: Text(
+                      _errorMessage!,
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: AppColors.statusError,
                       ),
                     ),
                   ),
+                  AppDimensions.vGapLg,
                 ],
-              ),
+
+                BlocBuilder<AuthBloc, AuthState>(
+                  builder: (context, state) {
+                    return SraButton(
+                      label: l10n.changeMyPasswordButton,
+                      isLoading: state is AuthLoading,
+                      onPressed: _submit,
+                    );
+                  },
+                ),
+                AppDimensions.vGapLg,
+
+                const Divider(),
+                AppDimensions.vGapMd,
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        l10n.cancelAndReturn,
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: AppColors.gold,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),

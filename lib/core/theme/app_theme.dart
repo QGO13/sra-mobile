@@ -27,14 +27,14 @@ class AppColors {
   /// Blanc pur — cartes, inputs
   static const Color white     = Color(0xFFFFFFFF);
 
-  /// Texte principal — mode light (#212222)
-  static const Color ink       = Color(0xFF212222);
+  /// Texte principal — mode light (#1A1B1B)
+  static const Color ink       = Color(0xFF1A1B1B);
 
-  /// Texte secondaire titres — mode light (#3A3B3B)
-  static const Color inkSoft   = Color(0xFF3A3B3B);
+  /// Texte secondaire titres — mode light (#2C2D2E)
+  static const Color inkSoft   = Color(0xFF2C2D2E);
 
-  /// Texte désactivé, hints, labels gris (#6B6C6C)
-  static const Color inkMuted  = Color(0xFF6B6C6C);
+  /// Texte désactivé, hints, labels gris à haut contraste (#4E4F52)
+  static const Color inkMuted  = Color(0xFF4E4F52);
 
   /// Fond dark principal (scaffold) (#1A1A1A)
   static const Color darkSurface  = Color(0xFF1A1A1A);
@@ -75,12 +75,13 @@ class AppColors {
   static const Color paymentOrange = Color(0xFFFF6600);
   static const Color paymentWave   = Color(0xFF1D9BF0);
 
-  // ── Surfaces adaptatives ──────────────────────────────────────────────────
   static const Color surfaceLight      = white;
   static const Color surfaceDark       = darkSurface;
   static const Color overlayLight      = Color(0x1A000000);
   static const Color overlayDark       = Color(0x1AFFFFFF);
-  static const Color overlayDarkMedium = Color(0x3DFFFFFF);
+  static const Color overlayDarkMedium = Color(0xB3FFFFFF); // 70% blanc opaque pour la lisibilité
+  static const Color darkTextSecondary = Color(0xD9FFFFFF); // 85% blanc opaque
+  static const Color darkTextMuted     = Color(0xB3FFFFFF); // 70% blanc opaque
   static const Color textOnGold        = white;
   static const Color textOnDark        = white;
   static const Color textOnLight       = ink;
@@ -281,33 +282,33 @@ class AppTextStyles {
   // ── Corps de texte (Raleway — modernité, lisibilité) ──────────────────────
 
   static TextStyle get bodyLarge => GoogleFonts.raleway(
-    fontSize: 16, fontWeight: FontWeight.w400, color: AppColors.ink, height: 1.6,
+    fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.ink, height: 1.5,
   );
 
   static TextStyle get bodyMedium => GoogleFonts.raleway(
-    fontSize: 14, fontWeight: FontWeight.w300, color: AppColors.inkSoft, height: 1.6,
+    fontSize: 14.5, fontWeight: FontWeight.w500, color: AppColors.inkSoft, height: 1.5,
   );
 
   static TextStyle get bodySmall => GoogleFonts.raleway(
-    fontSize: 12, fontWeight: FontWeight.w300, color: AppColors.inkMuted, height: 1.5,
+    fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.inkMuted, height: 1.45,
   );
 
   // ── Labels (Raleway — UI, formulaires) ────────────────────────────────────
 
   /// Label uppercase doré — titres de champs, SectionHeader
   static TextStyle get labelUppercase => GoogleFonts.raleway(
-    fontSize: 10, fontWeight: FontWeight.w600,
+    fontSize: 11.5, fontWeight: FontWeight.w700,
     letterSpacing: 1.8, color: AppColors.gold, height: 1.2,
   );
 
   /// Label muted — sous-titres de section, méta-données
   static TextStyle get labelMuted => GoogleFonts.raleway(
-    fontSize: 11, fontWeight: FontWeight.w400, color: AppColors.inkMuted, height: 1.4,
+    fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.inkMuted, height: 1.4,
   );
 
   /// Label standard — tags, chips
   static TextStyle get labelNormal => GoogleFonts.raleway(
-    fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.inkSoft, height: 1.4,
+    fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.inkSoft, height: 1.4,
   );
 
   // ── Boutons (Raleway — uppercase, serré) ──────────────────────────────────
@@ -503,8 +504,8 @@ class AppTheme {
         titleMedium:   AppTextStyles.titleMedium.copyWith(color: AppColors.white),
         titleSmall:    AppTextStyles.titleSmall.copyWith(color: AppColors.white),
         bodyLarge:     AppTextStyles.bodyLarge.copyWith(color: AppColors.white),
-        bodyMedium:    AppTextStyles.bodyMedium.copyWith(color: AppColors.overlayDarkMedium),
-        bodySmall:     AppTextStyles.bodySmall.copyWith(color: AppColors.inkMuted),
+        bodyMedium:    AppTextStyles.bodyMedium.copyWith(color: AppColors.darkTextSecondary),
+        bodySmall:     AppTextStyles.bodySmall.copyWith(color: AppColors.darkTextMuted),
         labelLarge:    AppTextStyles.buttonLabel,
         labelSmall:    AppTextStyles.labelUppercase,
       ),
@@ -523,7 +524,7 @@ class AppTheme {
         filled: true, fillColor: AppColors.darkCard,
         labelStyle: AppTextStyles.labelUppercase,
         hintStyle: GoogleFonts.raleway(
-          fontSize: 13, fontWeight: FontWeight.w300, color: AppColors.inkMuted,
+          fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0x99FFFFFF),
         ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppDimensions.spacingMd, vertical: AppDimensions.spacingMd,

@@ -7,14 +7,16 @@ class CartItemEntity {
   final bool extraBedIncluded;
   final bool breakfastIncluded;
   final int breakfastCount;
+  final bool isSelected;
 
   const CartItemEntity({
     required this.room,
     required this.checkIn,
     required this.checkOut,
     this.extraBedIncluded = false,
-    this.breakfastIncluded = false,
+    this.breakfastIncluded = true,
     this.breakfastCount = 1,
+    this.isSelected = true,
   });
 
   CartItemEntity copyWith({
@@ -24,6 +26,7 @@ class CartItemEntity {
     bool? extraBedIncluded,
     bool? breakfastIncluded,
     int? breakfastCount,
+    bool? isSelected,
   }) {
     return CartItemEntity(
       room: room ?? this.room,
@@ -32,6 +35,7 @@ class CartItemEntity {
       extraBedIncluded: extraBedIncluded ?? this.extraBedIncluded,
       breakfastIncluded: breakfastIncluded ?? this.breakfastIncluded,
       breakfastCount: breakfastCount ?? this.breakfastCount,
+      isSelected: isSelected ?? this.isSelected,
     );
   }
 
@@ -40,18 +44,11 @@ class CartItemEntity {
     return diff <= 0 ? 1 : diff;
   }
 
-  // Calculate room cost + select supplements per night, then multiply by nights
+  /// Calcul du coût de la chambre (petit-déjeuner offert)
   double get itemTotal {
-    double pricePerNight = room.prixNuit;
-    if (extraBedIncluded && room.isSuite) {
-      pricePerNight += 15000; // Extra bed cost (15,000 FCFA/night)
-    }
-    if (breakfastIncluded) {
-      pricePerNight += breakfastCount * 5000; // Breakfast cost (5,000 FCFA/person/night)
-    }
-    return pricePerNight * nightsCount;
+    return room.prixNuit * nightsCount;
   }
 
-  List<Object?> get props => [room, checkIn, checkOut, extraBedIncluded, breakfastIncluded, breakfastCount];
+  List<Object?> get props => [room, checkIn, checkOut, extraBedIncluded, breakfastIncluded, breakfastCount, isSelected];
 }
 

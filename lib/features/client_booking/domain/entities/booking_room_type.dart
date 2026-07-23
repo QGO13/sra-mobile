@@ -6,6 +6,7 @@ class BookingRoomType {
   final String description;
   final List<String> images;
   final List<String> equipments;
+  final int availableCount;
 
   const BookingRoomType({
     required this.id,
@@ -15,7 +16,8 @@ class BookingRoomType {
     required this.description,
     required this.images,
     required this.equipments,
+    this.availableCount = 1,
   });
 
-  List<Object?> get props => [id, nom, prixNuit, capacite, description, images, equipments];
+  List<Object?> get props => [id, nom, prixNuit, capacite, description, images, equipments, availableCount];
 }

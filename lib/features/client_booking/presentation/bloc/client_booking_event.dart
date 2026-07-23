@@ -6,7 +6,15 @@ abstract class ClientBookingEvent {
   List<Object?> get props => [];
 }
 
-class LoadRoomTypesEvent extends ClientBookingEvent {}
+class LoadRoomTypesEvent extends ClientBookingEvent {
+  final DateTime? checkIn;
+  final DateTime? checkOut;
+
+  const LoadRoomTypesEvent({this.checkIn, this.checkOut});
+
+  @override
+  List<Object?> get props => [checkIn, checkOut];
+}
 
 class SelectRoomTypeEvent extends ClientBookingEvent {
   final BookingRoomType roomType;

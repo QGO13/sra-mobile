@@ -367,5 +367,191 @@
   "overlapWarning": "Attention : Chevauchement",
   "settingsTab": "Paramètres",
   "proforma": "PROFORMA",
-  "addToCart": "Ajouter au panier"
+  "addToCart": "Ajouter au panier",
+  "selectAll": "Tout sélectionner",
+  "selectedRoomsCount": "{selected} / {total} cochée(s)",
+  "@selectedRoomsCount": {
+    "placeholders": {
+      "selected": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "cartSummaryTitle": "RÉSUMÉ DE LA SÉLECTION",
+  "selectedAccommodations": "Hébergements sélectionnés",
+  "freeBreakfastIncluded": "Petit-déjeuner inclus (Offert)",
+  "taxesIncludedNote": "Taxes de séjour & TVA incluses",
+  "proceedToBooking": "Passer à la réservation ({count} chambre(s))",
+  "@proceedToBooking": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "selectAtLeastOneRoom": "Sélectionnez au moins une chambre",
+  "addMoreRooms": "Ajouter d'autres chambres",
+  "emptyCartTitle": "Votre panier est vide",
+  "emptyCartSubtitle": "Découvrez nos hébergements et ajoutez vos chambres préférées pour commencer votre séjour.",
+  "viewAvailability": "Voir les disponibilités",
+  "loginValidationError": "Renseignez une adresse e-mail valide et un mot de passe d’au moins 6 caractères.",
+  "yourSweetRestSpace": "VOTRE ESPACE SWEET REST",
+  "signedOutSuccessMessage": "Vous êtes maintenant déconnecté(e) en toute sécurité.",
+  "emailAddressRequired": "ADRESSE E-MAIL *",
+  "emailPlaceholder": "vous@exemple.com",
+  "passwordRequired": "MOT DE PASSE *",
+  "rememberMe": "Rester connecté(e)",
+  "changePasswordTitle": "Modifier le mot de passe",
+  "continueButton": "CONTINUER →",
+  "fillAllRequiredFields": "Veuillez remplir tous les champs obligatoires.",
+  "passwordTooShort": "Le mot de passe doit contenir au moins 6 caractères.",
+  "passwordsDoNotMatch": "Les mots de passe ne correspondent pas.",
+  "accountCreationHeader": "CRÉATION DE COMPTE",
+  "joinUsTitle": "Rejoignez-nous.",
+  "registerSubtitle": "Créez votre compte pour réserver votre séjour et accéder à nos services.",
+  "firstNameRequired": "PRÉNOM *",
+  "firstNamePlaceholder": "Jean",
+  "lastNameRequired": "NOM *",
+  "lastNamePlaceholder": "Dupont",
+  "confirmPasswordRequired": "CONFIRMER MOT DE PASSE *",
+  "createMyAccountButton": "CRÉER MON COMPTE →",
+  "fillAllFields": "Veuillez remplir tous les champs.",
+  "newPasswordTooShort": "Le nouveau mot de passe doit contenir au moins 6 caractères.",
+  "passwordChangedSuccess": "Mot de passe modifié avec succès.",
+  "resetHeader": "RÉINITIALISATION",
+  "changePasswordSubtitle": "Saisissez votre mot de passe actuel ainsi que le nouveau.",
+  "currentPasswordRequired": "MOT DE PASSE ACTUEL *",
+  "newPasswordRequired": "NOUVEAU MOT DE PASSE *",
+  "confirmNewPasswordRequired": "CONFIRMER NOUVEAU MOT DE PASSE *",
+  "changeMyPasswordButton": "MODIFIER MON MOT DE PASSE →",
+  "cancelAndReturn": "← Annuler et revenir",
+  "enterFullSixDigitCode": "Veuillez saisir le code complet à 6 chiffres.",
+  "secureVerificationHeader": "VÉRIFICATION SÉCURISÉE",
+  "confirmationCodeTitle": "Code de confirmation",
+  "enterCodeSubtitle": "Saisissez le code à 6 chiffres envoyé sur votre adresse e-mail.",
+  "verifyCodeButton": "VÉRIFIER LE CODE →",
+  "didNotReceiveCode": "Vous n'avez rien reçu ? ",
+  "newCodeSentSuccess": "Un nouveau code a été envoyé.",
+  "resendCode": "Renvoyer le code",
+  "endOfSessionHeader": "FIN DE SESSION",
+  "leavingUsAlreadyTitle": "Vous nous quittez déjà ?",
+  "logoutSubtitle": "Votre session sera fermée sur cet appareil. Vous pourrez vous reconnecter à tout moment.",
+  "logoutSecurityNotice": "Pour votre sécurité, fermez votre navigateur après la déconnexion sur un appareil partagé.",
+  "sessionStillActive": "Votre session reste active.",
+  "staySignedIn": "Rester connecté(e)",
+  "logMeOutButton": "Me déconnecter",
+  "needHelpContactReception": "Besoin d’aide ? Contactez la réception Sweet Rest.",
+  "myStayTitle": "Votre séjour à venir",
+  "myStaySubtitle": "Les détails utiles, réunis au même endroit.",
+  "nextMomentHeader": "VOTRE PROCHAIN MOMENT",
+  "inDaysCountdown": "Dans {days} jours",
+  "yourBookingCode": "VOTRE CODE",
+  "digitalKeyActivate": "Activer ma clé digitale",
+  "digitalKeyRequested": "Clé digitale demandée",
+  "digitalKeyAvailableNotice": "Votre clé digitale sera disponible le jour de votre arrivée à partir de 14:00.",
+  "modifyStay": "Modifier mon séjour",
+  "prepareYourArrival": "Préparez votre arrivée",
+  "prepareArrivalSubtitle": "Dites-nous ce qui rendra votre accueil plus fluide.",
+  "arrivalSlot": "CRÉNEAU D’ARRIVÉE",
+  "airportTransfer": "Transfert aéroport",
+  "airportTransferSubtitle": "Notre équipe vous recontactera pour les détails de votre vol.",
+  "specialRequests": "Une attention particulière ?",
+  "specialRequestsPlaceholder": "Ex. arrivée avec un enfant, oreiller ferme…",
+  "savePreferences": "Enregistrer mes préférences",
+  "preferencesSavedSuccess": "Vos préférences d’arrivée ont été transmises à la réception.",
+  "yourLandmarks": "Vos repères",
+  "yourLandmarksSubtitle": "Tout ce qui vous attend à l’hôtel.",
+  "wifiLandmarkTitle": "Wi-Fi haut débit",
+  "wifiLandmarkDesc": "Vos accès sont disponibles dès votre arrivée.",
+  "transferLandmarkTitle": "Transfert aéroport",
+  "transferLandmarkDesc": "Activez-le dans vos préférences si vous le souhaitez.",
+  "roomServiceLandmarkTitle": "Room service & Sweetie",
+  "roomServiceLandmarkDesc": "Une attention ou un dîner, à demander quand vous le voulez.",
+  "editStayDialogTitle": "Modifier mon séjour",
+  "editStayNotice": "La réception confirmera toute modification selon les disponibilités et les conditions de votre tarif.",
+  "desiredCheckIn": "Arrivée souhaitée",
+  "desiredCheckOut": "Départ souhaité",
+  "messageToReception": "Votre message à la réception",
+  "messageToReceptionPlaceholder": "Indiquez votre demande…",
+  "sendRequest": "Envoyer la demande",
+  "modificationRequestSent": "Votre demande de modification a bien été envoyée à la réception.",
+  "tabBook": "Réserver",
+  "tabStays": "Séjours",
+  "bookingTitleSub": "VOTRE ESCAPADE, EN TOUTE LIBERTÉ",
+  "bookingTitleMain": "Réservez votre parenthèse.",
+  "bookingTitleDesc": "Le confort d’un hôtel, l’intimité de chez vous.",
+  "bookingStepSelection": "Sélection",
+  "bookingStepCart": "Ajout au panier",
+  "bookingDatesTitle": "Vos dates de séjour",
+  "bookingBreakfastIncluded": "Le petit-déjeuner est inclus et offert pour toute réservation.",
+  "arrivalLabelUpper": "ARRIVÉE *",
+  "departureLabelUpper": "DÉPART *",
+  "guestsLabelUpper": "VOYAGEURS",
+  "chooseAccommodation": "Choisissez votre hébergement",
+  "insufficientCapacity": "Capacité insuffisante",
+  "selectedBadge": "Sélectionnée",
+  "selectedRoomButton": "Chambre sélectionnée",
+  "chooseRoomButton": "CHOISIR CETTE CHAMBRE",
+  "roomAddedToCartTitleUpper": "CHAMBRE AJOUTÉE AU PANIER",
+  "selectionSavedTitle": "Sélection enregistrée",
+  "stayDatesLabel": "Dates de séjour",
+  "accommodationItemLabel": "Hébergement",
+  "breakfastLabel": "Petit-déjeuner",
+  "breakfastOfferedByHotel": "Offert par l'hôtel",
+  "accommodationAmountLabel": "Montant hébergement",
+  "viewCartAndValidateButton": "VOIR LE PANIER ET VALIDER",
+  "addAnotherRoomButton": "AJOUTER UNE AUTRE CHAMBRE",
+  "addToCartUpperButton": "AJOUTER AU PANIER",
+  "popularBadge": "Plus populaire",
+  "gardenView": "Vue Jardin",
+  "poolView": "Vue Piscine",
+  "panoramicView": "Vue Panoramique",
+  "standardRoomName": "Chambre Standard",
+  "premiumRoomName": "Chambre Premium",
+  "deluxeSuiteName": "Suite Deluxe",
+  "standardRoomDesc": "Chambre élégante et fonctionnelle, équipée d’un lit Queen-Size, espace bureau et Wi-Fi haut débit.",
+  "premiumRoomDesc": "Chambre spacieuse avec coin salon, machine espresso, lit King-Size et baignoire relaxante.",
+  "deluxeSuiteDesc": "Notre suite haut de gamme disposant d’un salon séparé, service de majordome sur demande et terrasse privée.",
+  "standardRoomStandingDesc": "Chambre de grand standing avec petit-déjeuner offert.",
+  "guestsCountSingular": "{count} voyageur",
+  "@guestsCountSingular": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "guestsCountPlural": "{count} voyageurs",
+  "@guestsCountPlural": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "availabilitiesForDates": "Disponibilités du {checkIn} au {checkOut} (Petit-déjeuner offert).",
+  "@availabilitiesForDates": {
+    "placeholders": {
+      "checkIn": { "type": "String" },
+      "checkOut": { "type": "String" }
+    }
+  },
+  "availableSingular": "{count} disponible",
+  "@availableSingular": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "availablePlural": "{count} disponibles",
+  "@availablePlural": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "startingFromPerNight": "à partir de {price} / nuit",
+  "@startingFromPerNight": {
+    "placeholders": {
+      "price": { "type": "String" }
+    }
+  },
+  "roomAddedToCartDesc": "Votre hébergement '{roomName}' pour {nights} nuit(s) a été ajouté à votre panier. Le petit-déjeuner est offert !",
+  "@roomAddedToCartDesc": {
+    "placeholders": {
+      "roomName": { "type": "String" },
+      "nights": { "type": "int" }
+    }
+  }
 }

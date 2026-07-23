@@ -6,16 +6,33 @@ import 'package:sra_hotel/core/widgets/widgets.dart';
 import 'package:sra_hotel/features/cart/presentation/bloc/cart_bloc.dart';
 import 'package:sra_hotel/features/cart/presentation/bloc/cart_event.dart';
 import 'package:sra_hotel/features/cart/presentation/bloc/cart_state.dart';
+import 'package:sra_hotel/features/cart/presentation/widgets/cart_header_bar.dart';
 import 'package:sra_hotel/features/cart/presentation/widgets/cart_item_card.dart';
+import 'package:sra_hotel/features/cart/presentation/widgets/cart_summary_footer.dart';
 import 'package:sra_hotel/l10n/app_localizations.dart';
 
 class CartPage extends StatelessWidget {
-  const CartPage({super.key});
+  final VoidCallback? onNavigateToSearch;
+
+  const CartPage({
+    super.key,
+    this.onNavigateToSearch,
+  });
+
+  void _handleNavigateToSearch(BuildContext context) {
+    if (onNavigateToSearch != null) {
+      onNavigateToSearch!();
+    } else if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    } else {
+      Navigator.of(context).pushNamed(AppRoutes.home);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -24,26 +41,36 @@ class CartPage extends StatelessWidget {
           if (state is CartInitial || (state is CartUpdated && state.items.isEmpty)) {
             return EmptyStateView(
               icon: Icons.shopping_cart_outlined,
-              title: "Votre panier est vide",
-              subtitle: "Découvrez nos hébergements et ajoutez vos chambres préférées pour commencer votre séjour.",
-              actionLabel: "Voir les disponibilités",
-              onAction: () {
-                Navigator.of(context).pushNamed(AppRoutes.search);
-              },
+              title: l10n.emptyCartTitle,
+              subtitle: l10n.emptyCartSubtitle,
+              actionLabel: l10n.viewAvailability,
+              onAction: () => _handleNavigateToSearch(context),
             );
           }
 
           if (state is CartUpdated) {
             final items = state.items;
-            double baseSubtotal = items.fold(0.0, (sum, item) => sum + item.room.prixNuit * item.nightsCount);
-            double extraSubtotal = state.cartSubtotal - baseSubtotal;
+            final selectedCount = state.selectedCount;
+            final selectedSubtotal = state.selectedSubtotal;
 
             return Column(
               children: [
-                // List of selected rooms
+                CartHeaderBar(
+                  areAllSelected: state.areAllSelected,
+                  selectedCount: selectedCount,
+                  totalCount: items.length,
+                  onToggleAll: (val) {
+                    context.read<CartBloc>().add(
+                          CartAllItemsSelectionToggled(val ?? false),
+                        );
+                  },
+                ),
                 Expanded(
                   child: ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMd, vertical: AppDimensions.spacingLg - 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppDimensions.spacingMd,
+                      vertical: AppDimensions.spacingLg - 4,
+                    ),
                     itemCount: items.length,
                     itemBuilder: (context, index) {
                       final item = items[index];
@@ -51,9 +78,13 @@ class CartPage extends StatelessWidget {
                         padding: const EdgeInsets.only(bottom: AppDimensions.spacingMd),
                         child: CartItemCard(
                           item: item,
+                          onSelectionChanged: (bool? val) {
+                            context.read<CartBloc>().add(
+                                  CartItemSelectionToggled(item.room.id, val ?? false),
+                                );
+                          },
                           onRemove: () async {
                             final cartBloc = context.read<CartBloc>();
-                            final l10n = AppLocalizations.of(context)!;
                             final confirmed = await ConfirmDeleteDialog.show(
                               context,
                               title: l10n.removeCartItemTitle,
@@ -66,110 +97,21 @@ class CartPage extends StatelessWidget {
                               cartBloc.add(CartItemRemoved(item.room.id));
                             }
                           },
-                          onExtraBedChanged: (bool? val) {
-                            context.read<CartBloc>().add(
-                                  CartItemUpdated(item.room.id, extraBedIncluded: val),
-                                );
-                          },
-                          onBreakfastChanged: (bool? val) {
-                            context.read<CartBloc>().add(
-                                  CartItemUpdated(item.room.id, breakfastIncluded: val),
-                                );
-                          },
-                          onBreakfastCountChanged: (int count) {
-                            context.read<CartBloc>().add(
-                                  CartItemUpdated(item.room.id, breakfastCount: count),
-                                );
-                          },
                         ),
                       );
                     },
                   ),
                 ),
-                
-                // Bottom summary panel matching Web
-                Container(
-                  padding: const EdgeInsets.all(AppDimensions.spacingLg),
-                  decoration: BoxDecoration(
-                    color: isDark ? AppColors.imperialNightBlue : AppColors.surfaceLight,
-                    border: Border(
-                      top: BorderSide(
-                        color: isDark ? AppColors.overlayDark : AppColors.softGrey,
-                        width: 1.0,
-                      ),
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        "RÉSUMÉ",
-                        style: AppTextStyles.titleMedium.copyWith(
-                          color: isDark ? AppColors.ecruWhite : AppColors.imperialNightBlue,
-                        ),
-                      ),
-                      const SizedBox(height: AppDimensions.spacingSm + 6),
-                      _buildSummaryRow(
-                        "${items.length} hébergement${items.length > 1 ? 's' : ''}",
-                        "${baseSubtotal.toStringAsFixed(0)} FCFA",
-                        isDark,
-                      ),
-                      const SizedBox(height: AppDimensions.spacingSm),
-                      _buildSummaryRow(
-                        "Total nuits",
-                        "${state.nights} nuit${state.nights > 1 ? 's' : ''}",
-                        isDark,
-                      ),
-                      if (extraSubtotal > 0) ...[
-                        const SizedBox(height: AppDimensions.spacingSm),
-                        _buildSummaryRow(
-                          "Suppléments & Options",
-                          "${extraSubtotal.toStringAsFixed(0)} FCFA",
-                          isDark,
-                        ),
-                      ],
-                      const Divider(height: AppDimensions.spacingLg, thickness: 0.5, color: AppColors.softGrey),
-                      
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            "Total estimé",
-                            style: TextStyle(fontSize: 12.5, color: AppColors.textMuted, fontWeight: FontWeight.w300),
-                          ),
-                          Text(
-                            "${state.cartSubtotal.toStringAsFixed(0)} FCFA",
-                            style: AppTextStyles.displayMedium.copyWith(color: AppColors.champagneGold),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      const Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          "Taxes de séjour & TVA appliquées au paiement",
-                          style: TextStyle(fontSize: 9, color: AppColors.textMuted, fontStyle: FontStyle.italic),
-                        ),
-                      ),
-                      const SizedBox(height: AppDimensions.spacingLg - 4),
-                      
-                      SraButton(
-                        onPressed: () {
+                CartSummaryFooter(
+                  selectedCount: selectedCount,
+                  totalCount: items.length,
+                  selectedSubtotal: selectedSubtotal,
+                  onProceedToBooking: selectedCount > 0
+                      ? () {
                           Navigator.of(context).pushNamed(AppRoutes.preInvoice);
-                        },
-                        label: "Passer à la réservation",
-                      ),
-                      const SizedBox(height: AppDimensions.spacingSm + 2),
-                      SraButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        label: "Ajouter une chambre",
-                        isOutlined: true,
-                      ),
-                    ],
-                  ),
+                        }
+                      : null,
+                  onAddMoreRooms: () => _handleNavigateToSearch(context),
                 ),
               ],
             );
@@ -180,29 +122,4 @@ class CartPage extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildSummaryRow(String label, String value, bool isDark) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 12.5,
-            fontWeight: FontWeight.w300,
-            color: Colors.grey,
-          ),
-        ),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w500,
-            color: isDark ? AppColors.ecruWhite.withValues(alpha: 0.7) : AppColors.imperialNightBlue,
-          ),
-        ),
-      ],
-    );
-  }
 }
-

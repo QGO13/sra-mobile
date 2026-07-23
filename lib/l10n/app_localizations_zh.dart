@@ -970,4 +970,438 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get addToCart => '加入购物车';
+
+  @override
+  String get selectAll => '全选';
+
+  @override
+  String selectedRoomsCount(int selected, int total) {
+    return '已选 $selected / $total 项';
+  }
+
+  @override
+  String get cartSummaryTitle => '所选项目摘要';
+
+  @override
+  String get selectedAccommodations => '已选住宿';
+
+  @override
+  String get freeBreakfastIncluded => '含早餐 (免费赠送)';
+
+  @override
+  String get taxesIncludedNote => '已含住宿税及增值税';
+
+  @override
+  String proceedToBooking(int count) {
+    return '前往预订 ($count 间客房)';
+  }
+
+  @override
+  String get selectAtLeastOneRoom => '请至少选择一间客房';
+
+  @override
+  String get addMoreRooms => '添加更多客房';
+
+  @override
+  String get emptyCartTitle => '您的购物车是空的';
+
+  @override
+  String get emptyCartSubtitle => '探索我们的住宿房型，选择您喜欢的客房开始预订。';
+
+  @override
+  String get viewAvailability => '查看可用房型';
+
+  @override
+  String get loginValidationError => '请输入有效的电子邮箱及至少 6 位字符的密码。';
+
+  @override
+  String get yourSweetRestSpace => '您的 SWEET REST 专属空间';
+
+  @override
+  String get signedOutSuccessMessage => '您已安全退出登录。';
+
+  @override
+  String get emailAddressRequired => '电子邮箱 *';
+
+  @override
+  String get emailPlaceholder => 'you@example.com';
+
+  @override
+  String get passwordRequired => '密码 *';
+
+  @override
+  String get rememberMe => '记住登录状态';
+
+  @override
+  String get changePasswordTitle => '修改密码';
+
+  @override
+  String get continueButton => '继续 →';
+
+  @override
+  String get fillAllRequiredFields => '请填写所有必填字段。';
+
+  @override
+  String get passwordTooShort => '密码长度至少需要 6 位字符。';
+
+  @override
+  String get passwordsDoNotMatch => '两次输入的密码不一致。';
+
+  @override
+  String get accountCreationHeader => '创建新账户';
+
+  @override
+  String get joinUsTitle => '加入我们。';
+
+  @override
+  String get registerSubtitle => '创建您的账户以预订住宿并享受我们的服务。';
+
+  @override
+  String get firstNameRequired => '名字 *';
+
+  @override
+  String get firstNamePlaceholder => '三';
+
+  @override
+  String get lastNameRequired => '姓氏 *';
+
+  @override
+  String get lastNamePlaceholder => '张';
+
+  @override
+  String get confirmPasswordRequired => '确认密码 *';
+
+  @override
+  String get createMyAccountButton => '创建我的账户 →';
+
+  @override
+  String get fillAllFields => '请填写所有字段。';
+
+  @override
+  String get newPasswordTooShort => '新密码长度至少需要 6 位字符。';
+
+  @override
+  String get passwordChangedSuccess => '密码修改成功。';
+
+  @override
+  String get resetHeader => '重置密码';
+
+  @override
+  String get changePasswordSubtitle => '请输入您当前的密码和新密码。';
+
+  @override
+  String get currentPasswordRequired => '当前密码 *';
+
+  @override
+  String get newPasswordRequired => '新密码 *';
+
+  @override
+  String get confirmNewPasswordRequired => '确认新密码 *';
+
+  @override
+  String get changeMyPasswordButton => '修改我的密码 →';
+
+  @override
+  String get cancelAndReturn => '← 取消并返回';
+
+  @override
+  String get enterFullSixDigitCode => '请输入完整的 6 位验证码。';
+
+  @override
+  String get secureVerificationHeader => '安全验证';
+
+  @override
+  String get confirmationCodeTitle => '确认验证码';
+
+  @override
+  String get enterCodeSubtitle => '请输入发送至您电子邮箱的 6 位验证码。';
+
+  @override
+  String get verifyCodeButton => '验证代码 →';
+
+  @override
+  String get didNotReceiveCode => '未收到验证码？ ';
+
+  @override
+  String get newCodeSentSuccess => '新的验证码已发送。';
+
+  @override
+  String get resendCode => '重新发送验证码';
+
+  @override
+  String get endOfSessionHeader => '会话结束';
+
+  @override
+  String get leavingUsAlreadyTitle => '您这就要离开了吗？';
+
+  @override
+  String get logoutSubtitle => '您的会话将在该设备上关闭。您随时可以重新登录。';
+
+  @override
+  String get logoutSecurityNotice => '为了您的安全，在共享设备上退出登录后请关闭浏览器。';
+
+  @override
+  String get sessionStillActive => '您的会话仍处于活动状态。';
+
+  @override
+  String get staySignedIn => '保持登录状态';
+
+  @override
+  String get logMeOutButton => '退出登录';
+
+  @override
+  String get needHelpContactReception => '需要帮助？请联系 Sweet Rest 前台。';
+
+  @override
+  String get myStayTitle => '您即将来临的住宿';
+
+  @override
+  String get myStaySubtitle => '所有实用信息，一站式全览。';
+
+  @override
+  String get nextMomentHeader => '您的下一次美好时光';
+
+  @override
+  String inDaysCountdown(Object days) {
+    return '还有 $days 天';
+  }
+
+  @override
+  String get yourBookingCode => '您的预订代码';
+
+  @override
+  String get digitalKeyActivate => '激活我的数字钥匙';
+
+  @override
+  String get digitalKeyRequested => '已申请数字钥匙';
+
+  @override
+  String get digitalKeyAvailableNotice => '您的数字钥匙将在入住当天 14:00 起生效可用。';
+
+  @override
+  String get modifyStay => '修改我的行程';
+
+  @override
+  String get prepareYourArrival => '准备您的入住';
+
+  @override
+  String get prepareArrivalSubtitle => '告知我们您的需求，让入住流程更加顺畅。';
+
+  @override
+  String get arrivalSlot => '预计到达时间段';
+
+  @override
+  String get airportTransfer => '机场接送';
+
+  @override
+  String get airportTransferSubtitle => '我们的团队将与您联系确认航班详情。';
+
+  @override
+  String get specialRequests => '有什么特殊要求吗？';
+
+  @override
+  String get specialRequestsPlaceholder => '例如：携带儿童入住、需要较硬枕头等...';
+
+  @override
+  String get savePreferences => '保存我的偏好';
+
+  @override
+  String get preferencesSavedSuccess => '您的入住偏好已成功发送至前台。';
+
+  @override
+  String get yourLandmarks => '客房及设施指南';
+
+  @override
+  String get yourLandmarksSubtitle => '酒店为您准备的一切。';
+
+  @override
+  String get wifiLandmarkTitle => '高速 Wi-Fi';
+
+  @override
+  String get wifiLandmarkDesc => '您的网络访问权限将在到达时生效。';
+
+  @override
+  String get transferLandmarkTitle => '机场接送';
+
+  @override
+  String get transferLandmarkDesc => '如有需要可以在入住偏好中开启。';
+
+  @override
+  String get roomServiceLandmarkTitle => '客房服务与 Sweetie AI 管家';
+
+  @override
+  String get roomServiceLandmarkDesc => '随时按需预订精美餐饮或特殊服务。';
+
+  @override
+  String get editStayDialogTitle => '修改我的行程';
+
+  @override
+  String get editStayNotice => '前台将根据客房空余情况及房价条款确认您的修改申请。';
+
+  @override
+  String get desiredCheckIn => '期望入住日期';
+
+  @override
+  String get desiredCheckOut => '期望退房日期';
+
+  @override
+  String get messageToReception => '给前台的留言';
+
+  @override
+  String get messageToReceptionPlaceholder => '请输入您的要求...';
+
+  @override
+  String get sendRequest => '发送申请';
+
+  @override
+  String get modificationRequestSent => '您的修改申请已成功发送至前台。';
+
+  @override
+  String get tabBook => '预订';
+
+  @override
+  String get tabStays => '行程';
+
+  @override
+  String get bookingTitleSub => '您的避世之旅，尽享自由';
+
+  @override
+  String get bookingTitleMain => '预订您的精致时光。';
+
+  @override
+  String get bookingTitleDesc => '酒店的舒适，家一般的私密。';
+
+  @override
+  String get bookingStepSelection => '选择客房';
+
+  @override
+  String get bookingStepCart => '加入购物车';
+
+  @override
+  String get bookingDatesTitle => '您的入住日期';
+
+  @override
+  String get bookingBreakfastIncluded => '所有预订均包含免费早餐。';
+
+  @override
+  String get arrivalLabelUpper => '入住日期 *';
+
+  @override
+  String get departureLabelUpper => '退房日期 *';
+
+  @override
+  String get guestsLabelUpper => '入住人数';
+
+  @override
+  String get chooseAccommodation => '选择您的房型';
+
+  @override
+  String get insufficientCapacity => '容纳人数不足';
+
+  @override
+  String get selectedBadge => '已选择';
+
+  @override
+  String get selectedRoomButton => '已选择此客房';
+
+  @override
+  String get chooseRoomButton => '选择此客房';
+
+  @override
+  String get roomAddedToCartTitleUpper => '客房已加入购物车';
+
+  @override
+  String get selectionSavedTitle => '选择已保存';
+
+  @override
+  String get stayDatesLabel => '入住日期';
+
+  @override
+  String get accommodationItemLabel => '住宿房型';
+
+  @override
+  String get breakfastLabel => '早餐';
+
+  @override
+  String get breakfastOfferedByHotel => '酒店免费赠送';
+
+  @override
+  String get accommodationAmountLabel => '住宿费用';
+
+  @override
+  String get viewCartAndValidateButton => '查看购物车并确认';
+
+  @override
+  String get addAnotherRoomButton => '添加其他客房';
+
+  @override
+  String get addToCartUpperButton => '加入购物车';
+
+  @override
+  String get popularBadge => '最受欢迎';
+
+  @override
+  String get gardenView => '园景';
+
+  @override
+  String get poolView => '泳池景';
+
+  @override
+  String get panoramicView => '全景';
+
+  @override
+  String get standardRoomName => '标准客房';
+
+  @override
+  String get premiumRoomName => '高级客房';
+
+  @override
+  String get deluxeSuiteName => '豪华套房';
+
+  @override
+  String get standardRoomDesc => '优雅实用的客房，配备大床、办公区和高速Wi-Fi。';
+
+  @override
+  String get premiumRoomDesc => '宽敞客房，配有休息区、意式浓缩咖啡机、特大床和放松浴缸。';
+
+  @override
+  String get deluxeSuiteDesc => '我们的顶级套房，设有独立客厅、应要求提供的管家服务和私人露台。';
+
+  @override
+  String get standardRoomStandingDesc => '高级客房，赠送免费早餐。';
+
+  @override
+  String guestsCountSingular(int count) {
+    return '$count 位客人';
+  }
+
+  @override
+  String guestsCountPlural(int count) {
+    return '$count 位客人';
+  }
+
+  @override
+  String availabilitiesForDates(String checkIn, String checkOut) {
+    return '$checkIn 至 $checkOut 房态（免费早餐）。';
+  }
+
+  @override
+  String availableSingular(int count) {
+    return '剩余 $count 间';
+  }
+
+  @override
+  String availablePlural(int count) {
+    return '剩余 $count 间';
+  }
+
+  @override
+  String startingFromPerNight(String price) {
+    return '$price 起 / 晚';
+  }
+
+  @override
+  String roomAddedToCartDesc(String roomName, int nights) {
+    return '您的住宿\'$roomName\'（$nights 晚）已加入购物车。免费赠送早餐！';
+  }
 }

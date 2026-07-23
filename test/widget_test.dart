@@ -105,6 +105,6 @@ void main() {
     await tester.pumpAndSettle(); // Attend la redirection automatique vers la page de connexion
     
     // Vérifie que le bouton de connexion est présent sur la page de connexion
-    expect(find.text('SE CONNECTER'), findsOneWidget);
+    expect(find.text('CONTINUER →'), findsOneWidget);
   });
 }

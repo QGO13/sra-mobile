@@ -6,7 +6,7 @@ class GetBookingRoomTypesUseCase {
 
   GetBookingRoomTypesUseCase(this.repository);
 
-  Future<List<BookingRoomType>> call() async {
-    return await repository.getRoomTypes();
+  Future<List<BookingRoomType>> call({DateTime? checkIn, DateTime? checkOut}) async {
+    return await repository.getRoomTypes(checkIn: checkIn, checkOut: checkOut);
   }
 }

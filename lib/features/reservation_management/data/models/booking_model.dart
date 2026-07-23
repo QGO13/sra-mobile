@@ -13,6 +13,9 @@ class BookingModel extends Booking {
     super.enfants,
     required super.statutBooking,
     required super.prixTotal,
+    super.totalPaid = 0.0,
+    super.balanceDue = 0.0,
+    super.folioId,
     super.discountPercentage = 0.0,
     required super.lines,
   });
@@ -34,7 +37,9 @@ class BookingModel extends Booking {
 
     // Calcul du prix total si présent ou somme des lignes
     double total = 0.0;
-    if (json['prix_total'] != null) {
+    if (json['total_price'] != null) {
+      total = double.tryParse(json['total_price'].toString()) ?? 0.0;
+    } else if (json['prix_total'] != null) {
       total = (json['prix_total'] as num).toDouble();
     } else if (lines != null) {
       total = lines.fold(0.0, (sum, line) {
@@ -43,6 +48,10 @@ class BookingModel extends Booking {
         return sum + priceDouble;
       });
     }
+
+    final double totalPaid = double.tryParse((json['total_paid'] ?? '0.0').toString()) ?? 0.0;
+    final double balanceDue = double.tryParse((json['balance_due'] ?? '0.0').toString()) ?? (total - totalPaid);
+    final String? folioId = json['folio_id']?.toString();
 
     // Récupérer le nom de l'occupant
     String clientName = 'Client SRA';
@@ -92,6 +101,7 @@ class BookingModel extends Booking {
             occupantName: lineMap['occupant_name']?.toString(),
             roomNumber: (lineMap['chambre_numero'] ?? lineMap['room_number'])?.toString(),
             chambreId: (lineMap['chambre_id'] ?? lineMap['room_id'] ?? '').toString(),
+            status: (lineMap['status'] ?? 'En attente').toString(),
           ),
         );
       }
@@ -110,6 +120,9 @@ class BookingModel extends Booking {
       enfants: json['enfants'] as int?,
       statutBooking: normalizeStatus((json['status'] ?? json['statut_booking'] ?? 'EN_ATTENTE').toString()),
       prixTotal: total,
+      totalPaid: totalPaid,
+      balanceDue: balanceDue,
+      folioId: folioId,
       discountPercentage: discountPercentage,
       lines: parsedLines,
     );
@@ -126,7 +139,10 @@ class BookingModel extends Booking {
       'adultes': adultes,
       'enfants': enfants,
       'status': denormalizeStatus(statutBooking),
-      'prix_total': prixTotal,
+      'total_price': prixTotal.toString(),
+      'total_paid': totalPaid.toString(),
+      'balance_due': balanceDue.toString(),
+      'folio_id': folioId,
       'discount_percentage': discountPercentage,
       'reservation_lines': lines.map((l) => {
         'id': l.id,
@@ -134,6 +150,7 @@ class BookingModel extends Booking {
         'check_in': l.checkIn,
         'check_out': l.checkOut,
         'occupant_name': l.occupantName,
+        'status': l.status,
         'room_type': {
           'name': l.roomTypeName,
         },

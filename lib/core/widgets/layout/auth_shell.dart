@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sra_hotel/core/routes/app_routes.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
 import 'package:sra_hotel/core/widgets/display/language_selector.dart';
 import 'package:sra_hotel/core/widgets/display/sra_logo.dart';
@@ -178,13 +177,14 @@ class _AuthLeftPanel extends StatelessWidget {
                       ),
                     ),
                     AppDimensions.vGapXl,
-                    const Row(
+                    const Wrap(
+                      spacing: AppDimensions.spacingLg,
+                      runSpacing: AppDimensions.spacingSm,
                       children: [
                         _TrustPoint(
                           icon: Icons.shield_outlined,
                           label: "Accès chiffré",
                         ),
-                        AppDimensions.hGapLg,
                         _TrustPoint(
                           icon: Icons.vpn_key_outlined,
                           label: "Vérification renforcée",

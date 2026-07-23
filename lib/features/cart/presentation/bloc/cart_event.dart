@@ -39,16 +39,37 @@ class CartItemUpdated extends CartEvent {
   final bool? extraBedIncluded;
   final bool? breakfastIncluded;
   final int? breakfastCount;
+  final bool? isSelected;
 
   const CartItemUpdated(
     this.roomId, {
     this.extraBedIncluded,
     this.breakfastIncluded,
     this.breakfastCount,
+    this.isSelected,
   });
 
   @override
-  List<Object?> get props => [roomId, extraBedIncluded, breakfastIncluded, breakfastCount];
+  List<Object?> get props => [roomId, extraBedIncluded, breakfastIncluded, breakfastCount, isSelected];
+}
+
+class CartItemSelectionToggled extends CartEvent {
+  final String roomId;
+  final bool isSelected;
+
+  const CartItemSelectionToggled(this.roomId, this.isSelected);
+
+  @override
+  List<Object?> get props => [roomId, isSelected];
+}
+
+class CartAllItemsSelectionToggled extends CartEvent {
+  final bool isSelected;
+
+  const CartAllItemsSelectionToggled(this.isSelected);
+
+  @override
+  List<Object?> get props => [isSelected];
 }
 
 class CartCleared extends CartEvent {}

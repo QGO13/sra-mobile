@@ -6,7 +6,7 @@ import 'package:sra_hotel/features/client_booking/domain/usecases/get_booking_ro
 
 class MockClientBookingRepository implements ClientBookingRepository {
   @override
-  Future<List<BookingRoomType>> getRoomTypes() async {
+  Future<List<BookingRoomType>> getRoomTypes({DateTime? checkIn, DateTime? checkOut}) async {
     return [
       const BookingRoomType(
         id: '1',

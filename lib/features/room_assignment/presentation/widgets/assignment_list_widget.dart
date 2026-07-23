@@ -129,48 +129,18 @@ class _AssignmentListWidgetState extends State<AssignmentListWidget> {
           ),
         ),
 
-        // Filter chips horizontal scroll list
-        Container(
-          height: 38,
-          margin: const EdgeInsets.only(bottom: AppDimensions.spacingMd),
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: filterChips.length,
-            padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMd),
-            itemBuilder: (context, index) {
-              final chip = filterChips[index];
-              final isSelected = _selectedFilter == chip['id'];
-              return Padding(
-                padding: const EdgeInsets.only(right: AppDimensions.spacingSm),
-                child: ChoiceChip(
-                  label: Text(
-                    chip['label']!,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                      color: isSelected ? Colors.white : (isDark ? Colors.white70 : AppColors.imperialNightBlue),
-                    ),
-                  ),
-                  selected: isSelected,
-                  selectedColor: AppColors.champagneGold,
-                  backgroundColor: isDark ? AppColors.deepBlue : AppColors.surfaceLight,
-                  checkmarkColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    side: const BorderSide(color: AppColors.softGrey),
-                    borderRadius: BorderRadius.circular(AppDimensions.radiusFull),
-                  ),
-                  onSelected: (selected) {
-                    if (selected) {
-                      setState(() {
-                        _selectedFilter = chip['id']!;
-                      });
-                    }
-                  },
-                ),
-              );
-            },
-          ),
+        SraFilterBar(
+          items: filterChips
+              .map((chip) => SraFilterItem(id: chip['id']!, label: chip['label']!))
+              .toList(),
+          selectedId: _selectedFilter,
+          onSelected: (id) {
+            setState(() {
+              _selectedFilter = id;
+            });
+          },
         ),
+        const SizedBox(height: AppDimensions.spacingMd),
 
         // Bookings list
         Expanded(

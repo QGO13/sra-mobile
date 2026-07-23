@@ -80,12 +80,16 @@ class RoomTypeCard extends StatelessWidget {
                 // Label uppercase
                 Text(
                   "HÉBERGEMENT · ${roomType.nom.toUpperCase()}",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: AppTextStyles.labelUppercase,
                 ),
                 const SizedBox(height: AppDimensions.spacingSm),
                 // Room type title
                 Text(
                   roomType.nom,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: AppTextStyles.titleLarge.copyWith(
                     color: isDark ? Colors.white : AppColors.imperialNightBlue,
                   ),

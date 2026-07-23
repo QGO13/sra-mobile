@@ -3,7 +3,7 @@ import 'package:sra_hotel/features/client_booking/data/models/booking_room_type_
 import 'package:sra_hotel/features/client_booking/data/models/booking_room_model.dart';
 
 abstract class ClientBookingRemoteDataSource {
-  Future<List<BookingRoomTypeModel>> getRoomTypes();
+  Future<List<BookingRoomTypeModel>> getRoomTypes({String? checkIn, String? checkOut});
   Future<List<BookingRoomModel>> getAvailableRooms({
     required String checkIn,
     required String checkOut,
@@ -16,11 +16,36 @@ class ClientBookingRemoteDataSourceImpl implements ClientBookingRemoteDataSource
   ClientBookingRemoteDataSourceImpl({required this.apiClient});
 
   @override
-  Future<List<BookingRoomTypeModel>> getRoomTypes() async {
+  Future<List<BookingRoomTypeModel>> getRoomTypes({String? checkIn, String? checkOut}) async {
+    if (checkIn != null && checkOut != null) {
+      try {
+        final response = await apiClient.get(
+          '/rooms/available-counts',
+          queryParameters: {
+            'check_in': checkIn,
+            'check_out': checkOut,
+          },
+        );
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> body = response.data as Map<String, dynamic>;
+          final List<dynamic> items = (body['room_types_count'] ?? []) as List<dynamic>;
+          return items.map((item) {
+            final map = item as Map<String, dynamic>;
+            final rtJson = map['room_type'] as Map<String, dynamic>;
+            final count = (map['available_count'] as num?)?.toInt() ?? 0;
+            final fullJson = {...rtJson, 'available_count': count};
+            return BookingRoomTypeModel.fromJson(fullJson);
+          }).toList();
+        }
+      } catch (_) {
+        // En cas d'erreur, fallback sur la liste globale des types
+      }
+    }
+
     final response = await apiClient.get('/room-types/');
     if (response.statusCode == 200) {
       final Map<String, dynamic> body = response.data as Map<String, dynamic>;
-      final List<dynamic> data = body['data'] as List<dynamic>;
+      final List<dynamic> data = (body['data'] ?? []) as List<dynamic>;
       return data.map((json) => BookingRoomTypeModel.fromJson(json as Map<String, dynamic>)).toList();
     } else {
       throw Exception('Server Error: ${response.statusMessage}');

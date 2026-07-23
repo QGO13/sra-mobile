@@ -101,52 +101,20 @@ class _AdminUsersViewState extends State<AdminUsersView> {
                   ],
                 ),
               ),
-              Container(
-                height: 38,
-                margin: const EdgeInsets.only(bottom: AppDimensions.spacingMd),
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 5,
-                  padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMd),
-                  itemBuilder: (context, index) {
-                    final chip = [
-                      {'id': 'all', 'label': 'Tout'},
-                      {'id': 'admin', 'label': l10n.adminRole},
-                      {'id': 'receptionist', 'label': l10n.receptionistRole},
-                      {'id': 'housekeeper', 'label': 'Gouvernante'},
-                      {'id': 'client', 'label': 'Client'},
-                    ][index];
-                    final isSelected = _selectedFilter == chip['id'];
-                    return Padding(
-                      padding: const EdgeInsets.only(right: AppDimensions.spacingSm),
-                      child: ChoiceChip(
-                        label: Text(
-                          chip['label']!,
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                            color: isSelected ? Colors.white : (isDark ? Colors.white70 : AppColors.imperialNightBlue),
-                          ),
-                        ),
-                        selected: isSelected,
-                        selectedColor: AppColors.champagneGold,
-                        backgroundColor: isDark ? AppColors.deepBlue : AppColors.surfaceLight,
-                        checkmarkColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          side: const BorderSide(color: AppColors.softGrey),
-                          borderRadius: BorderRadius.circular(AppDimensions.radiusFull),
-                        ),
-                        onSelected: (selected) {
-                          if (selected) {
-                            setState(() {
-                              _selectedFilter = chip['id']!;
-                            });
-                          }
-                        },
-                      ),
-                    );
-                  },
-                ),
+              SraFilterBar(
+                items: [
+                  const SraFilterItem(id: 'all', label: 'Tout'),
+                  SraFilterItem(id: 'admin', label: l10n.adminRole),
+                  SraFilterItem(id: 'receptionist', label: l10n.receptionistRole),
+                  const SraFilterItem(id: 'housekeeper', label: 'Gouvernante'),
+                  const SraFilterItem(id: 'client', label: 'Client'),
+                ],
+                selectedId: _selectedFilter,
+                onSelected: (id) {
+                  setState(() {
+                    _selectedFilter = id;
+                  });
+                },
               ),
               Expanded(
                 child: filteredUsers.isEmpty

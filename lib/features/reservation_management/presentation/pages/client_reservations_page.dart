@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
 import 'package:sra_hotel/core/widgets/widgets.dart';
 import 'package:sra_hotel/features/auth/presentation/bloc/auth_bloc.dart';
@@ -10,6 +11,7 @@ import 'package:sra_hotel/features/reservation_management/presentation/bloc/admi
 import 'package:sra_hotel/features/reservation_management/presentation/bloc/admin_booking_event.dart';
 import 'package:sra_hotel/features/reservation_management/presentation/bloc/admin_booking_state.dart';
 import 'package:sra_hotel/features/reservation_management/presentation/pages/booking_detail_page.dart';
+import 'package:sra_hotel/features/reservation_management/presentation/pages/booking_items_page.dart';
 import 'package:sra_hotel/l10n/app_localizations.dart';
 
 /// Page affichant les réservations du client avec filtres et recherche.
@@ -39,6 +41,17 @@ class _ClientReservationsPageState extends State<ClientReservationsPage> {
   String _formatCurrency(double amount) {
     final formatter = NumberFormat.currency(locale: 'fr_FR', symbol: 'FCFA', decimalDigits: 0);
     return formatter.format(amount);
+  }
+
+  String _getBookingImageUrl(Booking booking) {
+    final roomType = booking.typeChambre.toLowerCase();
+    if (roomType.contains('suite')) {
+      return 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80';
+    } else if (roomType.contains('prem') || roomType.contains('sup')) {
+      return 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800&q=80';
+    } else {
+      return 'https://images.unsplash.com/photo-1631049552057-403cdb8f0658?w=800&q=80';
+    }
   }
 
   bool _matchesFilter(Booking booking, String filter) {
@@ -76,60 +89,6 @@ class _ClientReservationsPageState extends State<ClientReservationsPage> {
     final lowerQuery = query.toLowerCase();
     return booking.reference.toLowerCase().contains(lowerQuery) ||
         booking.typeChambre.toLowerCase().contains(lowerQuery);
-  }
-
-  Widget _buildFilterChips(BuildContext context, AppLocalizations l10n, bool isDark) {
-    final filters = [
-      {'id': 'all', 'label': l10n.filterAll},
-      {'id': 'confirmed', 'label': l10n.filterConfirmed},
-      {'id': 'past', 'label': l10n.filterPast},
-      {'id': 'cancelled', 'label': l10n.filterCancelled},
-      {'id': 'check_in', 'label': l10n.filterCheckIn},
-      {'id': 'check_out', 'label': l10n.filterCheckOut},
-    ];
-
-    return Container(
-      height: 38,
-      margin: const EdgeInsets.only(bottom: AppDimensions.spacingMd),
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: filters.length,
-        padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMd),
-        itemBuilder: (context, index) {
-          final filter = filters[index];
-          final isSelected = _selectedFilter == filter['id'];
-          return Padding(
-            padding: const EdgeInsets.only(right: AppDimensions.spacingSm),
-            child: ChoiceChip(
-              label: Text(
-                filter['label']!,
-                style: TextStyle(
-                  color: isSelected ? Colors.white : (isDark ? Colors.white70 : AppColors.imperialNightBlue),
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                  fontSize: 12,
-                ),
-              ),
-              selected: isSelected,
-              onSelected: (selected) {
-                if (selected) {
-                  setState(() {
-                    _selectedFilter = filter['id']!;
-                  });
-                }
-              },
-              selectedColor: AppColors.champagneGold,
-              backgroundColor: isDark ? AppColors.deepBlue : AppColors.surfaceLight,
-              checkmarkColor: Colors.white,
-              shape: const RoundedRectangleBorder(
-                side: BorderSide(
-                  color: AppColors.softGrey,
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
   }
 
   @override
@@ -193,7 +152,26 @@ class _ClientReservationsPageState extends State<ClientReservationsPage> {
                       },
                     ),
                   ),
-                  _buildFilterChips(context, l10n, isDark),
+
+                  // ── Barre de Filtres Standardisée SRA Hotel ──
+                  SraFilterBar(
+                    items: [
+                      SraFilterItem(id: 'all', label: l10n.filterAll),
+                      SraFilterItem(id: 'confirmed', label: l10n.filterConfirmed),
+                      SraFilterItem(id: 'past', label: l10n.filterPast),
+                      SraFilterItem(id: 'cancelled', label: l10n.filterCancelled),
+                      SraFilterItem(id: 'check_in', label: l10n.filterCheckIn),
+                      SraFilterItem(id: 'check_out', label: l10n.filterCheckOut),
+                    ],
+                    selectedId: _selectedFilter,
+                    onSelected: (id) {
+                      setState(() {
+                        _selectedFilter = id;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: AppDimensions.spacingMd),
+
                   Expanded(
                     child: filteredBookings.isEmpty
                         ? EmptyStateView(
@@ -218,8 +196,8 @@ class _ClientReservationsPageState extends State<ClientReservationsPage> {
                         : ResponsiveListGridView(
                             itemCount: filteredBookings.length,
                             padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMd),
-                            maxCrossAxisExtent: 450,
-                            mainAxisExtent: 220,
+                            maxCrossAxisExtent: 480,
+                            mainAxisExtent: 250,
                             itemBuilder: (context, index) {
                               final booking = filteredBookings[index];
                               final checkin = DateTime.tryParse(booking.checkIn) ?? DateTime.now();
@@ -246,21 +224,38 @@ class _ClientReservationsPageState extends State<ClientReservationsPage> {
                                 child: InkWell(
                                   borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
                                   onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => BookingDetailPage(booking: booking),
-                                      ),
-                                    );
+                                    final adminBookingBloc = context.read<AdminBookingBloc>();
+                                    if (booking.lines.length > 1) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => BlocProvider.value(
+                                            value: adminBookingBloc,
+                                            child: BookingItemsPage(booking: booking),
+                                          ),
+                                        ),
+                                      );
+                                    } else {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => BlocProvider.value(
+                                            value: adminBookingBloc,
+                                            child: BookingDetailPage(
+                                              booking: booking,
+                                              selectedLine: booking.lines.isNotEmpty ? booking.lines.first : null,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
                                   },
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: AppDimensions.spacingMd,
-                                      vertical: AppDimensions.spacingSm + 2,
-                                    ),
+                                    padding: const EdgeInsets.all(AppDimensions.spacingMd),
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
+                                        // ── Ligne Supérieure : Référence & Statut ──
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
@@ -274,49 +269,145 @@ class _ClientReservationsPageState extends State<ClientReservationsPage> {
                                             Container(
                                               padding: const EdgeInsets.symmetric(
                                                 horizontal: AppDimensions.spacingSm - 2,
-                                                vertical: 2.0,
+                                                vertical: 3.0,
                                               ),
-                                              color: isConfirmed
-                                                  ? AppColors.statusSuccess.withValues(alpha: 0.1)
-                                                  : (isCancelled ? AppColors.statusError.withValues(alpha: 0.1) : AppColors.statusWarning.withValues(alpha: 0.1)),
+                                              decoration: BoxDecoration(
+                                                color: isConfirmed
+                                                    ? AppColors.statusSuccess.withValues(alpha: 0.12)
+                                                    : (isCancelled
+                                                        ? AppColors.statusError.withValues(alpha: 0.12)
+                                                        : AppColors.statusWarning.withValues(alpha: 0.12)),
+                                                borderRadius: BorderRadius.circular(AppDimensions.radiusXs),
+                                              ),
                                               child: Text(
                                                 statusText.toUpperCase(),
                                                 style: TextStyle(
-                                                  fontSize: 9,
+                                                  fontSize: 9.5,
                                                   fontWeight: FontWeight.bold,
                                                   color: isConfirmed
                                                       ? AppColors.statusSuccess
-                                                      : (isCancelled ? AppColors.statusError : AppColors.statusWarning),
+                                                      : (isCancelled
+                                                          ? AppColors.statusError
+                                                          : AppColors.statusWarning),
                                                 ),
                                               ),
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(height: AppDimensions.spacingSm),
+                                        const SizedBox(height: AppDimensions.spacingSm + 2),
+
+                                        // ── Corps de Carte avec Vignette Photo ──
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
+                                            Stack(
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+                                                  child: CachedNetworkImage(
+                                                    imageUrl: _getBookingImageUrl(booking),
+                                                    width: 84,
+                                                    height: 84,
+                                                    fit: BoxFit.cover,
+                                                    placeholder: (context, url) => Container(
+                                                      width: 84,
+                                                      height: 84,
+                                                      color: isDark ? AppColors.darkSurface : AppColors.fog,
+                                                      child: const Center(
+                                                        child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.champagneGold),
+                                                      ),
+                                                    ),
+                                                    errorWidget: (context, url, error) => Container(
+                                                      width: 84,
+                                                      height: 84,
+                                                      color: isDark ? AppColors.darkSurface : AppColors.fog,
+                                                      child: const Icon(Icons.hotel, color: AppColors.champagneGold, size: 28),
+                                                    ),
+                                                  ),
+                                                ),
+                                                if (booking.lines.length > 1)
+                                                  Positioned(
+                                                    bottom: 4,
+                                                    right: 4,
+                                                    child: Container(
+                                                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                                      decoration: BoxDecoration(
+                                                        color: AppColors.champagneGold,
+                                                        borderRadius: BorderRadius.circular(4),
+                                                      ),
+                                                      child: Text(
+                                                        "${booking.lines.length} hab.",
+                                                        style: const TextStyle(
+                                                          color: AppColors.imperialNightBlue,
+                                                          fontSize: 9,
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                              ],
+                                            ),
+                                            const SizedBox(width: 12),
                                             Expanded(
                                               child: Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  Text(
-                                                    l10n.bookingsTitle.toUpperCase(),
-                                                    style: const TextStyle(
-                                                      fontSize: 9,
-                                                      fontWeight: FontWeight.w600,
-                                                      letterSpacing: 1.0,
-                                                      color: Colors.grey,
-                                                    ),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Text(
+                                                              l10n.bookingsTitle.toUpperCase(),
+                                                              style: const TextStyle(
+                                                                fontSize: 9,
+                                                                fontWeight: FontWeight.w600,
+                                                                letterSpacing: 1.0,
+                                                                color: Colors.grey,
+                                                              ),
+                                                            ),
+                                                            const SizedBox(height: 2),
+                                                            Text(
+                                                              booking.lines.length > 1
+                                                                  ? "${booking.lines.length} hébergements"
+                                                                  : booking.typeChambre,
+                                                              maxLines: 1,
+                                                              overflow: TextOverflow.ellipsis,
+                                                              style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      const SizedBox(width: 8),
+                                                      Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                                        children: [
+                                                          Text(
+                                                            l10n.totalAmount.toUpperCase(),
+                                                            style: const TextStyle(
+                                                              fontSize: 9,
+                                                              fontWeight: FontWeight.w600,
+                                                              letterSpacing: 1.0,
+                                                              color: Colors.grey,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(height: 2),
+                                                          Text(
+                                                            _formatCurrency(booking.prixTotal),
+                                                            style: AppTextStyles.titleMedium.copyWith(
+                                                              fontSize: 14.5,
+                                                              fontWeight: FontWeight.bold,
+                                                              color: AppColors.champagneGold,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
                                                   ),
-                                                  const SizedBox(height: AppDimensions.spacingSm - 4),
-                                                  Text(
-                                                    booking.typeChambre,
-                                                    maxLines: 1,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w500),
-                                                  ),
-                                                  const SizedBox(height: AppDimensions.spacingSm),
+                                                  const SizedBox(height: 8),
                                                   Text(
                                                     l10n.periodOfStay.toUpperCase(),
                                                     style: const TextStyle(
@@ -326,7 +417,7 @@ class _ClientReservationsPageState extends State<ClientReservationsPage> {
                                                       color: Colors.grey,
                                                     ),
                                                   ),
-                                                  const SizedBox(height: AppDimensions.spacingSm - 4),
+                                                  const SizedBox(height: 2),
                                                   Text(
                                                     rangeStr,
                                                     maxLines: 1,
@@ -336,32 +427,9 @@ class _ClientReservationsPageState extends State<ClientReservationsPage> {
                                                 ],
                                               ),
                                             ),
-                                            const SizedBox(width: AppDimensions.spacingSm),
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.end,
-                                              children: [
-                                                Text(
-                                                  l10n.totalAmount.toUpperCase(),
-                                                  style: const TextStyle(
-                                                    fontSize: 9,
-                                                    fontWeight: FontWeight.w600,
-                                                    letterSpacing: 1.0,
-                                                    color: Colors.grey,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: AppDimensions.spacingSm - 4),
-                                                Text(
-                                                  _formatCurrency(booking.prixTotal),
-                                                  style: AppTextStyles.titleMedium.copyWith(
-                                                    fontSize: 14.5,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: AppColors.champagneGold,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
                                           ],
                                         ),
+
                                         if (!isCancelled) ...[
                                           const SizedBox(height: AppDimensions.spacingSm),
                                           Align(

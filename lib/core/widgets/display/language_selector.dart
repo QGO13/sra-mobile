@@ -15,43 +15,52 @@ class LanguageSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? AppColors.white : AppColors.ink;
 
-    return DropdownButton<Locale>(
-      value: currentLocale,
-      dropdownColor: isDark ? AppColors.darkCard : AppColors.white,
-      icon: const Icon(Icons.language_rounded, color: AppColors.gold),
-      underline: const SizedBox.shrink(),
-      onChanged: (Locale? newLocale) {
-        if (newLocale != null) {
-          onLocaleChanged(newLocale);
-        }
-      },
-      items: [
-        DropdownMenuItem(
-          value: const Locale('fr'),
-          child: Text('Français', style: AppTextStyles.bodyMedium.copyWith(color: isDark ? AppColors.white : AppColors.ink)),
+    return DropdownButtonHideUnderline(
+      child: DropdownButton<Locale>(
+        value: currentLocale,
+        dropdownColor: isDark ? AppColors.darkCard : AppColors.white,
+        icon: const Padding(
+          padding: EdgeInsets.only(left: AppDimensions.spacingXs),
+          child: Icon(Icons.language_rounded, color: AppColors.gold, size: AppDimensions.iconSizeMd),
         ),
-        DropdownMenuItem(
-          value: const Locale('en'),
-          child: Text('English', style: AppTextStyles.bodyMedium.copyWith(color: isDark ? AppColors.white : AppColors.ink)),
+        style: AppTextStyles.bodyMedium.copyWith(
+          color: textColor,
+          fontWeight: FontWeight.w600,
         ),
-        DropdownMenuItem(
-          value: const Locale('es'),
-          child: Text('Español', style: AppTextStyles.bodyMedium.copyWith(color: isDark ? AppColors.white : AppColors.ink)),
-        ),
-        DropdownMenuItem(
-          value: const Locale('ar'),
-          child: Text('العربية', style: AppTextStyles.bodyMedium.copyWith(color: isDark ? AppColors.white : AppColors.ink)),
-        ),
-        DropdownMenuItem(
-          value: const Locale('de'),
-          child: Text('Deutsch', style: AppTextStyles.bodyMedium.copyWith(color: isDark ? AppColors.white : AppColors.ink)),
-        ),
-        DropdownMenuItem(
-          value: const Locale('zh'),
-          child: Text('中文', style: AppTextStyles.bodyMedium.copyWith(color: isDark ? AppColors.white : AppColors.ink)),
-        ),
-      ],
+        onChanged: (Locale? newLocale) {
+          if (newLocale != null) {
+            onLocaleChanged(newLocale);
+          }
+        },
+        items: [
+          DropdownMenuItem(
+            value: const Locale('fr'),
+            child: Text('Français', style: AppTextStyles.bodyMedium.copyWith(color: textColor, fontWeight: FontWeight.w600)),
+          ),
+          DropdownMenuItem(
+            value: const Locale('en'),
+            child: Text('English', style: AppTextStyles.bodyMedium.copyWith(color: textColor, fontWeight: FontWeight.w600)),
+          ),
+          DropdownMenuItem(
+            value: const Locale('es'),
+            child: Text('Español', style: AppTextStyles.bodyMedium.copyWith(color: textColor, fontWeight: FontWeight.w600)),
+          ),
+          DropdownMenuItem(
+            value: const Locale('ar'),
+            child: Text('العربية', style: AppTextStyles.bodyMedium.copyWith(color: textColor, fontWeight: FontWeight.w600)),
+          ),
+          DropdownMenuItem(
+            value: const Locale('de'),
+            child: Text('Deutsch', style: AppTextStyles.bodyMedium.copyWith(color: textColor, fontWeight: FontWeight.w600)),
+          ),
+          DropdownMenuItem(
+            value: const Locale('zh'),
+            child: Text('中文', style: AppTextStyles.bodyMedium.copyWith(color: textColor, fontWeight: FontWeight.w600)),
+          ),
+        ],
+      ),
     );
   }
 }

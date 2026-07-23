@@ -988,4 +988,467 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get addToCart => 'Ajouter au panier';
+
+  @override
+  String get selectAll => 'Tout sélectionner';
+
+  @override
+  String selectedRoomsCount(int selected, int total) {
+    return '$selected / $total cochée(s)';
+  }
+
+  @override
+  String get cartSummaryTitle => 'RÉSUMÉ DE LA SÉLECTION';
+
+  @override
+  String get selectedAccommodations => 'Hébergements sélectionnés';
+
+  @override
+  String get freeBreakfastIncluded => 'Petit-déjeuner inclus (Offert)';
+
+  @override
+  String get taxesIncludedNote => 'Taxes de séjour & TVA incluses';
+
+  @override
+  String proceedToBooking(int count) {
+    return 'Passer à la réservation ($count chambre(s))';
+  }
+
+  @override
+  String get selectAtLeastOneRoom => 'Sélectionnez au moins une chambre';
+
+  @override
+  String get addMoreRooms => 'Ajouter d\'autres chambres';
+
+  @override
+  String get emptyCartTitle => 'Votre panier est vide';
+
+  @override
+  String get emptyCartSubtitle =>
+      'Découvrez nos hébergements et ajoutez vos chambres préférées pour commencer votre séjour.';
+
+  @override
+  String get viewAvailability => 'Voir les disponibilités';
+
+  @override
+  String get loginValidationError =>
+      'Renseignez une adresse e-mail valide et un mot de passe d’au moins 6 caractères.';
+
+  @override
+  String get yourSweetRestSpace => 'VOTRE ESPACE SWEET REST';
+
+  @override
+  String get signedOutSuccessMessage =>
+      'Vous êtes maintenant déconnecté(e) en toute sécurité.';
+
+  @override
+  String get emailAddressRequired => 'ADRESSE E-MAIL *';
+
+  @override
+  String get emailPlaceholder => 'vous@exemple.com';
+
+  @override
+  String get passwordRequired => 'MOT DE PASSE *';
+
+  @override
+  String get rememberMe => 'Rester connecté(e)';
+
+  @override
+  String get changePasswordTitle => 'Modifier le mot de passe';
+
+  @override
+  String get continueButton => 'CONTINUER →';
+
+  @override
+  String get fillAllRequiredFields =>
+      'Veuillez remplir tous les champs obligatoires.';
+
+  @override
+  String get passwordTooShort =>
+      'Le mot de passe doit contenir au moins 6 caractères.';
+
+  @override
+  String get passwordsDoNotMatch => 'Les mots de passe ne correspondent pas.';
+
+  @override
+  String get accountCreationHeader => 'CRÉATION DE COMPTE';
+
+  @override
+  String get joinUsTitle => 'Rejoignez-nous.';
+
+  @override
+  String get registerSubtitle =>
+      'Créez votre compte pour réserver votre séjour et accéder à nos services.';
+
+  @override
+  String get firstNameRequired => 'PRÉNOM *';
+
+  @override
+  String get firstNamePlaceholder => 'Jean';
+
+  @override
+  String get lastNameRequired => 'NOM *';
+
+  @override
+  String get lastNamePlaceholder => 'Dupont';
+
+  @override
+  String get confirmPasswordRequired => 'CONFIRMER MOT DE PASSE *';
+
+  @override
+  String get createMyAccountButton => 'CRÉER MON COMPTE →';
+
+  @override
+  String get fillAllFields => 'Veuillez remplir tous les champs.';
+
+  @override
+  String get newPasswordTooShort =>
+      'Le nouveau mot de passe doit contenir au moins 6 caractères.';
+
+  @override
+  String get passwordChangedSuccess => 'Mot de passe modifié avec succès.';
+
+  @override
+  String get resetHeader => 'RÉINITIALISATION';
+
+  @override
+  String get changePasswordSubtitle =>
+      'Saisissez votre mot de passe actuel ainsi que le nouveau.';
+
+  @override
+  String get currentPasswordRequired => 'MOT DE PASSE ACTUEL *';
+
+  @override
+  String get newPasswordRequired => 'NOUVEAU MOT DE PASSE *';
+
+  @override
+  String get confirmNewPasswordRequired => 'CONFIRMER NOUVEAU MOT DE PASSE *';
+
+  @override
+  String get changeMyPasswordButton => 'MODIFIER MON MOT DE PASSE →';
+
+  @override
+  String get cancelAndReturn => '← Annuler et revenir';
+
+  @override
+  String get enterFullSixDigitCode =>
+      'Veuillez saisir le code complet à 6 chiffres.';
+
+  @override
+  String get secureVerificationHeader => 'VÉRIFICATION SÉCURISÉE';
+
+  @override
+  String get confirmationCodeTitle => 'Code de confirmation';
+
+  @override
+  String get enterCodeSubtitle =>
+      'Saisissez le code à 6 chiffres envoyé sur votre adresse e-mail.';
+
+  @override
+  String get verifyCodeButton => 'VÉRIFIER LE CODE →';
+
+  @override
+  String get didNotReceiveCode => 'Vous n\'avez rien reçu ? ';
+
+  @override
+  String get newCodeSentSuccess => 'Un nouveau code a été envoyé.';
+
+  @override
+  String get resendCode => 'Renvoyer le code';
+
+  @override
+  String get endOfSessionHeader => 'FIN DE SESSION';
+
+  @override
+  String get leavingUsAlreadyTitle => 'Vous nous quittez déjà ?';
+
+  @override
+  String get logoutSubtitle =>
+      'Votre session sera fermée sur cet appareil. Vous pourrez vous reconnecter à tout moment.';
+
+  @override
+  String get logoutSecurityNotice =>
+      'Pour votre sécurité, fermez votre navigateur après la déconnexion sur un appareil partagé.';
+
+  @override
+  String get sessionStillActive => 'Votre session reste active.';
+
+  @override
+  String get staySignedIn => 'Rester connecté(e)';
+
+  @override
+  String get logMeOutButton => 'Me déconnecter';
+
+  @override
+  String get needHelpContactReception =>
+      'Besoin d’aide ? Contactez la réception Sweet Rest.';
+
+  @override
+  String get myStayTitle => 'Votre séjour à venir';
+
+  @override
+  String get myStaySubtitle => 'Les détails utiles, réunis au même endroit.';
+
+  @override
+  String get nextMomentHeader => 'VOTRE PROCHAIN MOMENT';
+
+  @override
+  String inDaysCountdown(Object days) {
+    return 'Dans $days jours';
+  }
+
+  @override
+  String get yourBookingCode => 'VOTRE CODE';
+
+  @override
+  String get digitalKeyActivate => 'Activer ma clé digitale';
+
+  @override
+  String get digitalKeyRequested => 'Clé digitale demandée';
+
+  @override
+  String get digitalKeyAvailableNotice =>
+      'Votre clé digitale sera disponible le jour de votre arrivée à partir de 14:00.';
+
+  @override
+  String get modifyStay => 'Modifier mon séjour';
+
+  @override
+  String get prepareYourArrival => 'Préparez votre arrivée';
+
+  @override
+  String get prepareArrivalSubtitle =>
+      'Dites-nous ce qui rendra votre accueil plus fluide.';
+
+  @override
+  String get arrivalSlot => 'CRÉNEAU D’ARRIVÉE';
+
+  @override
+  String get airportTransfer => 'Transfert aéroport';
+
+  @override
+  String get airportTransferSubtitle =>
+      'Notre équipe vous recontactera pour les détails de votre vol.';
+
+  @override
+  String get specialRequests => 'Une attention particulière ?';
+
+  @override
+  String get specialRequestsPlaceholder =>
+      'Ex. arrivée avec un enfant, oreiller ferme…';
+
+  @override
+  String get savePreferences => 'Enregistrer mes préférences';
+
+  @override
+  String get preferencesSavedSuccess =>
+      'Vos préférences d’arrivée ont été transmises à la réception.';
+
+  @override
+  String get yourLandmarks => 'Vos repères';
+
+  @override
+  String get yourLandmarksSubtitle => 'Tout ce qui vous attend à l’hôtel.';
+
+  @override
+  String get wifiLandmarkTitle => 'Wi-Fi haut débit';
+
+  @override
+  String get wifiLandmarkDesc =>
+      'Vos accès sont disponibles dès votre arrivée.';
+
+  @override
+  String get transferLandmarkTitle => 'Transfert aéroport';
+
+  @override
+  String get transferLandmarkDesc =>
+      'Activez-le dans vos préférences si vous le souhaitez.';
+
+  @override
+  String get roomServiceLandmarkTitle => 'Room service & Sweetie';
+
+  @override
+  String get roomServiceLandmarkDesc =>
+      'Une attention ou un dîner, à demander quand vous le voulez.';
+
+  @override
+  String get editStayDialogTitle => 'Modifier mon séjour';
+
+  @override
+  String get editStayNotice =>
+      'La réception confirmera toute modification selon les disponibilités et les conditions de votre tarif.';
+
+  @override
+  String get desiredCheckIn => 'Arrivée souhaitée';
+
+  @override
+  String get desiredCheckOut => 'Départ souhaité';
+
+  @override
+  String get messageToReception => 'Votre message à la réception';
+
+  @override
+  String get messageToReceptionPlaceholder => 'Indiquez votre demande…';
+
+  @override
+  String get sendRequest => 'Envoyer la demande';
+
+  @override
+  String get modificationRequestSent =>
+      'Votre demande de modification a bien été envoyée à la réception.';
+
+  @override
+  String get tabBook => 'Réserver';
+
+  @override
+  String get tabStays => 'Séjours';
+
+  @override
+  String get bookingTitleSub => 'VOTRE ESCAPADE, EN TOUTE LIBERTÉ';
+
+  @override
+  String get bookingTitleMain => 'Réservez votre parenthèse.';
+
+  @override
+  String get bookingTitleDesc =>
+      'Le confort d’un hôtel, l’intimité de chez vous.';
+
+  @override
+  String get bookingStepSelection => 'Sélection';
+
+  @override
+  String get bookingStepCart => 'Ajout au panier';
+
+  @override
+  String get bookingDatesTitle => 'Vos dates de séjour';
+
+  @override
+  String get bookingBreakfastIncluded =>
+      'Le petit-déjeuner est inclus et offert pour toute réservation.';
+
+  @override
+  String get arrivalLabelUpper => 'ARRIVÉE *';
+
+  @override
+  String get departureLabelUpper => 'DÉPART *';
+
+  @override
+  String get guestsLabelUpper => 'VOYAGEURS';
+
+  @override
+  String get chooseAccommodation => 'Choisissez votre hébergement';
+
+  @override
+  String get insufficientCapacity => 'Capacité insuffisante';
+
+  @override
+  String get selectedBadge => 'Sélectionnée';
+
+  @override
+  String get selectedRoomButton => 'Chambre sélectionnée';
+
+  @override
+  String get chooseRoomButton => 'CHOISIR CETTE CHAMBRE';
+
+  @override
+  String get roomAddedToCartTitleUpper => 'CHAMBRE AJOUTÉE AU PANIER';
+
+  @override
+  String get selectionSavedTitle => 'Sélection enregistrée';
+
+  @override
+  String get stayDatesLabel => 'Dates de séjour';
+
+  @override
+  String get accommodationItemLabel => 'Hébergement';
+
+  @override
+  String get breakfastLabel => 'Petit-déjeuner';
+
+  @override
+  String get breakfastOfferedByHotel => 'Offert par l\'hôtel';
+
+  @override
+  String get accommodationAmountLabel => 'Montant hébergement';
+
+  @override
+  String get viewCartAndValidateButton => 'VOIR LE PANIER ET VALIDER';
+
+  @override
+  String get addAnotherRoomButton => 'AJOUTER UNE AUTRE CHAMBRE';
+
+  @override
+  String get addToCartUpperButton => 'AJOUTER AU PANIER';
+
+  @override
+  String get popularBadge => 'Plus populaire';
+
+  @override
+  String get gardenView => 'Vue Jardin';
+
+  @override
+  String get poolView => 'Vue Piscine';
+
+  @override
+  String get panoramicView => 'Vue Panoramique';
+
+  @override
+  String get standardRoomName => 'Chambre Standard';
+
+  @override
+  String get premiumRoomName => 'Chambre Premium';
+
+  @override
+  String get deluxeSuiteName => 'Suite Deluxe';
+
+  @override
+  String get standardRoomDesc =>
+      'Chambre élégante et fonctionnelle, équipée d’un lit Queen-Size, espace bureau et Wi-Fi haut débit.';
+
+  @override
+  String get premiumRoomDesc =>
+      'Chambre spacieuse avec coin salon, machine espresso, lit King-Size et baignoire relaxante.';
+
+  @override
+  String get deluxeSuiteDesc =>
+      'Notre suite haut de gamme disposant d’un salon séparé, service de majordome sur demande et terrasse privée.';
+
+  @override
+  String get standardRoomStandingDesc =>
+      'Chambre de grand standing avec petit-déjeuner offert.';
+
+  @override
+  String guestsCountSingular(int count) {
+    return '$count voyageur';
+  }
+
+  @override
+  String guestsCountPlural(int count) {
+    return '$count voyageurs';
+  }
+
+  @override
+  String availabilitiesForDates(String checkIn, String checkOut) {
+    return 'Disponibilités du $checkIn au $checkOut (Petit-déjeuner offert).';
+  }
+
+  @override
+  String availableSingular(int count) {
+    return '$count disponible';
+  }
+
+  @override
+  String availablePlural(int count) {
+    return '$count disponibles';
+  }
+
+  @override
+  String startingFromPerNight(String price) {
+    return 'à partir de $price / nuit';
+  }
+
+  @override
+  String roomAddedToCartDesc(String roomName, int nights) {
+    return 'Votre hébergement \'$roomName\' pour $nights nuit(s) a été ajouté à votre panier. Le petit-déjeuner est offert !';
+  }
 }

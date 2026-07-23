@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sra_hotel/core/routes/app_routes.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
 import 'package:sra_hotel/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:sra_hotel/features/auth/presentation/bloc/auth_event.dart';
 import 'package:sra_hotel/features/auth/presentation/bloc/auth_state.dart';
 import 'package:sra_hotel/features/client_booking/presentation/pages/client_booking_page.dart';
 import 'package:sra_hotel/features/client_booking/presentation/bloc/client_booking_bloc.dart';
@@ -15,7 +14,6 @@ import 'package:sra_hotel/features/cart/presentation/pages/cart_page.dart';
 import 'package:sra_hotel/features/cart/presentation/bloc/cart_bloc.dart';
 import 'package:sra_hotel/features/cart/presentation/bloc/cart_state.dart';
 import 'package:sra_hotel/features/settings/presentation/pages/settings_page.dart';
-import 'package:sra_hotel/core/widgets/widgets.dart';
 import 'package:sra_hotel/injection_container.dart' as di;
 import 'package:sra_hotel/l10n/app_localizations.dart';
 
@@ -29,7 +27,7 @@ class ClientShellPage extends StatefulWidget {
 }
 
 class _ClientShellPageState extends State<ClientShellPage> {
-  // L'onglet Réservations (index 1) est l'onglet par défaut selon la demande utilisateur
+  // L'onglet Séjours (index 1) est l'onglet par défaut selon la demande utilisateur
   int _currentIndex = 1;
 
   void _onTabTapped(int index) {
@@ -49,7 +47,9 @@ class _ClientShellPageState extends State<ClientShellPage> {
     final List<Widget> pages = [
       BlocProvider<ClientBookingBloc>(
         create: (_) => di.sl<ClientBookingBloc>(),
-        child: const ClientBookingPage(),
+        child: ClientBookingPage(
+          onNavigateToCart: () => _onTabTapped(2),
+        ),
       ),
       BlocProvider<AdminBookingBloc>(
         create: (_) => di.sl<AdminBookingBloc>()..add(LoadAdminBookingsEvent()),
@@ -57,20 +57,22 @@ class _ClientShellPageState extends State<ClientShellPage> {
           onNavigateToSearch: () => _onTabTapped(0),
         ),
       ),
-      const CartPage(),
+      CartPage(
+        onNavigateToSearch: () => _onTabTapped(0),
+      ),
+      const SettingsPage(),
       BlocProvider<AdminBookingBloc>(
         create: (_) => di.sl<AdminBookingBloc>()..add(LoadAdminBookingsEvent()),
         child: const ClientProfilePage(),
       ),
-      const SettingsPage(),
     ];
 
     final titles = [
-      l10n.searchRoomsTab,
-      l10n.bookingsTitle,
+      l10n.tabBook,
+      l10n.tabStays,
       l10n.myCartTab,
-      l10n.myProfileTab,
       "Paramètres",
+      l10n.myProfileTab,
     ];
 
     return BlocListener<AuthBloc, AuthState>(
@@ -89,24 +91,29 @@ class _ClientShellPageState extends State<ClientShellPage> {
             ),
           ),
           actions: [
+            // ── Bouton Profil dans l'AppBar (Remplace le bouton de déconnexion) ──
             IconButton(
-              icon: const Icon(
-                Icons.logout_outlined,
-                color: AppColors.statusError,
+              tooltip: l10n.myProfileTab,
+              icon: Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: _currentIndex == 4 ? AppColors.champagneGold : (isDark ? Colors.white30 : AppColors.softGrey),
+                    width: 1.5,
+                  ),
+                  color: _currentIndex == 4
+                      ? AppColors.champagneGold.withValues(alpha: 0.2)
+                      : (isDark ? AppColors.deepBlue : AppColors.fog),
+                ),
+                child: Icon(
+                  Icons.person_rounded,
+                  size: 20,
+                  color: _currentIndex == 4 ? AppColors.champagneGold : (isDark ? Colors.white : AppColors.imperialNightBlue),
+                ),
               ),
-              onPressed: () async {
-                final confirmed = await ConfirmDeleteDialog.show(
-                  context,
-                  title: l10n.confirmLogoutTitle,
-                  message: l10n.confirmLogoutMessage,
-                  confirmLabel: l10n.logout,
-                  cancelLabel: l10n.cancelLabel,
-                  isDestructive: false,
-                );
-                if (confirmed && context.mounted) {
-                  context.read<AuthBloc>().add(LogoutRequested());
-                }
-              },
+              onPressed: () => _onTabTapped(4),
             ),
             const SizedBox(width: AppDimensions.spacingSm),
           ],
@@ -114,9 +121,14 @@ class _ClientShellPageState extends State<ClientShellPage> {
         body: isWide
             ? Row(
                 children: [
+                  // ── NavigationRail (Sidebar Grand Écran) ──
                   NavigationRail(
-                    selectedIndex: _currentIndex,
-                    onDestinationSelected: _onTabTapped,
+                    selectedIndex: _currentIndex > 2 ? 0 : _currentIndex,
+                    onDestinationSelected: (idx) {
+                      if (idx < 3) {
+                        _onTabTapped(idx);
+                      }
+                    },
                     indicatorColor: AppColors.champagneGold.withValues(alpha: 0.15),
                     selectedIconTheme: const IconThemeData(color: AppColors.champagneGold),
                     unselectedIconTheme: const IconThemeData(color: AppColors.textMuted),
@@ -125,15 +137,15 @@ class _ClientShellPageState extends State<ClientShellPage> {
                     labelType: NavigationRailLabelType.all,
                     backgroundColor: isDark ? AppColors.imperialNightBlue : AppColors.surfaceLight,
                     destinations: [
-                      const NavigationRailDestination(
-                        icon: Icon(Icons.search_outlined),
-                        selectedIcon: Icon(Icons.search),
-                        label: Text("Recherche"),
+                      NavigationRailDestination(
+                        icon: const Icon(Icons.bed_outlined),
+                        selectedIcon: const Icon(Icons.bed_rounded, color: AppColors.champagneGold),
+                        label: Text(l10n.tabBook),
                       ),
-                      const NavigationRailDestination(
-                        icon: Icon(Icons.calendar_today_outlined),
-                        selectedIcon: Icon(Icons.calendar_today),
-                        label: Text("Réservations"),
+                      NavigationRailDestination(
+                        icon: const Icon(Icons.calendar_today_outlined),
+                        selectedIcon: const Icon(Icons.calendar_today_rounded, color: AppColors.champagneGold),
+                        label: Text(l10n.tabStays),
                       ),
                       NavigationRailDestination(
                         icon: BlocBuilder<CartBloc, CartState>(
@@ -166,44 +178,81 @@ class _ClientShellPageState extends State<ClientShellPage> {
                             );
                           },
                         ),
-                        label: const Text("Panier"),
-                      ),
-                      const NavigationRailDestination(
-                        icon: Icon(Icons.person_outline),
-                        selectedIcon: Icon(Icons.person),
-                        label: Text("Profil"),
-                      ),
-                      const NavigationRailDestination(
-                        icon: Icon(Icons.settings_outlined),
-                        selectedIcon: Icon(Icons.settings),
-                        label: Text("Paramètres"),
+                        label: Text(l10n.myCartTab),
                       ),
                     ],
+                    // ── Bouton Paramètres tout en bas du Sidebar ──
+                    trailing: Expanded(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: AppDimensions.spacingLg),
+                          child: InkWell(
+                            onTap: () => _onTabTapped(3),
+                            borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                              decoration: BoxDecoration(
+                                color: _currentIndex == 3
+                                    ? AppColors.champagneGold.withValues(alpha: 0.15)
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+                                border: Border.all(
+                                  color: _currentIndex == 3 ? AppColors.champagneGold : (isDark ? Colors.white10 : AppColors.softGrey),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    _currentIndex == 3 ? Icons.settings_rounded : Icons.settings_outlined,
+                                    color: _currentIndex == 3 ? AppColors.champagneGold : AppColors.textMuted,
+                                    size: 22,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    "Paramètres",
+                                    style: TextStyle(
+                                      color: _currentIndex == 3 ? AppColors.champagneGold : AppColors.textMuted,
+                                      fontWeight: _currentIndex == 3 ? FontWeight.bold : FontWeight.w500,
+                                      fontSize: 11,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                   const VerticalDivider(thickness: 1, width: 1),
                   Expanded(child: pages[_currentIndex]),
                 ],
               )
             : pages[_currentIndex],
+
+        // ── BottomNavigationBar Mobile ──
         bottomNavigationBar: isWide
             ? null
             : BottomNavigationBar(
-                currentIndex: _currentIndex,
+                currentIndex: _currentIndex > 3 ? 0 : _currentIndex,
                 onTap: _onTabTapped,
                 selectedItemColor: AppColors.champagneGold,
                 unselectedItemColor: AppColors.textMuted,
                 type: BottomNavigationBarType.fixed,
                 backgroundColor: isDark ? AppColors.imperialNightBlue : AppColors.surfaceLight,
                 items: [
-                  const BottomNavigationBarItem(
-                    icon: Icon(Icons.search_outlined),
-                    activeIcon: Icon(Icons.search),
-                    label: "Recherche",
+                  BottomNavigationBarItem(
+                    icon: const Icon(Icons.bed_outlined),
+                    activeIcon: const Icon(Icons.bed_rounded),
+                    label: l10n.tabBook,
                   ),
-                  const BottomNavigationBarItem(
-                    icon: Icon(Icons.calendar_today_outlined),
-                    activeIcon: Icon(Icons.calendar_today),
-                    label: "Réservations",
+                  BottomNavigationBarItem(
+                    icon: const Icon(Icons.calendar_today_outlined),
+                    activeIcon: const Icon(Icons.calendar_today_rounded),
+                    label: l10n.tabStays,
                   ),
                   BottomNavigationBarItem(
                     icon: BlocBuilder<CartBloc, CartState>(
@@ -236,16 +285,11 @@ class _ClientShellPageState extends State<ClientShellPage> {
                         );
                       },
                     ),
-                    label: "Panier",
-                  ),
-                  const BottomNavigationBarItem(
-                    icon: Icon(Icons.person_outline),
-                    activeIcon: Icon(Icons.person),
-                    label: "Profil",
+                    label: l10n.myCartTab,
                   ),
                   const BottomNavigationBarItem(
                     icon: Icon(Icons.settings_outlined),
-                    activeIcon: Icon(Icons.settings),
+                    activeIcon: Icon(Icons.settings_rounded),
                     label: "Paramètres",
                   ),
                 ],

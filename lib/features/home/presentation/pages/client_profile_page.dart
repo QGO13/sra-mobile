@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sra_hotel/core/routes/app_routes.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
 import 'package:sra_hotel/core/widgets/widgets.dart';
 import 'package:sra_hotel/features/auth/presentation/bloc/auth_bloc.dart';
@@ -123,6 +124,17 @@ class ClientProfilePage extends StatelessWidget {
                           ],
                         ],
                       ),
+                    ),
+                    const SizedBox(height: AppDimensions.spacingLg),
+
+                    // ── Bouton de Déconnexion ──
+                    SraButton(
+                      label: l10n.logMeOutButton,
+                      icon: Icons.logout_rounded,
+                      backgroundColor: AppColors.statusError,
+                      onPressed: () {
+                        Navigator.pushNamed(context, AppRoutes.logout);
+                      },
                     ),
                     const SizedBox(height: AppDimensions.spacingXxl),
                   ],

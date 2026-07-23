@@ -33,7 +33,10 @@ class ClientBookingBloc extends Bloc<ClientBookingEvent, ClientBookingState> {
   ) async {
     emit(ClientBookingInitial());
     try {
-      _loadedRoomTypes = await getRoomTypesUseCase();
+      _loadedRoomTypes = await getRoomTypesUseCase(
+        checkIn: event.checkIn,
+        checkOut: event.checkOut,
+      );
       emit(RoomTypesLoadedState(_loadedRoomTypes));
     } catch (e) {
       emit(BookingErrorState(e.toString()));

@@ -82,12 +82,13 @@ class SraInput extends StatelessWidget {
           textCapitalization:  textCapitalization,
           style: AppTextStyles.bodyMedium.copyWith(
             color: isDark ? AppColors.white : AppColors.ink,
-            fontWeight: FontWeight.w400,
+            fontWeight: FontWeight.w500,
           ),
           decoration: InputDecoration(
             hintText:   placeholder,
-            hintStyle:  AppTextStyles.bodySmall.copyWith(
-              color: AppColors.inkMuted,
+            hintStyle:  AppTextStyles.bodyMedium.copyWith(
+              color: isDark ? AppColors.overlayDarkMedium : AppColors.inkMuted,
+              fontWeight: FontWeight.w400,
             ),
             filled:     true,
             fillColor:  isDark ? AppColors.darkCard : AppColors.white,

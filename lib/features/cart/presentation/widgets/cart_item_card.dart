@@ -11,19 +11,13 @@ import 'package:sra_hotel/l10n/app_localizations.dart';
 class CartItemCard extends StatelessWidget {
   final CartItemEntity item;
   final VoidCallback onRemove;
-  final ValueChanged<bool?> onExtraBedChanged;
-  final VoidCallback? onToggleExtraBed; // Optional helper
-  final ValueChanged<bool?> onBreakfastChanged;
-  final ValueChanged<int> onBreakfastCountChanged;
+  final ValueChanged<bool?> onSelectionChanged;
 
   const CartItemCard({
     super.key,
     required this.item,
     required this.onRemove,
-    required this.onExtraBedChanged,
-    this.onToggleExtraBed,
-    required this.onBreakfastChanged,
-    required this.onBreakfastCountChanged,
+    required this.onSelectionChanged,
   });
 
   @override
@@ -42,8 +36,10 @@ class CartItemCard extends StatelessWidget {
           color: isDark ? AppColors.deepBlue : Colors.white,
           borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
           border: Border.all(
-            color: isDark ? Colors.white10 : AppColors.softGrey,
-            width: 1.0,
+            color: item.isSelected
+                ? AppColors.champagneGold
+                : (isDark ? Colors.white10 : AppColors.softGrey),
+            width: item.isSelected ? 1.5 : 1.0,
           ),
           boxShadow: const [AppShadows.shadowCard],
         ),
@@ -55,10 +51,21 @@ class CartItemCard extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Checkbox sélection
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0, top: 38.0),
+                  child: Checkbox(
+                    value: item.isSelected,
+                    activeColor: AppColors.champagneGold,
+                    onChanged: onSelectionChanged,
+                  ),
+                ),
+
                 // Room Photo (Left Thumbnail)
                 Container(
-                  width: 110,
-                  height: 110,
+                  width: 100,
+                  height: 100,
+                  margin: const EdgeInsets.only(top: 8.0, bottom: 8.0),
                   color: isDark ? Colors.grey[900] : Colors.grey[200],
                   child: CachedNetworkImage(
                     imageUrl: img,
@@ -142,6 +149,30 @@ class CartItemCard extends StatelessWidget {
                             fontSize: 11.0,
                             fontWeight: FontWeight.bold,
                             color: AppColors.champagneGold,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        // Badge Petit-déjeuner offert
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: AppColors.statusSuccess.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(AppDimensions.radiusXs),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.free_breakfast_outlined, size: 12, color: AppColors.statusSuccess),
+                              const SizedBox(width: 4),
+                              Text(
+                                l10n.freeBreakfastIncluded,
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.statusSuccess,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],

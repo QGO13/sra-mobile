@@ -11,6 +11,9 @@ class Booking {
   final int? enfants;
   final String statutBooking;
   final double prixTotal;
+  final double totalPaid;
+  final double balanceDue;
+  final String? folioId;
   final double discountPercentage;
   final List<BookingLine> lines;
 
@@ -25,7 +28,13 @@ class Booking {
     this.enfants,
     required this.statutBooking,
     required this.prixTotal,
+    this.totalPaid = 0.0,
+    this.balanceDue = 0.0,
+    this.folioId,
     this.discountPercentage = 0.0,
     this.lines = const [],
   });
+
+  /// Le client a-t-il réglé l'acompte de 50% minimum obligatoire pour le check-in ?
+  bool get hasMinDepositPaid => totalPaid >= (prixTotal * 0.5);
 }

@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:sra_hotel/core/constants/app_constants.dart';
+import 'package:sra_hotel/core/network/mock_interceptor.dart';
 
 class ApiClient {
   final Dio dio;
@@ -8,12 +10,13 @@ class ApiClient {
   ApiClient({
     required this.dio,
     required this.secureStorage,
-    String baseUrl = 'http://192.168.10.246:8000/api/v1', // Real FastAPI backend URL
+    String? baseUrl,
   }) {
-    dio.options.baseUrl = baseUrl;
+    dio.options.baseUrl = baseUrl ?? AppConstants.apiBaseUrl;
     dio.options.connectTimeout = const Duration(seconds: 10);
     dio.options.receiveTimeout = const Duration(seconds: 10);
-    
+
+    dio.interceptors.add(MockInterceptor());
 
     dio.interceptors.add(
       LogInterceptor(
@@ -25,7 +28,7 @@ class ApiClient {
         error: true,
       ),
     );
-    
+
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
@@ -36,7 +39,6 @@ class ApiClient {
           return handler.next(options);
         },
         onError: (DioException e, handler) {
-          // Centralized error handling can be done here or in repositories
           return handler.next(e);
         },
       ),

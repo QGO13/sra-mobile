@@ -24,6 +24,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<CartItemAdded>(_onCartItemAdded);
     on<CartItemRemoved>(_onCartItemRemoved);
     on<CartItemUpdated>(_onCartItemUpdated);
+    on<CartItemSelectionToggled>(_onCartItemSelectionToggled);
+    on<CartAllItemsSelectionToggled>(_onCartAllItemsSelectionToggled);
     on<CartCleared>(_onCartCleared);
     on<CartDatesUpdated>(_onCartDatesUpdated);
   }
@@ -87,8 +89,32 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         extraBedIncluded: event.extraBedIncluded,
         breakfastIncluded: event.breakfastIncluded,
         breakfastCount: event.breakfastCount,
+        isSelected: event.isSelected,
       );
       await saveCartUseCase(items: _cartItems, checkIn: _checkIn, checkOut: _checkOut);
+    }
+    emit(CartUpdated(
+      items: List.from(_cartItems),
+      checkIn: _checkIn,
+      checkOut: _checkOut,
+    ));
+  }
+
+  void _onCartItemSelectionToggled(CartItemSelectionToggled event, Emitter<CartState> emit) {
+    final index = _cartItems.indexWhere((item) => item.room.id == event.roomId);
+    if (index != -1) {
+      _cartItems[index] = _cartItems[index].copyWith(isSelected: event.isSelected);
+      emit(CartUpdated(
+        items: List.from(_cartItems),
+        checkIn: _checkIn,
+        checkOut: _checkOut,
+      ));
+    }
+  }
+
+  void _onCartAllItemsSelectionToggled(CartAllItemsSelectionToggled event, Emitter<CartState> emit) {
+    for (int i = 0; i < _cartItems.length; i++) {
+      _cartItems[i] = _cartItems[i].copyWith(isSelected: event.isSelected);
     }
     emit(CartUpdated(
       items: List.from(_cartItems),

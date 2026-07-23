@@ -28,6 +28,18 @@ class CartUpdated extends CartState {
     return diff > 0 ? diff : 1; // Safeguard: minimum 1 night
   }
   
+  /// Articles actuellement cochés par l'utilisateur
+  List<CartItemEntity> get selectedItems => items.where((i) => i.isSelected).toList();
+
+  /// Total cumulé uniquement pour les hébergements cochés
+  double get selectedSubtotal => selectedItems.fold(0.0, (sum, item) => sum + item.itemTotal);
+
+  /// Indique si toutes les chambres du panier sont cochées
+  bool get areAllSelected => items.isNotEmpty && items.every((i) => i.isSelected);
+
+  /// Nombre d'hébergements cochés
+  int get selectedCount => selectedItems.length;
+
   // Calculate cumulative stay total HT (sum of item totals which already include their own nights count)
   double get cartSubtotal => items.fold(0.0, (sum, item) => sum + item.itemTotal);
 }

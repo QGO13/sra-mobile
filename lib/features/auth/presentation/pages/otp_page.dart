@@ -1,213 +1,239 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sra_hotel/core/error/error_handler.dart';
 import 'package:sra_hotel/core/routes/app_routes.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
 import 'package:sra_hotel/core/widgets/widgets.dart';
-import 'package:sra_hotel/main.dart';
+import 'package:sra_hotel/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:sra_hotel/features/auth/presentation/bloc/auth_state.dart';
+import 'package:sra_hotel/l10n/app_localizations.dart';
 
-/// Page de vérification OTP (2-FA) — Reproduction Pixel-Perfect de `OtpPage.tsx`.
+/// Page de vérification OTP / 2FA — Reproduction Pixel-Perfect avec `AuthShell`.
 class OtpPage extends StatefulWidget {
-  final String email;
-
-  const OtpPage({
-    super.key,
-    this.email = 'awa.camara@email.com',
-  });
+  const OtpPage({super.key});
 
   @override
   State<OtpPage> createState() => _OtpPageState();
 }
 
 class _OtpPageState extends State<OtpPage> {
-  final _codeController = TextEditingController();
+  final List<TextEditingController> _controllers = List.generate(6, (_) => TextEditingController());
+  final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
   String? _errorMessage;
 
   @override
   void dispose() {
-    _codeController.dispose();
+    for (var c in _controllers) {
+      c.dispose();
+    }
+    for (var f in _focusNodes) {
+      f.dispose();
+    }
     super.dispose();
   }
 
+  String get _otpCode => _controllers.map((c) => c.text).join();
+
   void _submit() {
-    if (_codeController.text.trim().length != 6) {
-      setState(() => _errorMessage = 'Saisissez les 6 chiffres du code de vérification.');
+    final l10n = AppLocalizations.of(context)!;
+    if (_otpCode.length < 6) {
+      setState(() => _errorMessage = l10n.enterFullSixDigitCode);
       return;
     }
     setState(() => _errorMessage = null);
-    Navigator.of(context).pushReplacementNamed(AppRoutes.backofficeAdmin);
-  }
-
-  void _resendCode() {
-    setState(() {
-      _errorMessage = null;
-    });
-    SraSnackbar.show(
-      context,
-      message: 'Un nouveau code vient d’être envoyé.',
-      type: SraSnackbarType.success,
-    );
+    Navigator.of(context).pushReplacementNamed(AppRoutes.home);
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final currentLocale = Localizations.localeOf(context);
+    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.inkMuted;
+    final cardBg = isDark ? AppColors.darkCard : AppColors.white;
+    final cardBorder = isDark ? AppColors.darkBorder : AppColors.mist;
 
-    final bgPage = isDark ? AppColors.darkSurface : AppColors.fog;
-    final textMuted = isDark ? AppColors.overlayDarkMedium : AppColors.inkMuted;
-
-    return Scaffold(
-      backgroundColor: bgPage,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: [
-          LanguageSelector(
-            currentLocale: currentLocale,
-            onLocaleChanged: (newLocale) {
-              MyApp.setLocale(context, newLocale);
-            },
+    return AuthShell(
+      child: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is Authenticated) {
+            Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+          } else if (state is AuthFailure) {
+            setState(() {
+              _errorMessage = ErrorMapper.getSubtitle(state.message, l10n);
+            });
+          }
+        },
+        child: Container(
+          padding: const EdgeInsets.all(AppDimensions.spacingXl),
+          decoration: BoxDecoration(
+            color: cardBg,
+            borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+            border: Border.all(color: cardBorder, width: AppDimensions.borderThin),
+            boxShadow: const [AppShadows.card],
           ),
-          AppDimensions.hGapMd,
-        ],
-      ),
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppDimensions.spacingLg,
-              vertical: AppDimensions.spacingXl,
-            ),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 480),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SraLogo(height: AppDimensions.avatarSizeLg * 1.5),
-                  AppDimensions.vGapLg,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: AppColors.gold.withValues(alpha: isDark ? 0.2 : 0.16),
+                  borderRadius: BorderRadius.circular(AppDimensions.radiusXs),
+                ),
+                child: const Icon(
+                  Icons.mark_email_read_outlined,
+                  color: AppColors.gold,
+                  size: AppDimensions.iconSizeLg,
+                ),
+              ),
+              AppDimensions.vGapMd,
 
-                  // ── Conteneur Icône Sécurisée ──
-                  Center(
-                    child: Container(
-                      width: AppDimensions.avatarSizeLg,
-                      height: AppDimensions.avatarSizeLg,
-                      decoration: BoxDecoration(
-                        color: AppColors.gold.withValues(alpha: isDark ? 0.2 : 0.12),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.mark_email_read_outlined,
+              Text(
+                l10n.secureVerificationHeader,
+                style: AppTextStyles.labelUppercase.copyWith(
+                  color: AppColors.gold,
+                  letterSpacing: 2.0,
+                ),
+              ),
+              AppDimensions.vGapXs,
+
+              Text(
+                l10n.confirmationCodeTitle,
+                style: AppTextStyles.displayMedium.copyWith(
+                  fontSize: 34,
+                  height: 1.1,
+                  color: isDark ? AppColors.white : AppColors.ink,
+                ),
+              ),
+              AppDimensions.vGapXs,
+
+              Text(
+                l10n.enterCodeSubtitle,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: textMuted,
+                ),
+              ),
+              AppDimensions.vGapLg,
+
+              // ── 6 cases OTP ──
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(6, (index) {
+                  return SizedBox(
+                    width: 46,
+                    height: 54,
+                    child: TextField(
+                      controller: _controllers[index],
+                      focusNode: _focusNodes[index],
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      maxLength: 1,
+                      style: AppTextStyles.titleLarge.copyWith(
                         color: AppColors.gold,
-                        size: AppDimensions.iconSizeXl,
+                        fontWeight: FontWeight.w700,
                       ),
+                      decoration: InputDecoration(
+                        counterText: '',
+                        filled: true,
+                        fillColor: isDark ? AppColors.darkSurface : AppColors.fog,
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: isDark ? AppColors.darkBorder : AppColors.mist,
+                          ),
+                          borderRadius: BorderRadius.circular(AppDimensions.radiusXs),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: AppColors.gold,
+                            width: AppDimensions.borderMedium,
+                          ),
+                          borderRadius: BorderRadius.circular(AppDimensions.radiusXs),
+                        ),
+                      ),
+                      onChanged: (val) {
+                        if (val.isNotEmpty && index < 5) {
+                          _focusNodes[index + 1].requestFocus();
+                        } else if (val.isEmpty && index > 0) {
+                          _focusNodes[index - 1].requestFocus();
+                        }
+                        if (_otpCode.length == 6) {
+                          _submit();
+                        }
+                      },
                     ),
-                  ),
-                  AppDimensions.vGapLg,
+                  );
+                }),
+              ),
+              AppDimensions.vGapLg,
 
-                  Text(
-                    "VÉRIFICATION EN DEUX ÉTAPES",
-                    textAlign: TextAlign.center,
-                    style: AppTextStyles.labelUppercase.copyWith(
-                      color: AppColors.gold,
+              if (_errorMessage != null) ...[
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.spacingSm,
+                    vertical: AppDimensions.spacingXs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.statusError.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(AppDimensions.radiusXs),
+                    border: Border.all(
+                      color: AppColors.statusError,
+                      width: AppDimensions.borderThin,
                     ),
                   ),
-                  AppDimensions.vGapXs,
-                  Text(
-                    "Confirmez votre identité.",
-                    textAlign: TextAlign.center,
-                    style: AppTextStyles.displayMedium.copyWith(
-                      color: isDark ? AppColors.white : AppColors.ink,
+                  child: Text(
+                    _errorMessage!,
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: AppColors.statusError,
                     ),
                   ),
-                  AppDimensions.vGapXs,
+                ),
+                AppDimensions.vGapLg,
+              ],
+
+              BlocBuilder<AuthBloc, AuthState>(
+                builder: (context, state) {
+                  return SraButton(
+                    label: l10n.verifyCodeButton,
+                    isLoading: state is AuthLoading,
+                    onPressed: _submit,
+                  );
+                },
+              ),
+              AppDimensions.vGapLg,
+
+              const Divider(),
+              AppDimensions.vGapMd,
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
                   Text(
-                    "Nous avons envoyé un code à usage unique à ${widget.email}.",
-                    textAlign: TextAlign.center,
-                    style: AppTextStyles.bodyMedium.copyWith(
+                    l10n.didNotReceiveCode,
+                    style: AppTextStyles.bodySmall.copyWith(
                       color: textMuted,
                     ),
                   ),
-                  AppDimensions.vGapLg,
-
-                  SraCard(
-                    padding: const EdgeInsets.all(AppDimensions.spacingXl),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SraInput(
-                          label: "CODE À 6 CHIFFRES *",
-                          placeholder: "000000",
-                          controller: _codeController,
-                          keyboardType: TextInputType.number,
-                          prefixIcon: const Icon(
-                            Icons.lock_clock_outlined,
-                            color: AppColors.gold,
-                            size: AppDimensions.iconSizeMd,
-                          ),
-                        ),
-                        AppDimensions.vGapLg,
-
-                        if (_errorMessage != null) ...[
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppDimensions.spacingSm,
-                              vertical: AppDimensions.spacingXs,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.statusError.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(AppDimensions.radiusXs),
-                              border: Border.all(
-                                color: AppColors.statusError,
-                                width: AppDimensions.borderThin,
-                              ),
-                            ),
-                            child: Text(
-                              _errorMessage!,
-                              style: AppTextStyles.bodySmall.copyWith(
-                                color: AppColors.statusError,
-                              ),
-                            ),
-                          ),
-                          AppDimensions.vGapLg,
-                        ],
-
-                        SraButton(
-                          label: "VÉRIFIER ET OUVRIR MON ESPACE",
-                          onPressed: _submit,
-                        ),
-                      ],
+                  GestureDetector(
+                    onTap: () {
+                      SraSnackbar.show(
+                        context,
+                        message: l10n.newCodeSentSuccess,
+                        type: SraSnackbarType.success,
+                      );
+                    },
+                    child: Text(
+                      l10n.resendCode,
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: AppColors.gold,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
-                  ),
-
-                  AppDimensions.vGapLg,
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        onTap: () => Navigator.of(context).pop(),
-                        child: Text(
-                          "← Modifier l'e-mail",
-                          style: AppTextStyles.bodySmall.copyWith(
-                            color: textMuted,
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: _resendCode,
-                        child: Text(
-                          "Renvoyer le code",
-                          style: AppTextStyles.bodySmall.copyWith(
-                            color: AppColors.gold,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ],
                   ),
                 ],
               ),
-            ),
+            ],
           ),
         ),
       ),

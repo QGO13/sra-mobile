@@ -21,13 +21,19 @@ class RoomEntity {
   String get categoryName {
     final lower = idTypeDeChambre.toLowerCase();
     if (lower.contains('suite') || lower == '3' || lower == '24') {
-      return 'Chambre Suite';
+      return 'Suite';
     }
     if (lower.contains('premium') || lower == '2' || lower == '23') {
       return 'Chambre Premium';
     }
-    if (lower.contains('superior') || lower == '22') {
+    if (lower.contains('superior') || lower.contains('superieure') || lower == '22') {
       return 'Chambre Supérieure';
+    }
+    if (lower.contains('standard') || lower == '1' || lower == '21') {
+      return 'Chambre Standard';
+    }
+    if (idTypeDeChambre.isNotEmpty && !idTypeDeChambre.contains('-')) {
+      return idTypeDeChambre;
     }
     return 'Chambre Standard';
   }

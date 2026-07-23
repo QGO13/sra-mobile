@@ -3,9 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sra_hotel/core/routes/app_routes.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
 import 'package:sra_hotel/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:sra_hotel/features/auth/presentation/bloc/auth_event.dart';
 import 'package:sra_hotel/features/auth/presentation/bloc/auth_state.dart';
-import 'package:sra_hotel/core/widgets/widgets.dart';
+import 'package:sra_hotel/features/home/presentation/pages/client_profile_page.dart';
 import 'package:sra_hotel/features/backoffice_kpis/presentation/bloc/kpi_bloc.dart';
 import 'package:sra_hotel/features/backoffice_kpis/presentation/bloc/kpi_event.dart';
 import 'package:sra_hotel/features/backoffice_kpis/presentation/pages/admin_kpis_view.dart';
@@ -206,22 +205,36 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               onPressed: _refreshAll,
             ),
             IconButton(
-              icon: const Icon(
-                Icons.logout_outlined,
-                color: AppColors.statusError,
+              tooltip: l10n.myProfileTab,
+              icon: Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColors.champagneGold,
+                    width: 1.5,
+                  ),
+                  color: AppColors.champagneGold.withValues(alpha: 0.15),
+                ),
+                child: const Icon(
+                  Icons.person_rounded,
+                  size: 20,
+                  color: AppColors.champagneGold,
+                ),
               ),
-              onPressed: () async {
-                final confirmed = await ConfirmDeleteDialog.show(
+              onPressed: () {
+                Navigator.push(
                   context,
-                  title: l10n.confirmLogoutTitle,
-                  message: l10n.confirmLogoutMessage,
-                  confirmLabel: l10n.logout,
-                  cancelLabel: l10n.cancelLabel,
-                  isDestructive: false,
+                  MaterialPageRoute(
+                    builder: (_) => Scaffold(
+                      appBar: AppBar(
+                        title: Text(l10n.myProfileTab),
+                      ),
+                      body: const ClientProfilePage(),
+                    ),
+                  ),
                 );
-                if (confirmed && context.mounted) {
-                  context.read<AuthBloc>().add(LogoutRequested());
-                }
               },
             ),
             const SizedBox(width: AppDimensions.spacingSm),

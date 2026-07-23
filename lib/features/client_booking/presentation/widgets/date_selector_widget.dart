@@ -22,8 +22,8 @@ class DateSelectorWidget extends StatefulWidget {
 }
 
 class _DateSelectorWidgetState extends State<DateSelectorWidget> {
-  DateTime _checkIn = DateTime.now().add(const Duration(days: 1));
-  DateTime _checkOut = DateTime.now().add(const Duration(days: 2));
+  DateTime _checkIn = DateTime.now();
+  DateTime _checkOut = DateTime.now().add(const Duration(days: 1));
 
   Future<void> _selectDateRange() async {
     final DateTimeRange? picked = await showDateRangePicker(

@@ -101,50 +101,18 @@ class _AdminEquipmentsViewState extends State<AdminEquipmentsView> {
                   ],
                 ),
               ),
-              Container(
-                height: 38,
-                margin: const EdgeInsets.only(bottom: AppDimensions.spacingMd),
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 3,
-                  padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMd),
-                  itemBuilder: (context, index) {
-                    final chip = [
-                      {'id': 'all', 'label': l10n.allFilter},
-                      {'id': 'available', 'label': l10n.availableStatus},
-                      {'id': 'unavailable', 'label': l10n.unavailableStatus},
-                    ][index];
-                    final isSelected = _selectedFilter == chip['id'];
-                    return Padding(
-                      padding: const EdgeInsets.only(right: AppDimensions.spacingSm),
-                      child: ChoiceChip(
-                        label: Text(
-                          chip['label']!,
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                            color: isSelected ? Colors.white : (isDark ? Colors.white70 : AppColors.imperialNightBlue),
-                          ),
-                        ),
-                        selected: isSelected,
-                        selectedColor: AppColors.champagneGold,
-                        backgroundColor: isDark ? AppColors.deepBlue : AppColors.surfaceLight,
-                        checkmarkColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          side: const BorderSide(color: AppColors.softGrey),
-                          borderRadius: BorderRadius.circular(AppDimensions.radiusFull),
-                        ),
-                        onSelected: (selected) {
-                          if (selected) {
-                            setState(() {
-                              _selectedFilter = chip['id']!;
-                            });
-                          }
-                        },
-                      ),
-                    );
-                  },
-                ),
+              SraFilterBar(
+                items: [
+                  SraFilterItem(id: 'all', label: l10n.allFilter),
+                  SraFilterItem(id: 'available', label: l10n.availableStatus),
+                  SraFilterItem(id: 'unavailable', label: l10n.unavailableStatus),
+                ],
+                selectedId: _selectedFilter,
+                onSelected: (id) {
+                  setState(() {
+                    _selectedFilter = id;
+                  });
+                },
               ),
               Expanded(
                 child: filtered.isEmpty

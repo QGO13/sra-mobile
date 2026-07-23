@@ -9,8 +9,10 @@ class ClientBookingRepositoryImpl implements ClientBookingRepository {
   ClientBookingRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<List<BookingRoomType>> getRoomTypes() async {
-    return await remoteDataSource.getRoomTypes();
+  Future<List<BookingRoomType>> getRoomTypes({DateTime? checkIn, DateTime? checkOut}) async {
+    final checkInStr = checkIn?.toIso8601String().substring(0, 10);
+    final checkOutStr = checkOut?.toIso8601String().substring(0, 10);
+    return await remoteDataSource.getRoomTypes(checkIn: checkInStr, checkOut: checkOutStr);
   }
 
   @override

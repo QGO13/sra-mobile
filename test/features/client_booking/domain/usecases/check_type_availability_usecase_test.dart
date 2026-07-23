@@ -9,7 +9,7 @@ class MockClientBookingRepository implements ClientBookingRepository {
   MockClientBookingRepository({required this.mockRooms});
 
   @override
-  Future<List<BookingRoomType>> getRoomTypes() async => [];
+  Future<List<BookingRoomType>> getRoomTypes({DateTime? checkIn, DateTime? checkOut}) async => [];
 
   @override
   Future<List<BookingRoom>> getAvailableRooms({

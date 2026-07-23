@@ -11,6 +11,8 @@ class ResponsiveListGridView extends StatelessWidget {
   final double mainAxisExtent;
   final double crossAxisSpacing;
   final double mainAxisSpacing;
+  final bool shrinkWrap;
+  final ScrollPhysics? physics;
 
   const ResponsiveListGridView({
     super.key,
@@ -23,6 +25,8 @@ class ResponsiveListGridView extends StatelessWidget {
     this.mainAxisExtent = AppDimensions.responsiveCardMainExtent,
     this.crossAxisSpacing = AppDimensions.spacingMd,
     this.mainAxisSpacing = AppDimensions.spacingMd,
+    this.shrinkWrap = false,
+    this.physics,
   });
 
   @override
@@ -36,6 +40,8 @@ class ResponsiveListGridView extends StatelessWidget {
         if (constraints.maxWidth < breakpoint) {
           return ListView.builder(
             padding: padding,
+            shrinkWrap: shrinkWrap,
+            physics: physics,
             itemCount: itemCount,
             itemBuilder: itemBuilder,
           );
@@ -43,6 +49,8 @@ class ResponsiveListGridView extends StatelessWidget {
 
         return GridView.builder(
           padding: padding,
+          shrinkWrap: shrinkWrap,
+          physics: physics,
           itemCount: itemCount,
           gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
             maxCrossAxisExtent: maxCrossAxisExtent,

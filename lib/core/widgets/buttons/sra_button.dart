@@ -119,8 +119,6 @@ class SraButton extends StatefulWidget {
 }
 
 class _SraButtonState extends State<SraButton> {
-  bool _hovered = false;
-
   bool get _isDisabled => widget.onPressed == null || widget.isLoading;
 
   double get _height =>
@@ -138,15 +136,7 @@ class _SraButtonState extends State<SraButton> {
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: AnimatedScale(
-        scale: _hovered && !_isDisabled ? 1.015 : 1.0,
-        duration: const Duration(milliseconds: 200),
-        child: _buildButton(),
-      ),
-    );
+    return _buildButton();
   }
 
   Widget _buildButton() {
@@ -165,7 +155,7 @@ class _SraButtonState extends State<SraButton> {
       opacity: _isDisabled ? 0.65 : 1.0,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        height: widget.fullWidth ? _height : null,
+        height: _height,
         width: widget.fullWidth ? double.infinity : null,
         decoration: BoxDecoration(
           gradient: AppColors.goldGradient,
@@ -193,7 +183,7 @@ class _SraButtonState extends State<SraButton> {
     return Opacity(
       opacity: _isDisabled ? 0.55 : 1.0,
       child: SizedBox(
-        height: widget.fullWidth ? _height : null,
+        height: _height,
         width: widget.fullWidth ? double.infinity : null,
         child: OutlinedButton(
           onPressed: _isDisabled ? null : widget.onPressed,
@@ -201,7 +191,7 @@ class _SraButtonState extends State<SraButton> {
             foregroundColor: AppColors.gold,
             side: BorderSide(
               color: AppColors.gold.withValues(
-                alpha: _isDisabled ? 0.4 : (_hovered ? 1.0 : 0.8),
+                alpha: _isDisabled ? 0.4 : 0.8,
               ),
               width: AppDimensions.borderMedium,
             ),
@@ -239,7 +229,7 @@ class _SraButtonState extends State<SraButton> {
     return Opacity(
       opacity: _isDisabled ? 0.55 : 1.0,
       child: SizedBox(
-        height: widget.fullWidth ? _height : null,
+        height: _height,
         width: widget.fullWidth ? double.infinity : null,
         child: ElevatedButton(
           onPressed: _isDisabled ? null : widget.onPressed,

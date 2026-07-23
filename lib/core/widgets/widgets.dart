@@ -20,6 +20,7 @@ export 'cards/kpi_card.dart';
 // ── Affichage & Typographie ──────────────────────────────────────────────────
 export 'display/sra_avatar.dart';
 export 'display/sra_chip.dart';
+export 'display/sra_filter_bar.dart';
 export 'display/sra_divider.dart';
 export 'display/sra_list_tile.dart';
 export 'display/sra_logo.dart';
@@ -29,7 +30,6 @@ export 'display/sra_star_rating.dart';
 export 'display/sra_status_badge.dart';
 export 'display/section_header.dart';
 export 'display/status_badge.dart';
-export 'display/demo_accounts_banner.dart';
 export 'display/language_selector.dart';
 
 // ── Layout & Structure ──────────────────────────────────────────────────────
@@ -38,6 +38,7 @@ export 'layout/sra_bottom_nav.dart';
 export 'layout/sra_page_scaffold.dart';
 export 'layout/responsive_list_grid_view.dart';
 export 'layout/luxe_data_grid.dart';
+export 'layout/auth_shell.dart';
 
 // ── Feedback & États ────────────────────────────────────────────────────────
 export 'feedback/empty_state_view.dart';

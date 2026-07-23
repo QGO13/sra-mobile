@@ -7,6 +7,7 @@ class BookingLine {
   final String? occupantName;
   final String? roomNumber;
   final String? chambreId;
+  final String status;
 
   const BookingLine({
     required this.id,
@@ -17,6 +18,7 @@ class BookingLine {
     this.occupantName,
     this.roomNumber,
     this.chambreId,
+    this.status = 'En attente',
   });
 }
 

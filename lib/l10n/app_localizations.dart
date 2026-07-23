@@ -1995,6 +1995,834 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Ajouter au panier'**
   String get addToCart;
+
+  /// No description provided for @selectAll.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout sélectionner'**
+  String get selectAll;
+
+  /// No description provided for @selectedRoomsCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{selected} / {total} cochée(s)'**
+  String selectedRoomsCount(int selected, int total);
+
+  /// No description provided for @cartSummaryTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'RÉSUMÉ DE LA SÉLECTION'**
+  String get cartSummaryTitle;
+
+  /// No description provided for @selectedAccommodations.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hébergements sélectionnés'**
+  String get selectedAccommodations;
+
+  /// No description provided for @freeBreakfastIncluded.
+  ///
+  /// In fr, this message translates to:
+  /// **'Petit-déjeuner inclus (Offert)'**
+  String get freeBreakfastIncluded;
+
+  /// No description provided for @taxesIncludedNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Taxes de séjour & TVA incluses'**
+  String get taxesIncludedNote;
+
+  /// No description provided for @proceedToBooking.
+  ///
+  /// In fr, this message translates to:
+  /// **'Passer à la réservation ({count} chambre(s))'**
+  String proceedToBooking(int count);
+
+  /// No description provided for @selectAtLeastOneRoom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sélectionnez au moins une chambre'**
+  String get selectAtLeastOneRoom;
+
+  /// No description provided for @addMoreRooms.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter d\'autres chambres'**
+  String get addMoreRooms;
+
+  /// No description provided for @emptyCartTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre panier est vide'**
+  String get emptyCartTitle;
+
+  /// No description provided for @emptyCartSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Découvrez nos hébergements et ajoutez vos chambres préférées pour commencer votre séjour.'**
+  String get emptyCartSubtitle;
+
+  /// No description provided for @viewAvailability.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir les disponibilités'**
+  String get viewAvailability;
+
+  /// No description provided for @loginValidationError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Renseignez une adresse e-mail valide et un mot de passe d’au moins 6 caractères.'**
+  String get loginValidationError;
+
+  /// No description provided for @yourSweetRestSpace.
+  ///
+  /// In fr, this message translates to:
+  /// **'VOTRE ESPACE SWEET REST'**
+  String get yourSweetRestSpace;
+
+  /// No description provided for @signedOutSuccessMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous êtes maintenant déconnecté(e) en toute sécurité.'**
+  String get signedOutSuccessMessage;
+
+  /// No description provided for @emailAddressRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'ADRESSE E-MAIL *'**
+  String get emailAddressRequired;
+
+  /// No description provided for @emailPlaceholder.
+  ///
+  /// In fr, this message translates to:
+  /// **'vous@exemple.com'**
+  String get emailPlaceholder;
+
+  /// No description provided for @passwordRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'MOT DE PASSE *'**
+  String get passwordRequired;
+
+  /// No description provided for @rememberMe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rester connecté(e)'**
+  String get rememberMe;
+
+  /// No description provided for @changePasswordTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le mot de passe'**
+  String get changePasswordTitle;
+
+  /// No description provided for @continueButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'CONTINUER →'**
+  String get continueButton;
+
+  /// No description provided for @fillAllRequiredFields.
+  ///
+  /// In fr, this message translates to:
+  /// **'Veuillez remplir tous les champs obligatoires.'**
+  String get fillAllRequiredFields;
+
+  /// No description provided for @passwordTooShort.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le mot de passe doit contenir au moins 6 caractères.'**
+  String get passwordTooShort;
+
+  /// No description provided for @passwordsDoNotMatch.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les mots de passe ne correspondent pas.'**
+  String get passwordsDoNotMatch;
+
+  /// No description provided for @accountCreationHeader.
+  ///
+  /// In fr, this message translates to:
+  /// **'CRÉATION DE COMPTE'**
+  String get accountCreationHeader;
+
+  /// No description provided for @joinUsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rejoignez-nous.'**
+  String get joinUsTitle;
+
+  /// No description provided for @registerSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créez votre compte pour réserver votre séjour et accéder à nos services.'**
+  String get registerSubtitle;
+
+  /// No description provided for @firstNameRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'PRÉNOM *'**
+  String get firstNameRequired;
+
+  /// No description provided for @firstNamePlaceholder.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jean'**
+  String get firstNamePlaceholder;
+
+  /// No description provided for @lastNameRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'NOM *'**
+  String get lastNameRequired;
+
+  /// No description provided for @lastNamePlaceholder.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dupont'**
+  String get lastNamePlaceholder;
+
+  /// No description provided for @confirmPasswordRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'CONFIRMER MOT DE PASSE *'**
+  String get confirmPasswordRequired;
+
+  /// No description provided for @createMyAccountButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'CRÉER MON COMPTE →'**
+  String get createMyAccountButton;
+
+  /// No description provided for @fillAllFields.
+  ///
+  /// In fr, this message translates to:
+  /// **'Veuillez remplir tous les champs.'**
+  String get fillAllFields;
+
+  /// No description provided for @newPasswordTooShort.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le nouveau mot de passe doit contenir au moins 6 caractères.'**
+  String get newPasswordTooShort;
+
+  /// No description provided for @passwordChangedSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe modifié avec succès.'**
+  String get passwordChangedSuccess;
+
+  /// No description provided for @resetHeader.
+  ///
+  /// In fr, this message translates to:
+  /// **'RÉINITIALISATION'**
+  String get resetHeader;
+
+  /// No description provided for @changePasswordSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Saisissez votre mot de passe actuel ainsi que le nouveau.'**
+  String get changePasswordSubtitle;
+
+  /// No description provided for @currentPasswordRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'MOT DE PASSE ACTUEL *'**
+  String get currentPasswordRequired;
+
+  /// No description provided for @newPasswordRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'NOUVEAU MOT DE PASSE *'**
+  String get newPasswordRequired;
+
+  /// No description provided for @confirmNewPasswordRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'CONFIRMER NOUVEAU MOT DE PASSE *'**
+  String get confirmNewPasswordRequired;
+
+  /// No description provided for @changeMyPasswordButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'MODIFIER MON MOT DE PASSE →'**
+  String get changeMyPasswordButton;
+
+  /// No description provided for @cancelAndReturn.
+  ///
+  /// In fr, this message translates to:
+  /// **'← Annuler et revenir'**
+  String get cancelAndReturn;
+
+  /// No description provided for @enterFullSixDigitCode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Veuillez saisir le code complet à 6 chiffres.'**
+  String get enterFullSixDigitCode;
+
+  /// No description provided for @secureVerificationHeader.
+  ///
+  /// In fr, this message translates to:
+  /// **'VÉRIFICATION SÉCURISÉE'**
+  String get secureVerificationHeader;
+
+  /// No description provided for @confirmationCodeTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code de confirmation'**
+  String get confirmationCodeTitle;
+
+  /// No description provided for @enterCodeSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Saisissez le code à 6 chiffres envoyé sur votre adresse e-mail.'**
+  String get enterCodeSubtitle;
+
+  /// No description provided for @verifyCodeButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'VÉRIFIER LE CODE →'**
+  String get verifyCodeButton;
+
+  /// No description provided for @didNotReceiveCode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous n\'avez rien reçu ? '**
+  String get didNotReceiveCode;
+
+  /// No description provided for @newCodeSentSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un nouveau code a été envoyé.'**
+  String get newCodeSentSuccess;
+
+  /// No description provided for @resendCode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Renvoyer le code'**
+  String get resendCode;
+
+  /// No description provided for @endOfSessionHeader.
+  ///
+  /// In fr, this message translates to:
+  /// **'FIN DE SESSION'**
+  String get endOfSessionHeader;
+
+  /// No description provided for @leavingUsAlreadyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous nous quittez déjà ?'**
+  String get leavingUsAlreadyTitle;
+
+  /// No description provided for @logoutSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre session sera fermée sur cet appareil. Vous pourrez vous reconnecter à tout moment.'**
+  String get logoutSubtitle;
+
+  /// No description provided for @logoutSecurityNotice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pour votre sécurité, fermez votre navigateur après la déconnexion sur un appareil partagé.'**
+  String get logoutSecurityNotice;
+
+  /// No description provided for @sessionStillActive.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre session reste active.'**
+  String get sessionStillActive;
+
+  /// No description provided for @staySignedIn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rester connecté(e)'**
+  String get staySignedIn;
+
+  /// No description provided for @logMeOutButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Me déconnecter'**
+  String get logMeOutButton;
+
+  /// No description provided for @needHelpContactReception.
+  ///
+  /// In fr, this message translates to:
+  /// **'Besoin d’aide ? Contactez la réception Sweet Rest.'**
+  String get needHelpContactReception;
+
+  /// No description provided for @myStayTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre séjour à venir'**
+  String get myStayTitle;
+
+  /// No description provided for @myStaySubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les détails utiles, réunis au même endroit.'**
+  String get myStaySubtitle;
+
+  /// No description provided for @nextMomentHeader.
+  ///
+  /// In fr, this message translates to:
+  /// **'VOTRE PROCHAIN MOMENT'**
+  String get nextMomentHeader;
+
+  /// No description provided for @inDaysCountdown.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dans {days} jours'**
+  String inDaysCountdown(Object days);
+
+  /// No description provided for @yourBookingCode.
+  ///
+  /// In fr, this message translates to:
+  /// **'VOTRE CODE'**
+  String get yourBookingCode;
+
+  /// No description provided for @digitalKeyActivate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activer ma clé digitale'**
+  String get digitalKeyActivate;
+
+  /// No description provided for @digitalKeyRequested.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clé digitale demandée'**
+  String get digitalKeyRequested;
+
+  /// No description provided for @digitalKeyAvailableNotice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre clé digitale sera disponible le jour de votre arrivée à partir de 14:00.'**
+  String get digitalKeyAvailableNotice;
+
+  /// No description provided for @modifyStay.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier mon séjour'**
+  String get modifyStay;
+
+  /// No description provided for @prepareYourArrival.
+  ///
+  /// In fr, this message translates to:
+  /// **'Préparez votre arrivée'**
+  String get prepareYourArrival;
+
+  /// No description provided for @prepareArrivalSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dites-nous ce qui rendra votre accueil plus fluide.'**
+  String get prepareArrivalSubtitle;
+
+  /// No description provided for @arrivalSlot.
+  ///
+  /// In fr, this message translates to:
+  /// **'CRÉNEAU D’ARRIVÉE'**
+  String get arrivalSlot;
+
+  /// No description provided for @airportTransfer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transfert aéroport'**
+  String get airportTransfer;
+
+  /// No description provided for @airportTransferSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notre équipe vous recontactera pour les détails de votre vol.'**
+  String get airportTransferSubtitle;
+
+  /// No description provided for @specialRequests.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une attention particulière ?'**
+  String get specialRequests;
+
+  /// No description provided for @specialRequestsPlaceholder.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. arrivée avec un enfant, oreiller ferme…'**
+  String get specialRequestsPlaceholder;
+
+  /// No description provided for @savePreferences.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer mes préférences'**
+  String get savePreferences;
+
+  /// No description provided for @preferencesSavedSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vos préférences d’arrivée ont été transmises à la réception.'**
+  String get preferencesSavedSuccess;
+
+  /// No description provided for @yourLandmarks.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vos repères'**
+  String get yourLandmarks;
+
+  /// No description provided for @yourLandmarksSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout ce qui vous attend à l’hôtel.'**
+  String get yourLandmarksSubtitle;
+
+  /// No description provided for @wifiLandmarkTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Wi-Fi haut débit'**
+  String get wifiLandmarkTitle;
+
+  /// No description provided for @wifiLandmarkDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vos accès sont disponibles dès votre arrivée.'**
+  String get wifiLandmarkDesc;
+
+  /// No description provided for @transferLandmarkTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transfert aéroport'**
+  String get transferLandmarkTitle;
+
+  /// No description provided for @transferLandmarkDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activez-le dans vos préférences si vous le souhaitez.'**
+  String get transferLandmarkDesc;
+
+  /// No description provided for @roomServiceLandmarkTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Room service & Sweetie'**
+  String get roomServiceLandmarkTitle;
+
+  /// No description provided for @roomServiceLandmarkDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une attention ou un dîner, à demander quand vous le voulez.'**
+  String get roomServiceLandmarkDesc;
+
+  /// No description provided for @editStayDialogTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier mon séjour'**
+  String get editStayDialogTitle;
+
+  /// No description provided for @editStayNotice.
+  ///
+  /// In fr, this message translates to:
+  /// **'La réception confirmera toute modification selon les disponibilités et les conditions de votre tarif.'**
+  String get editStayNotice;
+
+  /// No description provided for @desiredCheckIn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Arrivée souhaitée'**
+  String get desiredCheckIn;
+
+  /// No description provided for @desiredCheckOut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Départ souhaité'**
+  String get desiredCheckOut;
+
+  /// No description provided for @messageToReception.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre message à la réception'**
+  String get messageToReception;
+
+  /// No description provided for @messageToReceptionPlaceholder.
+  ///
+  /// In fr, this message translates to:
+  /// **'Indiquez votre demande…'**
+  String get messageToReceptionPlaceholder;
+
+  /// No description provided for @sendRequest.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyer la demande'**
+  String get sendRequest;
+
+  /// No description provided for @modificationRequestSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre demande de modification a bien été envoyée à la réception.'**
+  String get modificationRequestSent;
+
+  /// No description provided for @tabBook.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réserver'**
+  String get tabBook;
+
+  /// No description provided for @tabStays.
+  ///
+  /// In fr, this message translates to:
+  /// **'Séjours'**
+  String get tabStays;
+
+  /// No description provided for @bookingTitleSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'VOTRE ESCAPADE, EN TOUTE LIBERTÉ'**
+  String get bookingTitleSub;
+
+  /// No description provided for @bookingTitleMain.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réservez votre parenthèse.'**
+  String get bookingTitleMain;
+
+  /// No description provided for @bookingTitleDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le confort d’un hôtel, l’intimité de chez vous.'**
+  String get bookingTitleDesc;
+
+  /// No description provided for @bookingStepSelection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sélection'**
+  String get bookingStepSelection;
+
+  /// No description provided for @bookingStepCart.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajout au panier'**
+  String get bookingStepCart;
+
+  /// No description provided for @bookingDatesTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vos dates de séjour'**
+  String get bookingDatesTitle;
+
+  /// No description provided for @bookingBreakfastIncluded.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le petit-déjeuner est inclus et offert pour toute réservation.'**
+  String get bookingBreakfastIncluded;
+
+  /// No description provided for @arrivalLabelUpper.
+  ///
+  /// In fr, this message translates to:
+  /// **'ARRIVÉE *'**
+  String get arrivalLabelUpper;
+
+  /// No description provided for @departureLabelUpper.
+  ///
+  /// In fr, this message translates to:
+  /// **'DÉPART *'**
+  String get departureLabelUpper;
+
+  /// No description provided for @guestsLabelUpper.
+  ///
+  /// In fr, this message translates to:
+  /// **'VOYAGEURS'**
+  String get guestsLabelUpper;
+
+  /// No description provided for @chooseAccommodation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez votre hébergement'**
+  String get chooseAccommodation;
+
+  /// No description provided for @insufficientCapacity.
+  ///
+  /// In fr, this message translates to:
+  /// **'Capacité insuffisante'**
+  String get insufficientCapacity;
+
+  /// No description provided for @selectedBadge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sélectionnée'**
+  String get selectedBadge;
+
+  /// No description provided for @selectedRoomButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chambre sélectionnée'**
+  String get selectedRoomButton;
+
+  /// No description provided for @chooseRoomButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'CHOISIR CETTE CHAMBRE'**
+  String get chooseRoomButton;
+
+  /// No description provided for @roomAddedToCartTitleUpper.
+  ///
+  /// In fr, this message translates to:
+  /// **'CHAMBRE AJOUTÉE AU PANIER'**
+  String get roomAddedToCartTitleUpper;
+
+  /// No description provided for @selectionSavedTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sélection enregistrée'**
+  String get selectionSavedTitle;
+
+  /// No description provided for @stayDatesLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dates de séjour'**
+  String get stayDatesLabel;
+
+  /// No description provided for @accommodationItemLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hébergement'**
+  String get accommodationItemLabel;
+
+  /// No description provided for @breakfastLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Petit-déjeuner'**
+  String get breakfastLabel;
+
+  /// No description provided for @breakfastOfferedByHotel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Offert par l\'hôtel'**
+  String get breakfastOfferedByHotel;
+
+  /// No description provided for @accommodationAmountLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant hébergement'**
+  String get accommodationAmountLabel;
+
+  /// No description provided for @viewCartAndValidateButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'VOIR LE PANIER ET VALIDER'**
+  String get viewCartAndValidateButton;
+
+  /// No description provided for @addAnotherRoomButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'AJOUTER UNE AUTRE CHAMBRE'**
+  String get addAnotherRoomButton;
+
+  /// No description provided for @addToCartUpperButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'AJOUTER AU PANIER'**
+  String get addToCartUpperButton;
+
+  /// No description provided for @popularBadge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus populaire'**
+  String get popularBadge;
+
+  /// No description provided for @gardenView.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vue Jardin'**
+  String get gardenView;
+
+  /// No description provided for @poolView.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vue Piscine'**
+  String get poolView;
+
+  /// No description provided for @panoramicView.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vue Panoramique'**
+  String get panoramicView;
+
+  /// No description provided for @standardRoomName.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chambre Standard'**
+  String get standardRoomName;
+
+  /// No description provided for @premiumRoomName.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chambre Premium'**
+  String get premiumRoomName;
+
+  /// No description provided for @deluxeSuiteName.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suite Deluxe'**
+  String get deluxeSuiteName;
+
+  /// No description provided for @standardRoomDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chambre élégante et fonctionnelle, équipée d’un lit Queen-Size, espace bureau et Wi-Fi haut débit.'**
+  String get standardRoomDesc;
+
+  /// No description provided for @premiumRoomDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chambre spacieuse avec coin salon, machine espresso, lit King-Size et baignoire relaxante.'**
+  String get premiumRoomDesc;
+
+  /// No description provided for @deluxeSuiteDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notre suite haut de gamme disposant d’un salon séparé, service de majordome sur demande et terrasse privée.'**
+  String get deluxeSuiteDesc;
+
+  /// No description provided for @standardRoomStandingDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chambre de grand standing avec petit-déjeuner offert.'**
+  String get standardRoomStandingDesc;
+
+  /// No description provided for @guestsCountSingular.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} voyageur'**
+  String guestsCountSingular(int count);
+
+  /// No description provided for @guestsCountPlural.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} voyageurs'**
+  String guestsCountPlural(int count);
+
+  /// No description provided for @availabilitiesForDates.
+  ///
+  /// In fr, this message translates to:
+  /// **'Disponibilités du {checkIn} au {checkOut} (Petit-déjeuner offert).'**
+  String availabilitiesForDates(String checkIn, String checkOut);
+
+  /// No description provided for @availableSingular.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} disponible'**
+  String availableSingular(int count);
+
+  /// No description provided for @availablePlural.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} disponibles'**
+  String availablePlural(int count);
+
+  /// No description provided for @startingFromPerNight.
+  ///
+  /// In fr, this message translates to:
+  /// **'à partir de {price} / nuit'**
+  String startingFromPerNight(String price);
+
+  /// No description provided for @roomAddedToCartDesc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre hébergement \'{roomName}\' pour {nights} nuit(s) a été ajouté à votre panier. Le petit-déjeuner est offert !'**
+  String roomAddedToCartDesc(String roomName, int nights);
 }
 
 class _AppLocalizationsDelegate

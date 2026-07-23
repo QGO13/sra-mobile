@@ -5,9 +5,9 @@ import 'package:sra_hotel/core/theme/app_theme.dart';
 import 'package:sra_hotel/core/widgets/widgets.dart';
 import 'package:sra_hotel/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:sra_hotel/features/auth/presentation/bloc/auth_event.dart';
-import 'package:sra_hotel/main.dart';
+import 'package:sra_hotel/l10n/app_localizations.dart';
 
-/// Page de déconnexion — Reproduction Pixel-Perfect de `LogoutPage.tsx`.
+/// Page de confirmation de déconnexion — Reproduction Pixel-Perfect de `LogoutPage.tsx`.
 class LogoutPage extends StatefulWidget {
   const LogoutPage({super.key});
 
@@ -23,155 +23,187 @@ class _LogoutPageState extends State<LogoutPage> {
     Navigator.of(context).pushNamedAndRemoveUntil(
       AppRoutes.login,
       (route) => false,
+      arguments: {'signedOut': true},
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final currentLocale = Localizations.localeOf(context);
+    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.inkMuted;
+    final cardBg = isDark ? AppColors.darkCard : AppColors.white;
+    final cardBorder = isDark ? AppColors.darkBorder : AppColors.mist;
+    final infoBg = isDark ? AppColors.white.withValues(alpha: 0.05) : const Color(0xFFF6F1E8);
 
-    final bgPage = isDark ? AppColors.darkSurface : AppColors.fog;
-    final textMuted = isDark ? AppColors.overlayDarkMedium : AppColors.inkMuted;
-
-    return Scaffold(
-      backgroundColor: bgPage,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: [
-          LanguageSelector(
-            currentLocale: currentLocale,
-            onLocaleChanged: (newLocale) {
-              MyApp.setLocale(context, newLocale);
-            },
-          ),
-          AppDimensions.hGapMd,
-        ],
-      ),
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppDimensions.spacingLg,
-              vertical: AppDimensions.spacingXl,
-            ),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 440),
-              child: SraCard(
-                padding: const EdgeInsets.all(AppDimensions.spacingXl),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: AppDimensions.avatarSizeLg,
-                      height: AppDimensions.avatarSizeLg,
-                      decoration: BoxDecoration(
-                        color: AppColors.gold.withValues(alpha: isDark ? 0.2 : 0.16),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.exit_to_app_rounded,
-                        color: AppColors.gold,
-                        size: AppDimensions.iconSizeXl,
-                      ),
-                    ),
-                    AppDimensions.vGapLg,
-
-                    Text(
-                      "FIN DE SESSION",
-                      style: AppTextStyles.labelUppercase.copyWith(
-                        color: AppColors.gold,
-                      ),
-                    ),
-                    AppDimensions.vGapXs,
-                    Text(
-                      "Vous nous quittez déjà ?",
-                      textAlign: TextAlign.center,
-                      style: AppTextStyles.displayMedium.copyWith(
-                        color: isDark ? AppColors.white : AppColors.ink,
-                      ),
-                    ),
-                    AppDimensions.vGapXs,
-                    Text(
-                      "Votre session sera fermée sur cet appareil. Vous pourrez vous reconnecter à tout moment.",
-                      textAlign: TextAlign.center,
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: textMuted,
-                      ),
-                    ),
-                    AppDimensions.vGapLg,
-
-                    Container(
-                      padding: const EdgeInsets.all(AppDimensions.spacingMd),
-                      decoration: BoxDecoration(
-                        color: isDark ? AppColors.darkElevated : AppColors.fog,
-                        borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.lock_outline,
-                            color: AppColors.gold,
-                            size: AppDimensions.iconSizeMd,
-                          ),
-                          AppDimensions.hGapSm,
-                          Expanded(
-                            child: Text(
-                              "Pour votre sécurité, fermez votre navigateur après la déconnexion sur un appareil partagé.",
-                              style: AppTextStyles.bodySmall.copyWith(
-                                color: textMuted,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    if (_cancelled) ...[
-                      AppDimensions.vGapLg,
-                      Text(
-                        "Votre session reste active.",
-                        style: AppTextStyles.bodySmall.copyWith(
-                          color: AppColors.statusSuccess,
-                        ),
-                      ),
-                    ],
-
-                    AppDimensions.vGapXl,
-
-                    Row(
-                      children: [
-                        Expanded(
-                          child: SraButton.secondary(
-                            label: "RESTER CONNECTÉ(E)",
-                            onPressed: () => setState(() => _cancelled = true),
-                          ),
-                        ),
-                        AppDimensions.hGapSm,
-                        Expanded(
-                          child: SraButton(
-                            label: "ME DÉCONNECTER",
-                            onPressed: _logout,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    AppDimensions.vGapLg,
-
-                    Text(
-                      "Besoin d’aide ? Contactez la réception Sweet Rest.",
-                      style: AppTextStyles.bodySmall.copyWith(
-                        color: textMuted,
-                      ),
-                    ),
-                  ],
-                ),
+    return AuthShell(
+      child: Container(
+        padding: const EdgeInsets.all(AppDimensions.spacingXl),
+        decoration: BoxDecoration(
+          color: cardBg,
+          borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+          border: Border.all(color: cardBorder, width: AppDimensions.borderThin),
+          boxShadow: const [AppShadows.card],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // ── Cercle d'icône 58x58 Or ──
+            Container(
+              width: 58,
+              height: 58,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.gold.withValues(alpha: isDark ? 0.2 : 0.16),
+              ),
+              child: const Icon(
+                Icons.exit_to_app_rounded,
+                color: AppColors.gold,
+                size: 28,
               ),
             ),
-          ),
+            AppDimensions.vGapLg,
+
+            // ── Tag FIN DE SESSION ──
+            Text(
+              l10n.endOfSessionHeader,
+              style: AppTextStyles.labelUppercase.copyWith(
+                color: AppColors.gold,
+                letterSpacing: 2.0,
+              ),
+            ),
+            AppDimensions.vGapXs,
+
+            // ── Titre "Vous nous quittez déjà ?" ──
+            Text(
+              l10n.leavingUsAlreadyTitle,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.displayMedium.copyWith(
+                fontSize: 34,
+                height: 1.1,
+                color: isDark ? AppColors.white : AppColors.ink,
+              ),
+            ),
+            AppDimensions.vGapXs,
+
+            // ── Description ──
+            Text(
+              l10n.logoutSubtitle,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: textMuted,
+              ),
+            ),
+            AppDimensions.vGapLg,
+
+            // ── Encadré d'information de sécurité ──
+            Container(
+              padding: const EdgeInsets.all(AppDimensions.spacingMd),
+              decoration: BoxDecoration(
+                color: infoBg,
+                borderRadius: BorderRadius.circular(AppDimensions.radiusXs),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.lock_outlined,
+                    color: AppColors.gold,
+                    size: 19,
+                  ),
+                  AppDimensions.hGapSm,
+                  Expanded(
+                    child: Text(
+                      l10n.logoutSecurityNotice,
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: textMuted,
+                        height: 1.5,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            AppDimensions.vGapLg,
+
+            // ── Alerte d'annulation si cliqué sur Rester connecté(e) ──
+            if (_cancelled) ...[
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppDimensions.spacingSm,
+                  vertical: AppDimensions.spacingXs,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.gold.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppDimensions.radiusXs),
+                  border: Border.all(
+                    color: AppColors.gold,
+                    width: AppDimensions.borderThin,
+                  ),
+                ),
+                child: Text(
+                  l10n.sessionStillActive,
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.gold,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              AppDimensions.vGapLg,
+            ],
+
+            // ── Boutons d'action ──
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      setState(() => _cancelled = true);
+                      if (Navigator.of(context).canPop()) {
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    icon: const Icon(Icons.arrow_back_rounded, size: AppDimensions.iconSizeSm),
+                    label: Text(l10n.staySignedIn),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: isDark ? AppColors.white : AppColors.ink,
+                      side: BorderSide(
+                        color: isDark ? AppColors.darkBorder : AppColors.mist,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppDimensions.spacingMd,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppDimensions.radiusXs),
+                      ),
+                    ),
+                  ),
+                ),
+                AppDimensions.hGapMd,
+                Expanded(
+                  child: SraButton(
+                    label: l10n.logMeOutButton,
+                    onPressed: _logout,
+                  ),
+                ),
+              ],
+            ),
+            AppDimensions.vGapLg,
+
+            const Divider(),
+            AppDimensions.vGapMd,
+
+            // ── Pied de page ──
+            Text(
+              l10n.needHelpContactReception,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.bodySmall.copyWith(
+                color: textMuted,
+              ),
+            ),
+          ],
         ),
       ),
     );
