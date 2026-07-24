@@ -2203,7 +2203,7 @@ abstract class AppLocalizations {
   /// No description provided for @newPasswordTooShort.
   ///
   /// In fr, this message translates to:
-  /// **'Le nouveau mot de passe doit contenir au moins 6 caractères.'**
+  /// **'Le nouveau mot de passe doit contenir au moins 8 caractères.'**
   String get newPasswordTooShort;
 
   /// No description provided for @passwordChangedSuccess.
@@ -2215,7 +2215,7 @@ abstract class AppLocalizations {
   /// No description provided for @resetHeader.
   ///
   /// In fr, this message translates to:
-  /// **'RÉINITIALISATION'**
+  /// **'SÉCURITÉ DU COMPTE'**
   String get resetHeader;
 
   /// No description provided for @changePasswordSubtitle.
@@ -2347,8 +2347,50 @@ abstract class AppLocalizations {
   /// No description provided for @needHelpContactReception.
   ///
   /// In fr, this message translates to:
-  /// **'Besoin d’aide ? Contactez la réception Sweet Rest.'**
+  /// **'Besoin d\'aide ? Contactez la réception Sweet Rest.'**
   String get needHelpContactReception;
+
+  /// No description provided for @haveAReservation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous avez une réservation ?'**
+  String get haveAReservation;
+
+  /// No description provided for @accessMyStay.
+  ///
+  /// In fr, this message translates to:
+  /// **'Accéder à mon séjour'**
+  String get accessMyStay;
+
+  /// No description provided for @modifyEmail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier l\'e-mail'**
+  String get modifyEmail;
+
+  /// No description provided for @codeExpiresInTenMinutes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le code expire dans 10 minutes.'**
+  String get codeExpiresInTenMinutes;
+
+  /// No description provided for @changeYourPasswordTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changez votre mot de passe.'**
+  String get changeYourPasswordTitle;
+
+  /// No description provided for @newPasswordHelper.
+  ///
+  /// In fr, this message translates to:
+  /// **'8 caractères minimum'**
+  String get newPasswordHelper;
+
+  /// No description provided for @rememberYourPassword.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous vous souvenez de votre mot de passe ? Se connecter'**
+  String get rememberYourPassword;
 
   /// No description provided for @myStayTitle.
   ///

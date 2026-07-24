@@ -15,7 +15,9 @@ enum SraButtonVariant { primary, secondary, ghost, danger }
 class SraButton extends StatefulWidget {
   final VoidCallback? onPressed;
   final String label;
-  final IconData? icon;
+  final IconData? icon;         // icône principale (côté gauche par défaut)
+  final IconData? leadingIcon;  // alias explicite gauche (prioritaire sur icon)
+  final IconData? trailingIcon; // icône côté droit (ex: arrow_forward)
   final bool isLoading;
   final bool fullWidth;
   final bool small;
@@ -26,6 +28,8 @@ class SraButton extends StatefulWidget {
     required this.label,
     this.onPressed,
     this.icon,
+    this.leadingIcon,
+    this.trailingIcon,
     this.isLoading = false,
     this.fullWidth = true,
     this.small = false,
@@ -270,15 +274,24 @@ class _SraButtonState extends State<SraButton> {
           .copyWith(color: fgColor),
     );
 
-    if (widget.icon == null) return label;
+    final effectiveLeading = widget.leadingIcon ?? widget.icon;
+    final trailing = widget.trailingIcon;
+
+    if (effectiveLeading == null && trailing == null) return label;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(widget.icon, size: AppDimensions.iconSizeSm, color: fgColor),
-        AppDimensions.hGapSm,
+        if (effectiveLeading != null) ...[  
+          Icon(effectiveLeading, size: AppDimensions.iconSizeSm, color: fgColor),
+          AppDimensions.hGapSm,
+        ],
         label,
+        if (trailing != null) ...[  
+          AppDimensions.hGapSm,
+          Icon(trailing, size: AppDimensions.iconSizeSm, color: fgColor),
+        ],
       ],
     );
   }

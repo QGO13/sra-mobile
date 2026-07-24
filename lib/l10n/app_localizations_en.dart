@@ -1095,13 +1095,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get newPasswordTooShort =>
-      'New password must be at least 6 characters.';
+      'New password must be at least 8 characters.';
 
   @override
   String get passwordChangedSuccess => 'Password changed successfully.';
 
   @override
-  String get resetHeader => 'RESET PASSWORD';
+  String get resetHeader => 'ACCOUNT SECURITY';
 
   @override
   String get changePasswordSubtitle =>
@@ -1173,6 +1173,27 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get needHelpContactReception =>
       'Need help? Contact Sweet Rest reception.';
+
+  @override
+  String get haveAReservation => 'Do you have a reservation?';
+
+  @override
+  String get accessMyStay => 'Access my stay';
+
+  @override
+  String get modifyEmail => 'Change e-mail';
+
+  @override
+  String get codeExpiresInTenMinutes => 'The code expires in 10 minutes.';
+
+  @override
+  String get changeYourPasswordTitle => 'Change your password.';
+
+  @override
+  String get newPasswordHelper => '8 characters minimum';
+
+  @override
+  String get rememberYourPassword => 'Remember your password? Sign in';
 
   @override
   String get myStayTitle => 'Your upcoming stay';

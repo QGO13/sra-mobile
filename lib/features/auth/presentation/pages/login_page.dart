@@ -9,7 +9,11 @@ import 'package:sra_hotel/features/auth/presentation/bloc/auth_event.dart';
 import 'package:sra_hotel/features/auth/presentation/bloc/auth_state.dart';
 import 'package:sra_hotel/l10n/app_localizations.dart';
 
-/// Page de connexion SRA Hotel — Reproduction Pixel-Perfect de `LoginPage.tsx` + `AuthShell.tsx`.
+/// Page de connexion SRA Hotel — Pixel-Perfect de `LoginPage.tsx` + `AuthShell.tsx`.
+///
+/// Structure : icône-boîte 44×44 · overline or · titre Cormorant · corps Montserrat
+/// · champ email + mot de passe · ligne rememberMe + lien mot de passe
+/// · alerte erreur (SraAlert) · bouton Continuer · divider · lien client séjour.
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -18,10 +22,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
+  final _emailController    = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _rememberMe = false;
+  bool  _rememberMe    = false;
   String? _errorMessage;
 
   @override
@@ -38,10 +41,9 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
     setState(() => _errorMessage = null);
-
     context.read<AuthBloc>().add(
       LoginSubmitted(
-        login: _emailController.text.trim(),
+        login:    _emailController.text.trim(),
         password: _passwordController.text,
       ),
     );
@@ -49,12 +51,16 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n  = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final textMuted = isDark ? AppColors.darkTextSecondary : AppColors.inkMuted;
-    final cardBg = isDark ? AppColors.darkCard : AppColors.white;
+    final textMuted  = isDark ? AppColors.darkTextSecondary : AppColors.inkMuted;
+    final cardBg     = isDark ? AppColors.darkCard  : AppColors.white;
     final cardBorder = isDark ? AppColors.darkBorder : AppColors.mist;
+
+    // Vérifier si la page est ouverte après une déconnexion
+    final args = ModalRoute.of(context)?.settings.arguments;
+    final signedOut = (args is Map) && args['signedOut'] == true;
 
     return AuthShell(
       child: BlocListener<AuthBloc, AuthState>(
@@ -63,7 +69,8 @@ class _LoginPageState extends State<LoginPage> {
             final role = state.user.role.toLowerCase();
             if (role.contains('admin')) {
               Navigator.of(context).pushReplacementNamed(AppRoutes.backofficeAdmin);
-            } else if (role.contains('reception')) {
+            } else if (role.contains('reception') || role.contains('housekeeping') ||
+                       role.contains('gouvernante') || role.contains('femme')) {
               Navigator.of(context).pushReplacementNamed(AppRoutes.backofficeReception);
             } else {
               Navigator.of(context).pushReplacementNamed(AppRoutes.home);
@@ -82,234 +89,162 @@ class _LoginPageState extends State<LoginPage> {
             border: Border.all(color: cardBorder, width: AppDimensions.borderThin),
             boxShadow: const [AppShadows.card],
           ),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // ── Icône dorée en boîte carrée arrondie (44x44) ──
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: AppColors.gold.withValues(alpha: isDark ? 0.2 : 0.16),
-                    borderRadius: BorderRadius.circular(AppDimensions.radiusXs),
-                  ),
-                  child: const Icon(
-                    Icons.lock_outlined,
-                    color: AppColors.gold,
-                    size: AppDimensions.iconSizeLg,
-                  ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+
+              // ── Icône dorée en boîte carrée arrondie 44×44 ──────────────
+              Container(
+                width: 44, height: 44,
+                decoration: BoxDecoration(
+                  color: AppColors.gold.withValues(alpha: isDark ? 0.20 : 0.16),
+                  borderRadius: BorderRadius.circular(AppDimensions.radiusXs),
                 ),
+                child: const Icon(Icons.lock_outlined, color: AppColors.goldDark, size: AppDimensions.iconSizeLg),
+              ),
+              AppDimensions.vGapMd,
+
+              // ── Overline or — "VOTRE ESPACE SWEET REST" ─────────────────
+              Text(
+                l10n.yourSweetRestSpace,
+                style: AppTextStyles.labelUppercase.copyWith(color: AppColors.goldDark),
+              ),
+              AppDimensions.vGapXs,
+
+              // ── Titre Cormorant Garamond — "Ravi de vous revoir." ────────
+              Text(
+                l10n.welcomeBack,
+                style: AppTextStyles.displayMedium.copyWith(
+                  fontSize: 34, height: 1.1,
+                  color: isDark ? AppColors.white : AppColors.ink,
+                ),
+              ),
+              AppDimensions.vGapXs,
+
+              // ── Sous-titre Montserrat ────────────────────────────────────
+              Text(
+                l10n.loginSubtitle,
+                style: AppTextStyles.bodyMedium.copyWith(color: textMuted),
+              ),
+              AppDimensions.vGapLg,
+
+              // ── Alerte déconnexion réussie ───────────────────────────────
+              if (signedOut) ...[
+                SraAlert.success(message: l10n.signedOutSuccessMessage),
                 AppDimensions.vGapMd,
+              ],
 
-                // ── Titre "VOTRE ESPACE SWEET REST" ──
-                Text(
-                  l10n.yourSweetRestSpace,
-                  style: AppTextStyles.labelUppercase.copyWith(
-                    color: AppColors.gold,
-                    letterSpacing: 2.0,
-                  ),
+              // ── Champ Email ──────────────────────────────────────────────
+              SraInput(
+                label: l10n.emailAddressRequired,
+                placeholder: l10n.emailPlaceholder,
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                prefixIcon: Icon(
+                  Icons.alternate_email_rounded,
+                  color: isDark ? AppColors.gold.withValues(alpha: 0.7) : AppColors.inkMuted,
+                  size: AppDimensions.iconSizeMd,
                 ),
-                AppDimensions.vGapXs,
+              ),
+              AppDimensions.vGapMd,
 
-                // ── Titre Playfair Display "Ravi de vous revoir." ──
-                Text(
-                  l10n.welcomeBack,
-                  style: AppTextStyles.displayMedium.copyWith(
-                    fontSize: 34,
-                    height: 1.1,
-                    color: isDark ? AppColors.white : AppColors.ink,
-                  ),
+              // ── Champ Mot de passe ───────────────────────────────────────
+              SraInput(
+                label: l10n.passwordRequired,
+                placeholder: '••••••••',
+                controller: _passwordController,
+                obscureText: true,
+                prefixIcon: Icon(
+                  Icons.lock_outline_rounded,
+                  color: isDark ? AppColors.gold.withValues(alpha: 0.7) : AppColors.inkMuted,
+                  size: AppDimensions.iconSizeMd,
                 ),
-                AppDimensions.vGapXs,
+              ),
+              AppDimensions.vGapSm,
 
-                // ── Sous-titre ──
-                Text(
-                  l10n.loginSubtitle,
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: textMuted,
-                  ),
-                ),
-                AppDimensions.vGapLg,
-
-                // ── Bannière de déconnexion réussie ──
-                if (ModalRoute.of(context)?.settings.arguments is Map &&
-                    (ModalRoute.of(context)!.settings.arguments as Map)['signedOut'] == true) ...[
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppDimensions.spacingMd,
-                      vertical: AppDimensions.spacingSm,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.statusSuccess.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(AppDimensions.radiusXs),
-                      border: Border.all(
-                        color: AppColors.statusSuccess,
-                        width: AppDimensions.borderThin,
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.check_circle_outline_rounded,
-                          color: AppColors.statusSuccess,
-                          size: AppDimensions.iconSizeMd,
-                        ),
-                        AppDimensions.hGapSm,
-                        Expanded(
-                          child: Text(
-                            l10n.signedOutSuccessMessage,
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: AppColors.statusSuccess,
-                              fontWeight: FontWeight.w600,
-                            ),
+              // ── Ligne Rester connecté(e) + Modifier le mot de passe ─────
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        width: 24, height: 24,
+                        child: Checkbox(
+                          value: _rememberMe,
+                          activeColor: AppColors.gold,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(AppDimensions.radiusXs / 2),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  AppDimensions.vGapLg,
-                ],
-
-                // ── Champ Email ──
-                SraInput(
-                  label: l10n.emailAddressRequired,
-                  placeholder: l10n.emailPlaceholder,
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  prefixIcon: const Icon(
-                    Icons.alternate_email_rounded,
-                    color: AppColors.gold,
-                    size: AppDimensions.iconSizeMd,
-                  ),
-                ),
-                AppDimensions.vGapLg,
-
-                // ── Champ Mot de passe ──
-                SraInput(
-                  label: l10n.passwordRequired,
-                  placeholder: "••••••••",
-                  controller: _passwordController,
-                  obscureText: true,
-                  prefixIcon: const Icon(
-                    Icons.lock_outline_rounded,
-                    color: AppColors.gold,
-                    size: AppDimensions.iconSizeMd,
-                  ),
-                ),
-                AppDimensions.vGapSm,
-
-                // ── Ligne Rester connecté(e) + Modifier le mot de passe ──
-                Wrap(
-                  alignment: WrapAlignment.spaceBetween,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: AppDimensions.spacingSm,
-                  runSpacing: AppDimensions.spacingSm,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: Checkbox(
-                            value: _rememberMe,
-                            activeColor: AppColors.gold,
-                            onChanged: (val) => setState(() => _rememberMe = val ?? false),
-                          ),
-                        ),
-                        AppDimensions.hGapXs,
-                        Text(
-                          l10n.rememberMe,
-                          style: AppTextStyles.bodySmall.copyWith(
-                            color: textMuted,
-                          ),
-                        ),
-                      ],
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pushNamed(AppRoutes.changePassword);
-                      },
-                      child: Text(
-                        l10n.changePasswordTitle,
-                        style: AppTextStyles.bodySmall.copyWith(
-                          color: AppColors.gold,
-                          fontWeight: FontWeight.w700,
+                          onChanged: (val) => setState(() => _rememberMe = val ?? false),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                AppDimensions.vGapLg,
-
-                // ── Message d'erreur ──
-                if (_errorMessage != null) ...[
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppDimensions.spacingSm,
-                      vertical: AppDimensions.spacingXs,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.statusError.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(AppDimensions.radiusXs),
-                      border: Border.all(
-                        color: AppColors.statusError,
-                        width: AppDimensions.borderThin,
+                      AppDimensions.hGapXs,
+                      Text(
+                        l10n.rememberMe,
+                        style: AppTextStyles.bodySmall.copyWith(color: textMuted),
                       ),
-                    ),
+                    ],
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.of(context).pushNamed(AppRoutes.changePassword),
                     child: Text(
-                      _errorMessage!,
+                      l10n.changePasswordTitle,
                       style: AppTextStyles.bodySmall.copyWith(
-                        color: AppColors.statusError,
+                        color: AppColors.goldDark,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
-                  AppDimensions.vGapLg,
                 ],
+              ),
+              AppDimensions.vGapLg,
 
-                // ── Bouton Continuer ──
-                BlocBuilder<AuthBloc, AuthState>(
-                  builder: (context, state) {
-                    return SraButton(
-                      label: l10n.continueButton,
-                      isLoading: state is AuthLoading,
-                      onPressed: _submit,
-                    );
-                  },
-                ),
-                const Divider(),
+              // ── Alerte erreur ────────────────────────────────────────────
+              if (_errorMessage != null) ...[
+                SraAlert.error(message: _errorMessage!),
                 AppDimensions.vGapMd,
+              ],
 
-                Wrap(
+              // ── Bouton Continuer ─────────────────────────────────────────
+              BlocBuilder<AuthBloc, AuthState>(
+                builder: (context, state) => SraButton(
+                  label: l10n.continueButton,
+                  isLoading: state is AuthLoading,
+                  onPressed: _submit,
+                  trailingIcon: Icons.arrow_forward_rounded,
+                ),
+              ),
+
+              const Divider(height: AppDimensions.spacingXl * 1.5),
+
+              // ── Lien client — Accéder à mon séjour ──────────────────────
+              Center(
+                child: Wrap(
                   alignment: WrapAlignment.center,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   spacing: AppDimensions.spacingXs,
                   children: [
                     Text(
-                      l10n.noAccountYet,
-                      style: AppTextStyles.bodySmall.copyWith(
-                        color: textMuted,
-                      ),
+                      l10n.haveAReservation,
+                      style: AppTextStyles.bodySmall.copyWith(color: textMuted),
                     ),
                     GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pushNamed(AppRoutes.register);
-                      },
+                      onTap: () => Navigator.of(context).pushNamed(AppRoutes.myStay),
                       child: Text(
-                        l10n.createAccount,
+                        l10n.accessMyStay,
                         style: AppTextStyles.bodySmall.copyWith(
-                          color: AppColors.gold,
+                          color: AppColors.goldDark,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

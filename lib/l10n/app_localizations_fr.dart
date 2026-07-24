@@ -1103,13 +1103,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get newPasswordTooShort =>
-      'Le nouveau mot de passe doit contenir au moins 6 caractères.';
+      'Le nouveau mot de passe doit contenir au moins 8 caractères.';
 
   @override
   String get passwordChangedSuccess => 'Mot de passe modifié avec succès.';
 
   @override
-  String get resetHeader => 'RÉINITIALISATION';
+  String get resetHeader => 'SÉCURITÉ DU COMPTE';
 
   @override
   String get changePasswordSubtitle =>
@@ -1181,7 +1181,29 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get needHelpContactReception =>
-      'Besoin d’aide ? Contactez la réception Sweet Rest.';
+      'Besoin d\'aide ? Contactez la réception Sweet Rest.';
+
+  @override
+  String get haveAReservation => 'Vous avez une réservation ?';
+
+  @override
+  String get accessMyStay => 'Accéder à mon séjour';
+
+  @override
+  String get modifyEmail => 'Modifier l\'e-mail';
+
+  @override
+  String get codeExpiresInTenMinutes => 'Le code expire dans 10 minutes.';
+
+  @override
+  String get changeYourPasswordTitle => 'Changez votre mot de passe.';
+
+  @override
+  String get newPasswordHelper => '8 caractères minimum';
+
+  @override
+  String get rememberYourPassword =>
+      'Vous vous souvenez de votre mot de passe ? Se connecter';
 
   @override
   String get myStayTitle => 'Votre séjour à venir';

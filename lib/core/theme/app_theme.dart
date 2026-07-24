@@ -7,46 +7,46 @@ import 'package:google_fonts/google_fonts.dart';
 // Theme.of(context).colorScheme.
 // =============================================================================
 class AppColors {
-  // ── Palette de marque SRA V2 (alignée Next.js) ────────────────────────────
+  // ── Palette de marque SRA V2 — alignée sur design_SRAh/src/theme/theme.ts ─
 
-  /// Or cuivré principal — boutons, accents, icônes actives (#C5985B)
-  static const Color gold      = Color(0xFFC5985B);
+  /// Or prestige principal — boutons, accents, icônes actives (#D4AF37)
+  static const Color gold      = Color(0xFFD4AF37);
 
-  /// Or clair — hover, variantes légères (#DDB87C)
-  static const Color goldLight2 = Color(0xFFDDB87C);
+  /// Or clair — hover, variantes légères (#E4C766)
+  static const Color goldLight2 = Color(0xFFE4C766);
 
-  /// Or sombre — pressed, dégradé bas (#8F6B36)
-  static const Color goldDark  = Color(0xFF8F6B36);
+  /// Or foncé — pressed, état actif bas (#B8942A)
+  static const Color goldDark  = Color(0xFFB8942A);
 
-  /// Fond global pages — mode light (#F7F5F1)
-  static const Color fog       = Color(0xFFF7F5F1);
+  /// Fond global pages — mode light — crème (#FAF8F5)
+  static const Color fog       = Color(0xFFFAF8F5);
 
-  /// Surfaces secondaires, séparateurs — mode light (#EDE9E2)
-  static const Color mist      = Color(0xFFEDE9E2);
+  /// Surfaces secondaires, séparateurs — mode light (#ECE7DE)
+  static const Color mist      = Color(0xFFECE7DE);
 
   /// Blanc pur — cartes, inputs
   static const Color white     = Color(0xFFFFFFFF);
 
-  /// Texte principal — mode light (#1A1B1B)
-  static const Color ink       = Color(0xFF1A1B1B);
+  /// Texte principal — mode light (#1A1A1A)
+  static const Color ink       = Color(0xFF1A1A1A);
 
-  /// Texte secondaire titres — mode light (#2C2D2E)
-  static const Color inkSoft   = Color(0xFF2C2D2E);
+  /// Texte secondaire — mode light (#2A2A2A)
+  static const Color inkSoft   = Color(0xFF2A2A2A);
 
-  /// Texte désactivé, hints, labels gris à haut contraste (#4E4F52)
-  static const Color inkMuted  = Color(0xFF4E4F52);
+  /// Texte désactivé, hints, labels gris (#6E6A63)
+  static const Color inkMuted  = Color(0xFF6E6A63);
 
-  /// Fond dark principal (scaffold) (#1A1A1A)
-  static const Color darkSurface  = Color(0xFF1A1A1A);
+  /// Fond dark principal scaffold (#151515)
+  static const Color darkSurface  = Color(0xFF151515);
 
-  /// Fond dark secondaire (cartes, inputs) (#242322)
-  static const Color darkCard     = Color(0xFF242322);
+  /// Fond dark secondaire cartes/inputs (#20201E)
+  static const Color darkCard     = Color(0xFF20201E);
 
-  /// Fond dark tertiaire (sections imbriquées) (#2E2C2A)
-  static const Color darkElevated = Color(0xFF2E2C2A);
+  /// Fond dark tertiaire sections imbriquées (#2A2A28)
+  static const Color darkElevated = Color(0xFF2A2A28);
 
-  /// Bordures dark (#3A3836)
-  static const Color darkBorder   = Color(0xFF3A3836);
+  /// Bordures dark (#3A3834)
+  static const Color darkBorder   = Color(0xFF3A3834);
 
   // ── Dégradés ──────────────────────────────────────────────────────────────
   static const LinearGradient goldGradient = LinearGradient(
@@ -57,17 +57,17 @@ class AppColors {
 
   static const List<Color> goldGradientColors = [gold, goldDark];
 
-  // ── Statuts sémantiques ───────────────────────────────────────────────────
-  static const Color statusSuccess = Color(0xFF22C55E);
-  static const Color statusError   = Color(0xFFEF4444);
-  static const Color statusWarning = Color(0xFFF97316);
-  static const Color statusInfo    = Color(0xFF3B82F6);
+  // ── Statuts sémantiques — alignés design_SRAh ────────────────────────────
+  static const Color statusSuccess = Color(0xFF2E7D5B);
+  static const Color statusError   = Color(0xFFB23A3A);
+  static const Color statusWarning = Color(0xFFC98A1E);
+  static const Color statusInfo    = Color(0xFF3A6EA5);
 
   // ── Statuts chambre ───────────────────────────────────────────────────────
-  static const Color statusToClean   = Color(0xFFE53E3E);
-  static const Color statusCleaned   = Color(0xFFED8936);
-  static const Color statusConfirmed = Color(0xFF3182CE);
-  static const Color statusReady     = Color(0xFF38A169);
+  static const Color statusToClean   = Color(0xFFB23A3A);
+  static const Color statusCleaned   = Color(0xFFC98A1E);
+  static const Color statusConfirmed = Color(0xFF3A6EA5);
+  static const Color statusReady     = Color(0xFF2E7D5B);
 
   // ── Couleurs paiement mobile money ────────────────────────────────────────
   static const Color paymentMTN    = Color(0xFFFFCC00);
@@ -79,10 +79,10 @@ class AppColors {
   static const Color surfaceDark       = darkSurface;
   static const Color overlayLight      = Color(0x1A000000);
   static const Color overlayDark       = Color(0x1AFFFFFF);
-  static const Color overlayDarkMedium = Color(0xB3FFFFFF); // 70% blanc opaque pour la lisibilité
-  static const Color darkTextSecondary = Color(0xD9FFFFFF); // 85% blanc opaque
-  static const Color darkTextMuted     = Color(0xB3FFFFFF); // 70% blanc opaque
-  static const Color textOnGold        = white;
+  static const Color overlayDarkMedium = Color(0xB3FFFFFF); // 70% blanc opaque
+  static const Color darkTextSecondary = Color(0xD9F5F1E8); // 85% crème opaque
+  static const Color darkTextMuted     = Color(0xB3B9B3A9); // 70% brun clair
+  static const Color textOnGold        = Color(0xFF1A1A1A); // Anthracite sur or (contraste)
   static const Color textOnDark        = white;
   static const Color textOnLight       = ink;
 
@@ -245,94 +245,102 @@ class AppShadows {
 // =============================================================================
 // APP TEXT STYLES — Styles typographiques réutilisables.
 // RÈGLE : Ne jamais appeler GoogleFonts.* directement dans les widgets/pages.
-//         Polices : Playfair Display (titres serif) + Raleway (corps sans-serif).
+//         Polices : Cormorant Garamond (titres serif) + Montserrat (corps sans-serif).
+//         Alignées sur design_SRAh/src/theme/theme.ts.
 // =============================================================================
 class AppTextStyles {
-  // ── Titres display (Playfair Display — prestige, serif) ───────────────────
+  // ── Titres display (Cormorant Garamond — prestige, serif) ─────────────────
 
-  static TextStyle get displayXl => GoogleFonts.playfairDisplay(
-    fontSize: 40, fontWeight: FontWeight.w700, color: AppColors.ink, height: 1.15,
+  static TextStyle get displayXl => GoogleFonts.cormorantGaramond(
+    fontSize: 40, fontWeight: FontWeight.w600,
+    color: AppColors.ink, height: 1.15, letterSpacing: -0.5,
   );
 
-  static TextStyle get displayLarge => GoogleFonts.playfairDisplay(
-    fontSize: 32, fontWeight: FontWeight.w700, color: AppColors.ink, height: 1.2,
+  static TextStyle get displayLarge => GoogleFonts.cormorantGaramond(
+    fontSize: 32, fontWeight: FontWeight.w600,
+    color: AppColors.ink, height: 1.2, letterSpacing: -0.5,
   );
 
-  static TextStyle get displayMedium => GoogleFonts.playfairDisplay(
-    fontSize: 26, fontWeight: FontWeight.w600, color: AppColors.ink, height: 1.25,
+  static TextStyle get displayMedium => GoogleFonts.cormorantGaramond(
+    fontSize: 26, fontWeight: FontWeight.w600,
+    color: AppColors.ink, height: 1.25,
   );
 
-  static TextStyle get displaySmall => GoogleFonts.playfairDisplay(
-    fontSize: 22, fontWeight: FontWeight.w600, color: AppColors.ink, height: 1.3,
+  static TextStyle get displaySmall => GoogleFonts.cormorantGaramond(
+    fontSize: 22, fontWeight: FontWeight.w600,
+    color: AppColors.ink, height: 1.3,
   );
 
-  // ── Titres section (Playfair Display) ─────────────────────────────────────
+  // ── Titres section (Cormorant Garamond) ───────────────────────────────────
 
-  static TextStyle get titleLarge => GoogleFonts.playfairDisplay(
-    fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.ink, height: 1.35,
+  static TextStyle get titleLarge => GoogleFonts.cormorantGaramond(
+    fontSize: 20, fontWeight: FontWeight.w600,
+    color: AppColors.ink, height: 1.35, letterSpacing: 0.2,
   );
 
-  static TextStyle get titleMedium => GoogleFonts.playfairDisplay(
-    fontSize: 17, fontWeight: FontWeight.w500, color: AppColors.ink, height: 1.35,
+  static TextStyle get titleMedium => GoogleFonts.cormorantGaramond(
+    fontSize: 17, fontWeight: FontWeight.w600,
+    color: AppColors.ink, height: 1.35,
   );
 
-  static TextStyle get titleSmall => GoogleFonts.playfairDisplay(
-    fontSize: 15, fontWeight: FontWeight.w500, color: AppColors.ink, height: 1.4,
+  static TextStyle get titleSmall => GoogleFonts.cormorantGaramond(
+    fontSize: 15, fontWeight: FontWeight.w600,
+    color: AppColors.ink, height: 1.4,
   );
 
-  // ── Corps de texte (Raleway — modernité, lisibilité) ──────────────────────
+  // ── Corps de texte (Montserrat — modernité, lisibilité) ───────────────────
 
-  static TextStyle get bodyLarge => GoogleFonts.raleway(
+  static TextStyle get bodyLarge => GoogleFonts.montserrat(
     fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.ink, height: 1.5,
   );
 
-  static TextStyle get bodyMedium => GoogleFonts.raleway(
+  static TextStyle get bodyMedium => GoogleFonts.montserrat(
     fontSize: 14.5, fontWeight: FontWeight.w500, color: AppColors.inkSoft, height: 1.5,
   );
 
-  static TextStyle get bodySmall => GoogleFonts.raleway(
+  static TextStyle get bodySmall => GoogleFonts.montserrat(
     fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.inkMuted, height: 1.45,
   );
 
-  // ── Labels (Raleway — UI, formulaires) ────────────────────────────────────
+  // ── Labels (Montserrat — UI, formulaires) ─────────────────────────────────
 
-  /// Label uppercase doré — titres de champs, SectionHeader
-  static TextStyle get labelUppercase => GoogleFonts.raleway(
-    fontSize: 11.5, fontWeight: FontWeight.w700,
-    letterSpacing: 1.8, color: AppColors.gold, height: 1.2,
+  /// Label overline doré — titres de champs, SectionHeader (letterSpacing: 2px comme MUI overline)
+  static TextStyle get labelUppercase => GoogleFonts.montserrat(
+    fontSize: 11.5, fontWeight: FontWeight.w600,
+    letterSpacing: 2.0, color: AppColors.gold, height: 1.2,
   );
 
   /// Label muted — sous-titres de section, méta-données
-  static TextStyle get labelMuted => GoogleFonts.raleway(
+  static TextStyle get labelMuted => GoogleFonts.montserrat(
     fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.inkMuted, height: 1.4,
   );
 
   /// Label standard — tags, chips
-  static TextStyle get labelNormal => GoogleFonts.raleway(
+  static TextStyle get labelNormal => GoogleFonts.montserrat(
     fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.inkSoft, height: 1.4,
   );
 
-  // ── Boutons (Raleway — uppercase, serré) ──────────────────────────────────
+  // ── Boutons (Montserrat — fontWeight 600, letterSpacing 0.3 comme MUI button) ─
 
-  static TextStyle get buttonLabel => GoogleFonts.raleway(
-    fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1.6, height: 1.2,
+  static TextStyle get buttonLabel => GoogleFonts.montserrat(
+    fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 0.3, height: 1.2,
   );
 
-  static TextStyle get buttonLabelSm => GoogleFonts.raleway(
-    fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 1.4, height: 1.2,
+  static TextStyle get buttonLabelSm => GoogleFonts.montserrat(
+    fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: 0.3, height: 1.2,
   );
 
-  // ── Prix (Playfair Display — prestige) ────────────────────────────────────
+  // ── Prix (Cormorant Garamond — prestige) ──────────────────────────────────
 
-  static TextStyle get priceLarge => GoogleFonts.playfairDisplay(
-    fontSize: 28, fontWeight: FontWeight.w700, color: AppColors.ink, height: 1.1,
+  static TextStyle get priceLarge => GoogleFonts.cormorantGaramond(
+    fontSize: 28, fontWeight: FontWeight.w600, color: AppColors.ink, height: 1.1,
   );
 
-  static TextStyle get priceMedium => GoogleFonts.playfairDisplay(
+  static TextStyle get priceMedium => GoogleFonts.cormorantGaramond(
     fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.ink, height: 1.2,
   );
 
-  static TextStyle get priceSmall => GoogleFonts.playfairDisplay(
+  static TextStyle get priceSmall => GoogleFonts.cormorantGaramond(
     fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.ink, height: 1.3,
   );
 
@@ -368,7 +376,7 @@ class AppTheme {
         outline:                 AppColors.mist,
       ),
       scaffoldBackgroundColor: AppColors.fog,
-      textTheme: GoogleFonts.ralewayTextTheme(ThemeData.light().textTheme).copyWith(
+      textTheme: GoogleFonts.montserratTextTheme(ThemeData.light().textTheme).copyWith(
         displayLarge:  AppTextStyles.displayLarge,
         displayMedium: AppTextStyles.displayMedium,
         displaySmall:  AppTextStyles.displaySmall,
@@ -395,7 +403,7 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true, fillColor: AppColors.white,
         labelStyle: AppTextStyles.labelUppercase,
-        hintStyle: GoogleFonts.raleway(
+        hintStyle: GoogleFonts.montserrat(
           fontSize: 13, fontWeight: FontWeight.w300, color: AppColors.inkMuted,
         ),
         contentPadding: const EdgeInsets.symmetric(
@@ -497,7 +505,7 @@ class AppTheme {
         outline:                 AppColors.darkBorder,
       ),
       scaffoldBackgroundColor: AppColors.darkSurface,
-      textTheme: GoogleFonts.ralewayTextTheme(ThemeData.dark().textTheme).copyWith(
+      textTheme: GoogleFonts.montserratTextTheme(ThemeData.dark().textTheme).copyWith(
         displayLarge:  AppTextStyles.displayLarge.copyWith(color: AppColors.gold),
         displayMedium: AppTextStyles.displayMedium.copyWith(color: AppColors.gold),
         displaySmall:  AppTextStyles.displaySmall.copyWith(color: AppColors.goldLight2),
@@ -524,7 +532,7 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true, fillColor: AppColors.darkCard,
         labelStyle: AppTextStyles.labelUppercase,
-        hintStyle: GoogleFonts.raleway(
+        hintStyle: GoogleFonts.montserrat(
           fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0x99FFFFFF),
         ),
         contentPadding: const EdgeInsets.symmetric(

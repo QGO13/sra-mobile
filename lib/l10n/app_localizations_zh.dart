@@ -1078,13 +1078,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get fillAllFields => '请填写所有字段。';
 
   @override
-  String get newPasswordTooShort => '新密码长度至少需要 6 位字符。';
+  String get newPasswordTooShort => '新密码至少需要 8 个字符。';
 
   @override
   String get passwordChangedSuccess => '密码修改成功。';
 
   @override
-  String get resetHeader => '重置密码';
+  String get resetHeader => '账户安全';
 
   @override
   String get changePasswordSubtitle => '请输入您当前的密码和新密码。';
@@ -1151,6 +1151,27 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get needHelpContactReception => '需要帮助？请联系 Sweet Rest 前台。';
+
+  @override
+  String get haveAReservation => '您有预订吗？';
+
+  @override
+  String get accessMyStay => '查看我的住宿';
+
+  @override
+  String get modifyEmail => '修改邮筱';
+
+  @override
+  String get codeExpiresInTenMinutes => '验证码將10分钟内失效。';
+
+  @override
+  String get changeYourPasswordTitle => '更改您的密码。';
+
+  @override
+  String get newPasswordHelper => '至少 8 个字符';
+
+  @override
+  String get rememberYourPassword => '记得密码？立即登录';
 
   @override
   String get myStayTitle => '您即将来临的住宿';

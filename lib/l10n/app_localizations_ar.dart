@@ -1095,13 +1095,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get newPasswordTooShort =>
-      'يجب أن تتكون كلمة المرور الجديدة من 6 أحرف على الأقل.';
+      'يجب أن تتكون كلمة المرور الجديدة من 8 أحرف على الأقل.';
 
   @override
   String get passwordChangedSuccess => 'تم تغيير كلمة المرور بنجاح.';
 
   @override
-  String get resetHeader => 'إعادة الضبط';
+  String get resetHeader => 'أمان الحساب';
 
   @override
   String get changePasswordSubtitle =>
@@ -1174,6 +1174,27 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get needHelpContactReception =>
       'هل تحتاج مساعدة؟ اتصل بالاستقبال في Sweet Rest.';
+
+  @override
+  String get haveAReservation => 'هل لديك حجز?';
+
+  @override
+  String get accessMyStay => 'الوصول إلى إقامتي';
+
+  @override
+  String get modifyEmail => 'تعديل البريد الإلكتروني';
+
+  @override
+  String get codeExpiresInTenMinutes => 'ينتهي صلاحية الرمز خلال 10 دقائق.';
+
+  @override
+  String get changeYourPasswordTitle => 'غيّر كلمة مرورك.';
+
+  @override
+  String get newPasswordHelper => 'حد أدنى 8 أحرف';
+
+  @override
+  String get rememberYourPassword => 'تتذكر كلمة مرورك؟ تسجيل الدخول';
 
   @override
   String get myStayTitle => 'إقامتك القادمة';

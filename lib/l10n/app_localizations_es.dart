@@ -1100,13 +1100,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get newPasswordTooShort =>
-      'La nueva contraseña debe tener al menos 6 caracteres.';
+      'La nueva contraseña debe tener al menos 8 caracteres.';
 
   @override
   String get passwordChangedSuccess => 'Contraseña modificada con éxito.';
 
   @override
-  String get resetHeader => 'RESTABLECER';
+  String get resetHeader => 'SEGURIDAD DE LA CUENTA';
 
   @override
   String get changePasswordSubtitle =>
@@ -1179,6 +1179,27 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get needHelpContactReception =>
       '¿Necesita ayuda? Contacte con la recepción de Sweet Rest.';
+
+  @override
+  String get haveAReservation => '¿Tiene una reserva?';
+
+  @override
+  String get accessMyStay => 'Acceder a mi estadía';
+
+  @override
+  String get modifyEmail => 'Modificar el correo';
+
+  @override
+  String get codeExpiresInTenMinutes => 'El código expira en 10 minutos.';
+
+  @override
+  String get changeYourPasswordTitle => 'Cambia tu contraseña.';
+
+  @override
+  String get newPasswordHelper => 'Mínimo 8 caracteres';
+
+  @override
+  String get rememberYourPassword => '¿Recuerdas tu contraseña? Iniciar sesión';
 
   @override
   String get myStayTitle => 'Su próxima estancia';

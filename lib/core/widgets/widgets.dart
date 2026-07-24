@@ -29,7 +29,6 @@ export 'display/sra_section_header.dart';
 export 'display/sra_star_rating.dart';
 export 'display/sra_status_badge.dart';
 export 'display/section_header.dart';
-export 'display/status_badge.dart';
 export 'display/language_selector.dart';
 
 // ── Layout & Structure ──────────────────────────────────────────────────────
@@ -41,6 +40,7 @@ export 'layout/luxe_data_grid.dart';
 export 'layout/auth_shell.dart';
 
 // ── Feedback & États ────────────────────────────────────────────────────────
+export 'feedback/sra_alert.dart';
 export 'feedback/empty_state_view.dart';
 export 'feedback/error_state_view.dart';
 export 'feedback/error_widget.dart';

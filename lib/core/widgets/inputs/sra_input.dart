@@ -28,6 +28,7 @@ class SraInput extends StatelessWidget {
   final FocusNode? focusNode;
   final bool autofocus;
   final TextCapitalization textCapitalization;
+  final String? helperText;
 
   const SraInput({
     super.key,
@@ -49,6 +50,7 @@ class SraInput extends StatelessWidget {
     this.focusNode,
     this.autofocus = false,
     this.textCapitalization = TextCapitalization.none,
+    this.helperText,
   });
 
   @override
@@ -95,6 +97,10 @@ class SraInput extends StatelessWidget {
             prefixIcon: prefixIcon,
             suffixIcon: suffixIcon,
             counterText: '',
+            helperText: helperText,
+            helperStyle: AppTextStyles.bodySmall.copyWith(
+              color: AppColors.inkMuted,
+            ),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: AppDimensions.spacingMd,
               vertical:   AppDimensions.spacingMd,
