@@ -151,16 +151,16 @@ class _EditAssignmentDialogState extends State<EditAssignmentDialog> {
       data: theme.copyWith(
         colorScheme: isDark
             ? const ColorScheme.dark(
-                primary: AppColors.champagneGold,
+                primary: AppColors.gold,
                 onPrimary: Colors.black,
-                surface: AppColors.imperialNightBlue,
+                surface: AppColors.darkSurface,
                 onSurface: Colors.white,
               )
             : const ColorScheme.light(
-                primary: AppColors.champagneGold,
+                primary: AppColors.gold,
                 onPrimary: Colors.white,
                 surface: Colors.white,
-                onSurface: AppColors.imperialNightBlue,
+                onSurface: AppColors.darkSurface,
               ),
       ),
       child: child!,
@@ -193,9 +193,9 @@ class _EditAssignmentDialogState extends State<EditAssignmentDialog> {
     return AlertDialog(
       title: Text(
         l10n.editBookingTitle,
-        style: AppTextStyles.titleLarge.copyWith(color: AppColors.champagneGold),
+        style: AppTextStyles.titleLarge.copyWith(color: AppColors.gold),
       ),
-      backgroundColor: isDark ? AppColors.imperialNightBlue : Colors.white,
+      backgroundColor: isDark ? AppColors.darkSurface : Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusLg)),
       content: SingleChildScrollView(
         child: Form(
@@ -227,7 +227,7 @@ class _EditAssignmentDialogState extends State<EditAssignmentDialog> {
                             fontSize: 10,
                             fontWeight: FontWeight.w600,
                             letterSpacing: 1.8,
-                            color: AppColors.champagneGold,
+                            color: AppColors.gold,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -236,9 +236,9 @@ class _EditAssignmentDialogState extends State<EditAssignmentDialog> {
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                             decoration: BoxDecoration(
-                              color: isDark ? AppColors.deepBlue : Colors.white,
+                              color: isDark ? AppColors.darkCard : Colors.white,
                               borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
-                              border: Border.all(color: isDark ? Colors.white12 : AppColors.softGrey, width: 1.0),
+                              border: Border.all(color: isDark ? Colors.white12 : AppColors.mist, width: 1.0),
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -247,7 +247,7 @@ class _EditAssignmentDialogState extends State<EditAssignmentDialog> {
                                   DateFormat.yMd(Localizations.localeOf(context).toString()).format(_checkIn),
                                   style: const TextStyle(fontSize: 13),
                                 ),
-                                const Icon(Icons.calendar_today, size: 16, color: AppColors.champagneGold),
+                                const Icon(Icons.calendar_today, size: 16, color: AppColors.gold),
                               ],
                             ),
                           ),
@@ -267,7 +267,7 @@ class _EditAssignmentDialogState extends State<EditAssignmentDialog> {
                             fontSize: 10,
                             fontWeight: FontWeight.w600,
                             letterSpacing: 1.8,
-                            color: AppColors.champagneGold,
+                            color: AppColors.gold,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -276,9 +276,9 @@ class _EditAssignmentDialogState extends State<EditAssignmentDialog> {
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                             decoration: BoxDecoration(
-                              color: isDark ? AppColors.deepBlue : Colors.white,
+                              color: isDark ? AppColors.darkCard : Colors.white,
                               borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
-                              border: Border.all(color: isDark ? Colors.white12 : AppColors.softGrey, width: 1.0),
+                              border: Border.all(color: isDark ? Colors.white12 : AppColors.mist, width: 1.0),
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -287,7 +287,7 @@ class _EditAssignmentDialogState extends State<EditAssignmentDialog> {
                                   DateFormat.yMd(Localizations.localeOf(context).toString()).format(_checkOut),
                                   style: const TextStyle(fontSize: 13),
                                 ),
-                                const Icon(Icons.calendar_today, size: 16, color: AppColors.champagneGold),
+                                const Icon(Icons.calendar_today, size: 16, color: AppColors.gold),
                               ],
                             ),
                           ),
@@ -314,7 +314,7 @@ class _EditAssignmentDialogState extends State<EditAssignmentDialog> {
                   style: const TextStyle(fontSize: 12),
                 ),
                 contentPadding: EdgeInsets.zero,
-                activeColor: AppColors.champagneGold,
+                activeColor: AppColors.gold,
                 controlAffinity: ListTileControlAffinity.leading,
               ),
 
@@ -325,7 +325,7 @@ class _EditAssignmentDialogState extends State<EditAssignmentDialog> {
                   fontSize: 10,
                   fontWeight: FontWeight.w600,
                   letterSpacing: 1.8,
-                  color: AppColors.champagneGold,
+                  color: AppColors.gold,
                 ),
               ),
               const SizedBox(height: 8),
@@ -333,10 +333,10 @@ class _EditAssignmentDialogState extends State<EditAssignmentDialog> {
                 key: ValueKey('room_dropdown_${_checkIn.millisecondsSinceEpoch}_${_checkOut.millisecondsSinceEpoch}'),
                 initialValue: _selectedRoomNumber,
                 validator: (val) => val == null ? l10n.requiredField : null,
-                dropdownColor: isDark ? AppColors.imperialNightBlue : Colors.white,
+                dropdownColor: isDark ? AppColors.darkSurface : Colors.white,
                 menuMaxHeight: 300,
-                iconEnabledColor: AppColors.champagneGold,
-                style: TextStyle(fontSize: 14, color: isDark ? Colors.white : AppColors.imperialNightBlue),
+                iconEnabledColor: AppColors.gold,
+                style: TextStyle(fontSize: 14, color: isDark ? Colors.white : AppColors.darkSurface),
                 decoration: InputDecoration(
                   hintText: l10n.selectRoomPlaceholder,
                   hintStyle: TextStyle(
@@ -344,19 +344,19 @@ class _EditAssignmentDialogState extends State<EditAssignmentDialog> {
                     fontSize: 13,
                     fontWeight: FontWeight.w300,
                   ),
-                  fillColor: isDark ? AppColors.deepBlue : Colors.white,
+                  fillColor: isDark ? AppColors.darkCard : Colors.white,
                   filled: true,
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                      color: isDark ? Colors.white12 : AppColors.softGrey,
+                      color: isDark ? Colors.white12 : AppColors.mist,
                       width: 1.0,
                     ),
                     borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderSide: const BorderSide(
-                      color: AppColors.champagneGold,
+                      color: AppColors.gold,
                       width: 1.2,
                     ),
                     borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
@@ -404,29 +404,29 @@ class _EditAssignmentDialogState extends State<EditAssignmentDialog> {
                   fontSize: 10,
                   fontWeight: FontWeight.w600,
                   letterSpacing: 1.8,
-                  color: AppColors.champagneGold,
+                  color: AppColors.gold,
                 ),
               ),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
                 initialValue: _status,
-                dropdownColor: isDark ? AppColors.imperialNightBlue : Colors.white,
-                iconEnabledColor: AppColors.champagneGold,
-                style: TextStyle(fontSize: 14, color: isDark ? Colors.white : AppColors.imperialNightBlue),
+                dropdownColor: isDark ? AppColors.darkSurface : Colors.white,
+                iconEnabledColor: AppColors.gold,
+                style: TextStyle(fontSize: 14, color: isDark ? Colors.white : AppColors.darkSurface),
                 decoration: InputDecoration(
-                  fillColor: isDark ? AppColors.deepBlue : Colors.white,
+                  fillColor: isDark ? AppColors.darkCard : Colors.white,
                   filled: true,
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                      color: isDark ? Colors.white12 : AppColors.softGrey,
+                      color: isDark ? Colors.white12 : AppColors.mist,
                       width: 1.0,
                     ),
                     borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderSide: const BorderSide(
-                      color: AppColors.champagneGold,
+                      color: AppColors.gold,
                       width: 1.2,
                     ),
                     borderRadius: BorderRadius.circular(AppDimensions.radiusSm),

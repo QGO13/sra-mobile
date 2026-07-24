@@ -128,8 +128,8 @@ class _AssignmentCalendarWidgetState extends State<AssignmentCalendarWidget> {
     Widget buildCalendarGrid() {
       return Container(
         decoration: BoxDecoration(
-          color: isDark ? AppColors.deepBlue : AppColors.surfaceLight,
-          border: Border.all(color: isDark ? Colors.white10 : AppColors.softGrey),
+          color: isDark ? AppColors.darkCard : AppColors.surfaceLight,
+          border: Border.all(color: isDark ? Colors.white10 : AppColors.mist),
         ),
         padding: const EdgeInsets.all(12),
         child: Column(
@@ -139,7 +139,7 @@ class _AssignmentCalendarWidgetState extends State<AssignmentCalendarWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.chevron_left, color: AppColors.champagneGold),
+                  icon: const Icon(Icons.chevron_left, color: AppColors.gold),
                   onPressed: _prevMonth,
                 ),
                 Text(
@@ -147,7 +147,7 @@ class _AssignmentCalendarWidgetState extends State<AssignmentCalendarWidget> {
                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, letterSpacing: 1.0),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.chevron_right, color: AppColors.champagneGold),
+                  icon: const Icon(Icons.chevron_right, color: AppColors.gold),
                   onPressed: _nextMonth,
                 ),
               ],
@@ -161,7 +161,7 @@ class _AssignmentCalendarWidgetState extends State<AssignmentCalendarWidget> {
                   child: Center(
                     child: Text(
                       day,
-                      style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.textMuted),
+                      style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.inkMuted),
                     ),
                   ),
                 );
@@ -206,14 +206,14 @@ class _AssignmentCalendarWidgetState extends State<AssignmentCalendarWidget> {
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: isSelected 
-                            ? AppColors.champagneGold 
-                            : (isCellToday ? AppColors.champagneGold.withValues(alpha: 0.5) : Colors.transparent),
+                            ? AppColors.gold 
+                            : (isCellToday ? AppColors.gold.withValues(alpha: 0.5) : Colors.transparent),
                         width: isSelected ? 1.5 : 1.0,
                       ),
                       color: isSelected 
-                          ? AppColors.champagneGold.withValues(alpha: 0.1)
+                          ? AppColors.gold.withValues(alpha: 0.1)
                           : (occupancyRate > 0 
-                              ? AppColors.champagneGold.withValues(alpha: occupancyRate * 0.25)
+                              ? AppColors.gold.withValues(alpha: occupancyRate * 0.25)
                               : null),
                     ),
                     child: Column(
@@ -224,14 +224,14 @@ class _AssignmentCalendarWidgetState extends State<AssignmentCalendarWidget> {
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: isCellToday || isSelected ? FontWeight.bold : FontWeight.normal,
-                            color: isCellToday ? AppColors.champagneGold : null,
+                            color: isCellToday ? AppColors.gold : null,
                           ),
                         ),
                         if (occupiedCount > 0) ...[
                           const SizedBox(height: 2),
                           Text(
                             "$occupiedCount Ch.",
-                            style: const TextStyle(fontSize: 8, color: AppColors.textMuted, fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontSize: 8, color: AppColors.inkMuted, fontWeight: FontWeight.bold),
                           ),
                         ],
                       ],
@@ -252,9 +252,9 @@ class _AssignmentCalendarWidgetState extends State<AssignmentCalendarWidget> {
           margin: const EdgeInsets.only(bottom: AppDimensions.spacingSm),
           elevation: 0,
           shape: RoundedRectangleBorder(
-            side: BorderSide(color: isDark ? Colors.white10 : AppColors.softGrey),
+            side: BorderSide(color: isDark ? Colors.white10 : AppColors.mist),
           ),
-          color: isDark ? AppColors.deepBlue : Colors.white,
+          color: isDark ? AppColors.darkCard : Colors.white,
           child: ListTile(
             dense: true,
             title: Text(
@@ -263,7 +263,7 @@ class _AssignmentCalendarWidgetState extends State<AssignmentCalendarWidget> {
             ),
             subtitle: Text(
               "${booking.reference} • ${booking.typeChambre}",
-              style: const TextStyle(fontSize: 11, color: AppColors.textMuted),
+              style: const TextStyle(fontSize: 11, color: AppColors.inkMuted),
             ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
@@ -272,10 +272,10 @@ class _AssignmentCalendarWidgetState extends State<AssignmentCalendarWidget> {
                   Container(
                     margin: const EdgeInsets.only(right: 8),
                     padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                    color: AppColors.champagneGold.withValues(alpha: 0.1),
+                    color: AppColors.gold.withValues(alpha: 0.1),
                     child: Text(
                       "Apart $roomNo",
-                      style: const TextStyle(fontSize: 9, color: AppColors.champagneGold, fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontSize: 9, color: AppColors.gold, fontWeight: FontWeight.bold),
                     ),
                   ),
                 Container(
@@ -310,7 +310,7 @@ class _AssignmentCalendarWidgetState extends State<AssignmentCalendarWidget> {
           children: [
             Text(
               "Mouvements du ${DateFormat.yMMMMEEEEd('fr').format(_selectedDay)} :",
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.champagneGold),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.gold),
             ),
             const SizedBox(height: 12),
 
@@ -320,7 +320,7 @@ class _AssignmentCalendarWidgetState extends State<AssignmentCalendarWidget> {
                 child: Center(
                   child: Text(
                     "Aucune activité pour ce jour.",
-                    style: TextStyle(fontSize: 12, color: AppColors.textMuted),
+                    style: TextStyle(fontSize: 12, color: AppColors.inkMuted),
                   ),
                 ),
               )

@@ -52,9 +52,9 @@ class _RoomAssignmentDashboardPageState extends State<RoomAssignmentDashboardPag
         ),
         bottom: TabBar(
           controller: _tabController,
-          indicatorColor: AppColors.champagneGold,
-          labelColor: AppColors.champagneGold,
-          unselectedLabelColor: AppColors.textMuted,
+          indicatorColor: AppColors.gold,
+          labelColor: AppColors.gold,
+          unselectedLabelColor: AppColors.inkMuted,
           isScrollable: true,
           tabs: [
             Tab(text: l10n.visioPlanningTab),

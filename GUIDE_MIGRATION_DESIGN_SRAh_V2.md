@@ -1,7 +1,7 @@
 # Guide de migration — Design SRAh V2 (sra-mobile)
 
 > Document de cadrage à donner tel quel à tout agent (Claude ou autre) qui reprend le travail.
-> Dernière mise à jour : 24 juillet 2026 — **5.1 complété** (Auth pixel-perfect + SraAlert + nouveaux tokens SraButton/SraInput) · **5.3 en cours** (Rooms & Room Types admin — pastilles de statut/typologie corrigées, écart de données consigné §7, revue visuelle finale restant à faire).
+> Dernière mise à jour : 24 juillet 2026 — **5.1 complété** (Auth pixel-perfect + SraAlert + nouveaux tokens SraButton/SraInput) · **5.3 en cours** (Rooms & Room Types admin — pastilles de statut/typologie corrigées, écart de données consigné §7, revue visuelle finale restant à faire) · **5.4 en cours** (Visio Planning pixel-perfect : couleurs de statut, contraste, rayon/ombre des barres, teinte week-end, légende ajoutée ; audit large des alias dépréciés sur tout le module `room_assignment` ; revue visuelle finale et `flutter analyze` restant à faire, pas de SDK Flutter dans cet agent).
 
 ---
 
@@ -133,10 +133,19 @@ Légende : ✅ fait · 🟡 en cours / partiel · ❌ à faire
 - [ ] Vérification pixel-perfect des dialogues de création/édition (actuellement inline dans les pages — c'est acceptable, pas besoin de les extraire sauf si ça simplifie la maintenance). Structure des champs déjà cohérente avec les schémas `CreateRoom`/`CreateRoomType` de `openai.json`
 - [ ] Revue visuelle côte-à-côte (capture React `npm run dev` vs simulateur Flutter) — non faite dans cette passe (pas d'environnement graphique dans cet agent), à valider par un agent/humain avec accès visuel avant de cocher définitivement 5.3
 
-### 5.4 Planning / Attribution des chambres
+### 5.4 Planning / Attribution des chambres — **EN COURS**
 - Design : `PlanningPage.tsx`
-- [ ] Vérification pixel-perfect de `room_assignment_dashboard_page.dart`
-- [ ] Note : le Flutter a 3 vues (calendrier / kanban / liste) — la maquette n'en montre peut-être qu'une. Si les vues supplémentaires servent l'usage mobile, les garder mais les styliser dans le même esprit que la vue de référence (voir §7 pour consignation).
+- [x] Constat : le Flutter a **4** vues (Visio Planning / Kanban / Calendrier / Liste), pas 3. Seule **Visio Planning** (`visio_planning_widget.dart`) correspond réellement à `PlanningPage.tsx` — c'est la vue traitée pixel-perfect ci-dessous. Kanban/Calendrier/Liste n'ont pas d'équivalent dans la maquette ; gardées car elles servent l'usage mobile (voir §7).
+- [x] `visio_planning_widget.dart` — couleur de statut codée en dur (`Color(0xFF34495E)`) remplacée par un mapping sémantique sur les 5 statuts réels de `ReservationStatusEnum` (`openai.json` : En attente/Confirmée/En cours/Terminée/Annulée, normalisés côté `BookingModel`), réutilisant le même vocabulaire warning/info/success/error/or déjà utilisé pour les statuts de chambre (§7)
+- [x] `visio_planning_widget.dart` — contraste de texte corrigé : la maquette (`toneStyles`) affiche du texte anthracite sur fond or, le code affichait du blanc sur or (illisible)
+- [x] `visio_planning_widget.dart` — rayon (`AppDimensions.radiusSm`) et ombre portée (`0 4px 12px -4px rgba(0,0,0,0.35)`) ajoutés aux barres de réservation, absents jusqu'ici (angles vifs) alors que la maquette les arrondit et les ombre
+- [x] `visio_planning_widget.dart` — teinte week-end (`alpha(gold, 0.06)` en-tête / `0.04` grille) ajoutée en plus du marqueur "aujourd'hui" existant, conforme à la maquette
+- [x] `visio_planning_widget.dart` — bouton "Aujourd'hui" : angles vifs codés en dur (`BorderRadius.zero`) remplacés par le style pill (`radiusFull`) cohérent avec le reste de l'app
+- [x] `visio_planning_widget.dart` — légende de statuts ajoutée (absente jusqu'ici), équivalent mobile des chips `Confirmée`/`Option`/`Payée` en `actions` du `PageHeader` de la maquette, réutilisant les clés ARB déjà présentes dans les 6 langues (aucune nouvelle clé nécessaire)
+- [x] Audit large (règle d'or §2) : remplacement de tous les alias dépréciés (`champagneGold`, `deepBlue`, `imperialNightBlue`, `softGrey`, `textMuted`…) par les tokens canoniques (`AppColors.gold`, `darkCard`, `darkSurface`, `mist`, `inkMuted`…) dans les 6 fichiers du module `room_assignment` (page + widgets Visio Planning/Kanban/Calendrier/Liste/dialog d'édition)
+- [x] `assignment_kanban_widget.dart` et `assignment_list_widget.dart` — deux `Colors.orange` codés en dur remplacés par `AppColors.statusWarning` (cohérence avec le mapping de statut de Visio Planning)
+- [ ] Revue visuelle côte-à-côte (capture React `npm run dev` vs simulateur Flutter) — **non faite dans cette passe (pas d'environnement graphique ni de SDK Flutter dans cet agent)**, à valider par un agent/humain avec accès visuel avant de cocher définitivement 5.4
+- [ ] `flutter analyze` — non exécuté (SDK Flutter absent de cet agent) ; seule une vérification manuelle d'équilibre syntaxique a été faite sur les fichiers modifiés
 
 ### 5.5 Invoices (admin)
 - Design : `InvoicesPage.tsx`, `InvoiceDetailsDialog.tsx`
@@ -196,6 +205,9 @@ Toute adaptation volontaire par rapport à la maquette doit être ajoutée ici, 
 | `RoomTypesPage` — colonnes `Surface`, `Nombre`, `Petit-déjeuner` | Colonnes du DataGrid alimentées par du mock data | Absentes du modèle Flutter (`RoomType`) | Idem : absentes du schéma API réel (`ReadRoomType`/`CreateRoomType` : `name`, `price_per_night`, `capacity`, `description`, `is_active`, `images` uniquement). |
 | Rooms — carte statut | `StatusPill` unique par état (available/occupied/cleaning/maintenance) | Ajout d'un état "Hors service" (pastille grise) quand `estActive == 0` | État réel du système (activation/désactivation d'une chambre) sans équivalent dans la maquette web, qui ne montre que les 4 statuts d'occupation/ménage. Cohérent avec le reste du design system (pastille neutre, pas de couleur inventée). |
 | `RoomDialog` — champ "Statut initial" | Présent uniquement dans le dialogue de création (pas de variante édition dans la maquette) | Champ ajouté à la création Flutter, **masqué en édition** | Éviter un crash du dropdown si la chambre éditée est dans l'état réel `EN_COURS` (ménage en cours), un état non proposé comme choix initial dans la maquette et non couvert par les 3 options du Select `RoomDialog.tsx`. Le changement de statut de ménage au quotidien relève du module Réception/Housekeeping (§5.7), pas de ce dialogue. |
+| `PlanningPage` — vues | Une seule vue (timeline drag & drop, 14 jours fixes) | 4 onglets : Visio Planning (équivalent réel) + Kanban + Calendrier + Liste | Les 3 vues additionnelles n'ont pas d'équivalent dans la maquette mais servent des usages mobiles réels (glisser-déposer peu pratique au doigt sur un planning dense) ; stylisées dans le même esprit que Visio Planning (mêmes tokens, mêmes couleurs de statut). |
+| `PlanningPage` — grille temporelle | 14 jours fixes, largeur de cellule 46px | Timeline scrollable infinie (30 jours par fenêtre, `_dayColumnWidth` 80px, `_rowHeight` 65px), avec auto-scroll sur "aujourd'hui" et navigation ±30 jours | Un planning hôtelier réel dépasse 14 jours ; le scroll horizontal + cible tactile plus grande (65px vs 46px) sont nécessaires sur mobile. Le marqueur "aujourd'hui" (absent de la maquette, mock figée en juillet 2026) est un ajout justifié par l'usage réel continu de l'app. |
+| `PlanningPage` — statuts de réservation | 3 statuts mock arbitraires (`Confirmée`=or, `Option`=anthracite, `Payée`=succès), sans lien avec une API | 5 statuts réels de `ReservationStatusEnum` (`openai.json`) mappés sur le vocabulaire sémantique déjà en place pour les chambres : Confirmée=or, En attente=warning, En cours=info, Terminée=succès, Annulée=error (filtrée de l'affichage) | Les statuts de la maquette sont du mock sans équivalent backend. On réutilise l'esprit (or = confirmé) tout en s'alignant sur le système sémantique warning/info/success/error déjà utilisé ailleurs dans l'app, plutôt que d'inventer une nouvelle teinte pour un statut fictif ("Option"). |
 
 ---
 

@@ -34,9 +34,9 @@ class AssignmentKanbanWidget extends StatelessWidget {
   Color _getColumnColor(String status) {
     switch (status) {
       case 'EN_ATTENTE':
-        return Colors.orange.shade700;
+        return AppColors.statusWarning;
       case 'CONFIRME':
-        return AppColors.champagneGold;
+        return AppColors.gold;
       case 'EFFECTUE':
         return AppColors.statusInfo;
       case 'TERMINEE':
@@ -44,7 +44,7 @@ class AssignmentKanbanWidget extends StatelessWidget {
       case 'ANNULE':
         return AppColors.statusError;
       default:
-        return AppColors.textMuted;
+        return AppColors.inkMuted;
     }
   }
 
@@ -83,8 +83,8 @@ class AssignmentKanbanWidget extends StatelessWidget {
           width: isWide ? null : 290.0,
           margin: const EdgeInsets.only(right: AppDimensions.spacingMd),
           decoration: BoxDecoration(
-            color: isDark ? AppColors.deepBlue : AppColors.surfaceLight,
-            border: Border.all(color: isDark ? Colors.white10 : AppColors.softGrey),
+            color: isDark ? AppColors.darkCard : AppColors.surfaceLight,
+            border: Border.all(color: isDark ? Colors.white10 : AppColors.mist),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -94,7 +94,7 @@ class AssignmentKanbanWidget extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                 decoration: BoxDecoration(
                   border: Border(
-                    bottom: BorderSide(color: isDark ? Colors.white10 : AppColors.softGrey),
+                    bottom: BorderSide(color: isDark ? Colors.white10 : AppColors.mist),
                     left: BorderSide(color: colColor, width: 3),
                   ),
                 ),
@@ -132,9 +132,9 @@ class AssignmentKanbanWidget extends StatelessWidget {
                       margin: const EdgeInsets.only(bottom: AppDimensions.spacingSm),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
-                        side: BorderSide(color: isDark ? Colors.white10 : AppColors.softGrey),
+                        side: BorderSide(color: isDark ? Colors.white10 : AppColors.mist),
                       ),
-                      color: isDark ? AppColors.imperialNightBlue : Colors.white,
+                      color: isDark ? AppColors.darkSurface : Colors.white,
                       child: InkWell(
                         onTap: () {
                           showDialog(
@@ -160,16 +160,16 @@ class AssignmentKanbanWidget extends StatelessWidget {
                                     style: AppTextStyles.monospace.copyWith(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 11,
-                                      color: AppColors.champagneGold,
+                                      color: AppColors.gold,
                                     ),
                                   ),
                                   if (roomNo != null)
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                                      color: AppColors.champagneGold.withValues(alpha: 0.1),
+                                      color: AppColors.gold.withValues(alpha: 0.1),
                                       child: Text(
                                         "Ch. $roomNo",
-                                        style: const TextStyle(fontSize: 9, color: AppColors.champagneGold, fontWeight: FontWeight.bold),
+                                        style: const TextStyle(fontSize: 9, color: AppColors.gold, fontWeight: FontWeight.bold),
                                       ),
                                     ),
                                 ],
@@ -182,7 +182,7 @@ class AssignmentKanbanWidget extends StatelessWidget {
                               const SizedBox(height: 4),
                               Text(
                                 "${booking.typeChambre} • $dateRange",
-                                style: const TextStyle(color: AppColors.textMuted, fontSize: 11),
+                                style: const TextStyle(color: AppColors.inkMuted, fontSize: 11),
                               ),
                               const Divider(height: 16),
                               Row(
@@ -190,11 +190,11 @@ class AssignmentKanbanWidget extends StatelessWidget {
                                 children: [
                                   Text(
                                     "${booking.adultes} Ad. / ${(booking.enfants ?? 0)} Enf.",
-                                    style: const TextStyle(fontSize: 10, color: AppColors.textMuted),
+                                    style: const TextStyle(fontSize: 10, color: AppColors.inkMuted),
                                   ),
                                   // Quick status shift popup
                                   PopupMenuButton<String>(
-                                    icon: const Icon(Icons.arrow_forward, size: 16, color: AppColors.champagneGold),
+                                    icon: const Icon(Icons.arrow_forward, size: 16, color: AppColors.gold),
                                     padding: EdgeInsets.zero,
                                     constraints: const BoxConstraints(minWidth: 120),
                                     onSelected: (newStatus) {

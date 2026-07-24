@@ -132,17 +132,29 @@ class _VisioPlanningWidgetState extends State<VisioPlanningWidget> {
     }).toList();
   }
 
+  // Mapping des statuts réels de ReservationStatusEnum (openai.json : "En attente",
+  // "Confirmée", "En cours", "Terminée", "Annulée" — normalisés en EN_ATTENTE/CONFIRMEE/
+  // EFFECTUE/TERMINEE/ANNULEE par BookingModel.normalizeStatus) vers les couleurs
+  // sémantiques de AppColors. La maquette PlanningPage.tsx ne connaît que 3 statuts
+  // mock (Confirmée = or, Option = anthracite, Payée = succès) sans équivalent avec
+  // l'API réelle ; on reprend l'esprit (or = confirmé) tout en réutilisant le même
+  // vocabulaire sémantique warning/info/success/error déjà utilisé pour les statuts
+  // de chambre (§7 du guide de migration), plutôt que d'inventer une teinte.
   Color _getStatusColor(String status) {
     switch (status.toUpperCase()) {
       case 'CONFIRME':
       case 'CONFIRMEE':
-        return AppColors.champagneGold;
+        return AppColors.gold;
+      case 'EFFECTUE': // "En cours" — client actuellement sur place
+        return AppColors.statusInfo;
       case 'TERMINEE':
         return AppColors.statusSuccess;
+      case 'ANNULE':
+      case 'ANNULEE':
+        return AppColors.statusError;
       case 'EN_ATTENTE':
-        return const Color(0xFF34495E);
       default:
-        return AppColors.textMuted;
+        return AppColors.statusWarning;
     }
   }
 
@@ -154,36 +166,70 @@ class _VisioPlanningWidgetState extends State<VisioPlanningWidget> {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMd, vertical: AppDimensions.spacingSm),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            rangeText.toUpperCase(),
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.champagneGold, letterSpacing: 0.5),
-          ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButton(
-                icon: const Icon(Icons.chevron_left, color: AppColors.champagneGold),
-                onPressed: _goToPreviousPeriod,
+              Text(
+                rangeText.toUpperCase(),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.gold, letterSpacing: 0.5),
               ),
-              OutlinedButton(
-                onPressed: _goToToday,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.champagneGold,
-                  side: const BorderSide(color: AppColors.champagneGold, width: 1),
-                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                ),
-                child: Text(l10n.todayLabel.toUpperCase(), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-              ),
-              IconButton(
-                icon: const Icon(Icons.chevron_right, color: AppColors.champagneGold),
-                onPressed: _goToNextPeriod,
+              Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.chevron_left, color: AppColors.gold),
+                    onPressed: _goToPreviousPeriod,
+                  ),
+                  OutlinedButton(
+                    onPressed: _goToToday,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.gold,
+                      side: const BorderSide(color: AppColors.gold, width: 1),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusFull)),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    ),
+                    child: Text(l10n.todayLabel.toUpperCase(), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.chevron_right, color: AppColors.gold),
+                    onPressed: _goToNextPeriod,
+                  ),
+                ],
               ),
             ],
           ),
+          const SizedBox(height: AppDimensions.spacingXs),
+          Wrap(
+            spacing: AppDimensions.spacingXs,
+            runSpacing: AppDimensions.spacingXs,
+            children: [
+              _buildLegendChip(l10n.confirmedStatus, AppColors.gold, AppColors.textOnGold),
+              _buildLegendChip(l10n.pendingStatus, AppColors.statusWarning, AppColors.white),
+              _buildLegendChip(l10n.effectueStatus, AppColors.statusInfo, AppColors.white),
+              _buildLegendChip(l10n.completedStatus, AppColors.statusSuccess, AppColors.white),
+            ],
+          ),
         ],
+      ),
+    );
+  }
+
+  // Équivalent mobile des <Chip> de légende dans les `actions` du PageHeader de
+  // PlanningPage.tsx (maquette : Confirmée/Option/Payée). Statuts réels utilisés ici
+  // (voir _getStatusColor) faute d'équivalent avec l'API — divergence consignée §7
+  // du guide de migration.
+  Widget _buildLegendChip(String label, Color bg, Color fg) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingSm, vertical: 4),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(AppDimensions.radiusFull),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: fg),
       ),
     );
   }
@@ -207,9 +253,9 @@ class _VisioPlanningWidgetState extends State<VisioPlanningWidget> {
               Container(
                 width: 110,
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.imperialNightBlue : AppColors.surfaceLight,
+                  color: isDark ? AppColors.darkSurface : AppColors.surfaceLight,
                   border: Border(
-                    right: BorderSide(color: isDark ? Colors.white10 : AppColors.softGrey),
+                    right: BorderSide(color: isDark ? Colors.white10 : AppColors.mist),
                   ),
                 ),
                 child: Column(
@@ -219,7 +265,7 @@ class _VisioPlanningWidgetState extends State<VisioPlanningWidget> {
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         border: Border(
-                          bottom: BorderSide(color: isDark ? Colors.white10 : AppColors.softGrey),
+                          bottom: BorderSide(color: isDark ? Colors.white10 : AppColors.mist),
                         ),
                       ),
                       child: Text(
@@ -227,7 +273,7 @@ class _VisioPlanningWidgetState extends State<VisioPlanningWidget> {
                         style: const TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.champagneGold,
+                          color: AppColors.gold,
                           letterSpacing: 0.5,
                         ),
                       ),
@@ -245,7 +291,7 @@ class _VisioPlanningWidgetState extends State<VisioPlanningWidget> {
                             alignment: Alignment.centerLeft,
                             decoration: BoxDecoration(
                               border: Border(
-                                bottom: BorderSide(color: isDark ? Colors.white10 : AppColors.softGrey),
+                                bottom: BorderSide(color: isDark ? Colors.white10 : AppColors.mist),
                               ),
                             ),
                             child: Column(
@@ -258,7 +304,7 @@ class _VisioPlanningWidgetState extends State<VisioPlanningWidget> {
                                 ),
                                 Text(
                                   room.type.split(' ').last,
-                                  style: const TextStyle(fontSize: 10, color: AppColors.textMuted),
+                                  style: const TextStyle(fontSize: 10, color: AppColors.inkMuted),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -277,8 +323,8 @@ class _VisioPlanningWidgetState extends State<VisioPlanningWidget> {
                 child: Theme(
                   data: theme.copyWith(
                     scrollbarTheme: ScrollbarThemeData(
-                      thumbColor: WidgetStateProperty.all(AppColors.champagneGold.withValues(alpha: 0.6)),
-                      trackColor: WidgetStateProperty.all(isDark ? Colors.white10 : AppColors.softGrey.withValues(alpha: 0.3)),
+                      thumbColor: WidgetStateProperty.all(AppColors.gold.withValues(alpha: 0.6)),
+                      trackColor: WidgetStateProperty.all(isDark ? Colors.white10 : AppColors.mist.withValues(alpha: 0.3)),
                       trackBorderColor: WidgetStateProperty.all(Colors.transparent),
                       thickness: WidgetStateProperty.all(8.0),
                       radius: const Radius.circular(4),
@@ -299,14 +345,15 @@ class _VisioPlanningWidgetState extends State<VisioPlanningWidget> {
                             Container(
                               height: 50,
                               decoration: BoxDecoration(
-                                color: isDark ? AppColors.deepBlue : Colors.white,
+                                color: isDark ? AppColors.darkCard : Colors.white,
                                 border: Border(
-                                  bottom: BorderSide(color: isDark ? Colors.white10 : AppColors.softGrey),
+                                  bottom: BorderSide(color: isDark ? Colors.white10 : AppColors.mist),
                                 ),
                               ),
                               child: Row(
                                 children: dates.map((date) {
                                   final isToday = DateUtils.isSameDay(date, DateTime.now());
+                                  final isWeekend = date.weekday == DateTime.saturday || date.weekday == DateTime.sunday;
                                   return Container(
                                     width: _dayColumnWidth,
                                     height: double.infinity,
@@ -314,10 +361,12 @@ class _VisioPlanningWidgetState extends State<VisioPlanningWidget> {
                                     decoration: BoxDecoration(
                                       border: Border(
                                         right: BorderSide(
-                                          color: isDark ? Colors.white10 : AppColors.softGrey.withValues(alpha: 0.5),
+                                          color: isDark ? Colors.white10 : AppColors.mist.withValues(alpha: 0.5),
                                         ),
                                       ),
-                                      color: isToday ? AppColors.champagneGold.withValues(alpha: 0.1) : null,
+                                      color: isToday
+                                          ? AppColors.gold.withValues(alpha: 0.1)
+                                          : (isWeekend ? AppColors.gold.withValues(alpha: 0.06) : null),
                                     ),
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -327,7 +376,7 @@ class _VisioPlanningWidgetState extends State<VisioPlanningWidget> {
                                           style: TextStyle(
                                             fontSize: 9,
                                             fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
-                                            color: isToday ? AppColors.champagneGold : AppColors.textMuted,
+                                            color: isToday ? AppColors.gold : AppColors.inkMuted,
                                           ),
                                         ),
                                         Text(
@@ -335,7 +384,7 @@ class _VisioPlanningWidgetState extends State<VisioPlanningWidget> {
                                           style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
-                                            color: isToday ? AppColors.champagneGold : null,
+                                            color: isToday ? AppColors.gold : null,
                                           ),
                                         ),
                                       ],
@@ -364,17 +413,20 @@ class _VisioPlanningWidgetState extends State<VisioPlanningWidget> {
                                           children: List.generate(_totalDays, (colIndex) {
                                             final date = dates[colIndex];
                                             final isToday = DateUtils.isSameDay(date, DateTime.now());
+                                            final isWeekend = date.weekday == DateTime.saturday || date.weekday == DateTime.sunday;
                                             return Container(
                                               width: _dayColumnWidth,
                                               height: _rowHeight,
                                               decoration: BoxDecoration(
                                                 border: Border(
                                                   right: BorderSide(
-                                                    color: isDark ? Colors.white10 : AppColors.softGrey.withValues(alpha: 0.5),
+                                                    color: isDark ? Colors.white10 : AppColors.mist.withValues(alpha: 0.5),
                                                   ),
-                                                  bottom: BorderSide(color: isDark ? Colors.white10 : AppColors.softGrey),
+                                                  bottom: BorderSide(color: isDark ? Colors.white10 : AppColors.mist),
                                                 ),
-                                                color: isToday ? AppColors.champagneGold.withValues(alpha: 0.05) : null,
+                                                color: isToday
+                                                    ? AppColors.gold.withValues(alpha: 0.05)
+                                                    : (isWeekend ? AppColors.gold.withValues(alpha: 0.04) : null),
                                               ),
                                             );
                                           }),
@@ -401,6 +453,9 @@ class _VisioPlanningWidgetState extends State<VisioPlanningWidget> {
                                           final double width = (durationDays * _dayColumnWidth) - 4;
 
                                           final color = _getStatusColor(booking.statutBooking);
+                                          // La maquette (toneStyles) utilise un texte anthracite sur fond or
+                                          // et blanc sur les autres teintes — un texte blanc sur or serait illisible.
+                                          final textColor = color == AppColors.gold ? AppColors.textOnGold : AppColors.white;
 
                                           return Positioned(
                                             left: left,
@@ -425,11 +480,19 @@ class _VisioPlanningWidgetState extends State<VisioPlanningWidget> {
                                                 decoration: BoxDecoration(
                                                   color: color.withValues(alpha: 0.85),
                                                   border: Border.all(color: color, width: 1),
+                                                  borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.black.withValues(alpha: 0.35),
+                                                      blurRadius: 12,
+                                                      offset: const Offset(0, 4),
+                                                    ),
+                                                  ],
                                                 ),
                                                 child: Text(
                                                   booking.clientNom,
-                                                  style: const TextStyle(
-                                                    color: Colors.white,
+                                                  style: TextStyle(
+                                                    color: textColor,
                                                     fontSize: 10.5,
                                                     fontWeight: FontWeight.bold,
                                                   ),

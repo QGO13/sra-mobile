@@ -102,11 +102,11 @@ class _AssignmentListWidgetState extends State<AssignmentListWidget> {
               prefixIcon: const Icon(Icons.search, size: 20),
               contentPadding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMd, vertical: 12),
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: isDark ? Colors.white10 : AppColors.softGrey),
+                borderSide: BorderSide(color: isDark ? Colors.white10 : AppColors.mist),
                 borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
               ),
               focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: AppColors.champagneGold, width: 2),
+                borderSide: const BorderSide(color: AppColors.gold, width: 2),
                 borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
               ),
               suffixIcon: _searchQuery.isNotEmpty
@@ -186,9 +186,9 @@ class _AssignmentListWidgetState extends State<AssignmentListWidget> {
                           : EdgeInsets.zero,
                       padding: const EdgeInsets.all(AppDimensions.spacingMd),
                       decoration: BoxDecoration(
-                        color: isDark ? AppColors.deepBlue : Colors.white,
+                        color: isDark ? AppColors.darkCard : Colors.white,
                         borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
-                        border: Border.all(color: isDark ? Colors.white10 : AppColors.softGrey),
+                        border: Border.all(color: isDark ? Colors.white10 : AppColors.mist),
                         boxShadow: const [AppShadows.shadowCard],
                       ),
                       child: Column(
@@ -202,29 +202,29 @@ class _AssignmentListWidgetState extends State<AssignmentListWidget> {
                                 booking.reference,
                                 style: AppTextStyles.monospace.copyWith(
                                   fontWeight: FontWeight.bold,
-                                  color: AppColors.champagneGold,
+                                  color: AppColors.gold,
                                   fontSize: 12.5,
                                 ),
                               ),
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                 color: isConfirmed
-                                    ? AppColors.champagneGold.withValues(alpha: 0.15)
+                                    ? AppColors.gold.withValues(alpha: 0.15)
                                     : (isCancelled
                                         ? AppColors.statusError.withValues(alpha: 0.15)
                                         : (isStaying
                                             ? AppColors.statusInfo.withValues(alpha: 0.15)
-                                            : Colors.orange.withValues(alpha: 0.15))),
+                                            : AppColors.statusWarning.withValues(alpha: 0.15))),
                                 child: Text(
                                   booking.statutBooking.toUpperCase(),
                                   style: TextStyle(
                                     fontSize: 9,
                                     fontWeight: FontWeight.bold,
                                     color: isConfirmed
-                                        ? AppColors.champagneGold
+                                        ? AppColors.gold
                                         : (isCancelled
                                             ? AppColors.statusError
-                                            : (isStaying ? AppColors.statusInfo : Colors.orange.shade700)),
+                                            : (isStaying ? AppColors.statusInfo : AppColors.statusWarning)),
                                   ),
                                 ),
                               ),
@@ -246,24 +246,24 @@ class _AssignmentListWidgetState extends State<AssignmentListWidget> {
                             "${booking.typeChambre} • $dateRange",
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
+                            style: const TextStyle(color: AppColors.inkMuted, fontSize: 12),
                           ),
                           Text(
                             "${booking.adultes} adultes${booking.enfants != null && booking.enfants! > 0 ? ' + ${booking.enfants} enfants' : ''}",
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
+                            style: const TextStyle(color: AppColors.inkMuted, fontSize: 12),
                           ),
 
                           if (roomNo != null) ...[
                             const SizedBox(height: 6),
                             Row(
                               children: [
-                                const Icon(Icons.meeting_room, size: 14, color: AppColors.champagneGold),
+                                const Icon(Icons.meeting_room, size: 14, color: AppColors.gold),
                                 const SizedBox(width: 4),
                                 Text(
                                   "Chambre assignée : Apart $roomNo",
-                                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.champagneGold),
+                                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.gold),
                                 ),
                               ],
                             ),
@@ -277,7 +277,7 @@ class _AssignmentListWidgetState extends State<AssignmentListWidget> {
                             children: [
                               Text(
                                 _formatCurrency(booking.prixTotal),
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppColors.champagneGold),
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppColors.gold),
                               ),
                               Row(
                                 children: [
@@ -293,8 +293,8 @@ class _AssignmentListWidgetState extends State<AssignmentListWidget> {
                                         ),
                                       );
                                     },
-                                    icon: const Icon(Icons.edit, size: 14, color: AppColors.champagneGold),
-                                    label: const Text("Modifier", style: TextStyle(color: AppColors.champagneGold, fontSize: 12)),
+                                    icon: const Icon(Icons.edit, size: 14, color: AppColors.gold),
+                                    label: const Text("Modifier", style: TextStyle(color: AppColors.gold, fontSize: 12)),
                                   ),
                                   if (!isCancelled && booking.statutBooking != 'TERMINEE') ...[
                                     const SizedBox(width: 8),
