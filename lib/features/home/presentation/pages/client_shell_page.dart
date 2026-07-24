@@ -14,11 +14,12 @@ import 'package:sra_hotel/features/cart/presentation/pages/cart_page.dart';
 import 'package:sra_hotel/features/cart/presentation/bloc/cart_bloc.dart';
 import 'package:sra_hotel/features/cart/presentation/bloc/cart_state.dart';
 import 'package:sra_hotel/features/settings/presentation/pages/settings_page.dart';
+import 'package:sra_hotel/features/home/presentation/widgets/client_sidebar_widget.dart';
 import 'package:sra_hotel/injection_container.dart' as di;
 import 'package:sra_hotel/l10n/app_localizations.dart';
 
 /// Shell de navigation pour l'espace Client/Corporate.
-/// Gère un affichage adaptatif : BottomNavigationBar pour mobile, NavigationRail pour grand écran.
+/// Gère un affichage adaptatif : BottomNavigationBar pour mobile, ClientSidebarWidget pour grand écran.
 class ClientShellPage extends StatefulWidget {
   const ClientShellPage({super.key});
 
@@ -29,6 +30,7 @@ class ClientShellPage extends StatefulWidget {
 class _ClientShellPageState extends State<ClientShellPage> {
   // L'onglet Séjours (index 1) est l'onglet par défaut selon la demande utilisateur
   int _currentIndex = 1;
+  bool? _isSidebarExtended;
 
   void _onTabTapped(int index) {
     setState(() {
@@ -41,6 +43,8 @@ class _ClientShellPageState extends State<ClientShellPage> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final isWide = MediaQuery.of(context).size.width >= 1024;
+    final isLargeDesktop = MediaQuery.of(context).size.width >= 1280;
+    final sidebarExtended = _isSidebarExtended ?? isLargeDesktop;
     final l10n = AppLocalizations.of(context)!;
 
     // Définition des pages d'onglets avec leurs Blocs respectifs
@@ -91,7 +95,7 @@ class _ClientShellPageState extends State<ClientShellPage> {
             ),
           ),
           actions: [
-            // ── Bouton Profil dans l'AppBar (Remplace le bouton de déconnexion) ──
+            // ── Bouton Profil dans l'AppBar ──
             IconButton(
               tooltip: l10n.myProfileTab,
               icon: Container(
@@ -121,33 +125,28 @@ class _ClientShellPageState extends State<ClientShellPage> {
         body: isWide
             ? Row(
                 children: [
-                  // ── NavigationRail (Sidebar Grand Écran) ──
-                  NavigationRail(
-                    selectedIndex: _currentIndex > 2 ? 0 : _currentIndex,
-                    onDestinationSelected: (idx) {
-                      if (idx < 3) {
-                        _onTabTapped(idx);
-                      }
+                  // ── ClientSidebarWidget (Sidebar Grand Écran Pixel Perfect) ──
+                  ClientSidebarWidget(
+                    isExtended: sidebarExtended,
+                    selectedIndex: _currentIndex,
+                    onItemSelected: _onTabTapped,
+                    onToggleExtend: () {
+                      setState(() {
+                        _isSidebarExtended = !sidebarExtended;
+                      });
                     },
-                    indicatorColor: AppColors.champagneGold.withValues(alpha: 0.15),
-                    selectedIconTheme: const IconThemeData(color: AppColors.champagneGold),
-                    unselectedIconTheme: const IconThemeData(color: AppColors.textMuted),
-                    selectedLabelTextStyle: const TextStyle(color: AppColors.champagneGold, fontWeight: FontWeight.bold),
-                    unselectedLabelTextStyle: const TextStyle(color: AppColors.textMuted),
-                    labelType: NavigationRailLabelType.all,
-                    backgroundColor: isDark ? AppColors.imperialNightBlue : AppColors.surfaceLight,
-                    destinations: [
-                      NavigationRailDestination(
-                        icon: const Icon(Icons.bed_outlined),
-                        selectedIcon: const Icon(Icons.bed_rounded, color: AppColors.champagneGold),
-                        label: Text(l10n.tabBook),
+                    items: [
+                      ClientSidebarItem(
+                        icon: const Icon(Icons.bed_outlined, color: AppColors.textMuted, size: 20),
+                        selectedIcon: const Icon(Icons.bed_rounded, color: AppColors.champagneGold, size: 20),
+                        label: l10n.tabBook,
                       ),
-                      NavigationRailDestination(
-                        icon: const Icon(Icons.calendar_today_outlined),
-                        selectedIcon: const Icon(Icons.calendar_today_rounded, color: AppColors.champagneGold),
-                        label: Text(l10n.tabStays),
+                      ClientSidebarItem(
+                        icon: const Icon(Icons.calendar_today_outlined, color: AppColors.textMuted, size: 20),
+                        selectedIcon: const Icon(Icons.calendar_today_rounded, color: AppColors.champagneGold, size: 20),
+                        label: l10n.tabStays,
                       ),
-                      NavigationRailDestination(
+                      ClientSidebarItem(
                         icon: BlocBuilder<CartBloc, CartState>(
                           builder: (context, state) {
                             int count = 0;
@@ -159,7 +158,7 @@ class _ClientShellPageState extends State<ClientShellPage> {
                               label: Text(count.toString()),
                               backgroundColor: AppColors.champagneGold,
                               textColor: Colors.white,
-                              child: const Icon(Icons.shopping_cart_outlined),
+                              child: const Icon(Icons.shopping_cart_outlined, color: AppColors.textMuted, size: 20),
                             );
                           },
                         ),
@@ -174,60 +173,20 @@ class _ClientShellPageState extends State<ClientShellPage> {
                               label: Text(count.toString()),
                               backgroundColor: AppColors.champagneGold,
                               textColor: Colors.white,
-                              child: const Icon(Icons.shopping_cart),
+                              child: const Icon(Icons.shopping_cart, color: AppColors.champagneGold, size: 20),
                             );
                           },
                         ),
-                        label: Text(l10n.myCartTab),
+                        label: l10n.myCartTab,
                       ),
                     ],
-                    // ── Bouton Paramètres tout en bas du Sidebar ──
-                    trailing: Expanded(
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: AppDimensions.spacingLg),
-                          child: InkWell(
-                            onTap: () => _onTabTapped(3),
-                            borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                              decoration: BoxDecoration(
-                                color: _currentIndex == 3
-                                    ? AppColors.champagneGold.withValues(alpha: 0.15)
-                                    : Colors.transparent,
-                                borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
-                                border: Border.all(
-                                  color: _currentIndex == 3 ? AppColors.champagneGold : (isDark ? Colors.white10 : AppColors.softGrey),
-                                  width: 1,
-                                ),
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    _currentIndex == 3 ? Icons.settings_rounded : Icons.settings_outlined,
-                                    color: _currentIndex == 3 ? AppColors.champagneGold : AppColors.textMuted,
-                                    size: 22,
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    "Paramètres",
-                                    style: TextStyle(
-                                      color: _currentIndex == 3 ? AppColors.champagneGold : AppColors.textMuted,
-                                      fontWeight: _currentIndex == 3 ? FontWeight.bold : FontWeight.w500,
-                                      fontSize: 11,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                    footerItem: const ClientSidebarItem(
+                      icon: Icon(Icons.settings_outlined, color: AppColors.textMuted, size: 20),
+                      selectedIcon: Icon(Icons.settings_rounded, color: AppColors.champagneGold, size: 20),
+                      label: "Paramètres",
                     ),
+                    onFooterSelected: () => _onTabTapped(3),
                   ),
-                  const VerticalDivider(thickness: 1, width: 1),
                   Expanded(child: pages[_currentIndex]),
                 ],
               )

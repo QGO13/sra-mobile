@@ -506,5 +506,17 @@
   "availableSingular": "剩余 {count} 间",
   "availablePlural": "剩余 {count} 间",
   "startingFromPerNight": "{price} 起 / 晚",
-  "roomAddedToCartDesc": "您的住宿'{roomName}'（{nights} 晚）已加入购物车。免费赠送早餐！"
+  "roomAddedToCartDesc": "您的住宿'{roomName}'（{nights} 晚）已加入购物车。免费赠送早餐！",
+  "unassignedBookingsBanner": "待分配预订",
+  "totalRooms": "客房总数",
+  "occupancyRateLabel": "入住率",
+  "avgPricePerNight": "平均房价 / 晚",
+  "totalCapacity": "总接待能力",
+  "totalRevenue": "总营业额",
+  "viewModeGrid": "网格",
+  "viewModeTable": "表格",
+  "unassignedStatus": "未分配",
+  "paidAmount": "已付",
+  "balanceDue": "未付余额",
+  "associatedRooms": "关联客房"
 }

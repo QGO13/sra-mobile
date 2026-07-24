@@ -29,4 +29,14 @@ class ApiCache {
     }
     return null;
   }
+
+  Future<void> clear(String key) async {
+    final db = await localDatabase.database;
+    if (db == null) return;
+    await db.delete(
+      'api_cache',
+      where: 'key = ?',
+      whereArgs: [key],
+    );
+  }
 }

@@ -506,5 +506,17 @@
   "availableSingular": "{count} available",
   "availablePlural": "{count} available",
   "startingFromPerNight": "starting from {price} / night",
-  "roomAddedToCartDesc": "Your accommodation '{roomName}' for {nights} night(s) has been added to your cart. Breakfast is complimentary!"
+  "roomAddedToCartDesc": "Your accommodation '{roomName}' for {nights} night(s) has been added to your cart. Breakfast is complimentary!",
+  "unassignedBookingsBanner": "Unassigned bookings",
+  "totalRooms": "Total Rooms",
+  "occupancyRateLabel": "Occupancy Rate",
+  "avgPricePerNight": "Avg Price / night",
+  "totalCapacity": "Total Capacity",
+  "totalRevenue": "Total Revenue",
+  "viewModeGrid": "Grid",
+  "viewModeTable": "Table",
+  "unassignedStatus": "Unassigned",
+  "paidAmount": "Paid",
+  "balanceDue": "Balance Due",
+  "associatedRooms": "associated room(s)"
 }

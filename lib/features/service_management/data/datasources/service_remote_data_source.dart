@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:sra_hotel/core/network/api_client.dart';
 import 'package:sra_hotel/core/network/api_cache.dart';
 import 'package:sra_hotel/features/service_management/data/models/hotel_service_model.dart';
@@ -33,6 +34,9 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
         final decoded = jsonDecode(cachedStr) as Map<String, dynamic>;
         final data = decoded['data'] as List<dynamic>? ?? const [];
         return data.map((json) => HotelServiceModel.fromJson(json as Map<String, dynamic>)).toList();
+      }
+      if (e is DioException && e.response?.statusCode == 404) {
+        return const <HotelServiceModel>[];
       }
       rethrow;
     }

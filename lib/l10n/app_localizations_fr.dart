@@ -1485,4 +1485,40 @@ class AppLocalizationsFr extends AppLocalizations {
   String roomAddedToCartDesc(String roomName, int nights) {
     return 'Votre hébergement \'$roomName\' pour $nights nuit(s) a été ajouté à votre panier. Le petit-déjeuner est offert !';
   }
+
+  @override
+  String get unassignedBookingsBanner => 'Réservations à attribuer';
+
+  @override
+  String get totalRooms => 'Total Chambres';
+
+  @override
+  String get occupancyRateLabel => 'Taux d\'occupation';
+
+  @override
+  String get avgPricePerNight => 'Prix moyen / nuit';
+
+  @override
+  String get totalCapacity => 'Capacité d\'accueil';
+
+  @override
+  String get totalRevenue => 'Chiffre d\'affaires';
+
+  @override
+  String get viewModeGrid => 'Grille';
+
+  @override
+  String get viewModeTable => 'Tableau';
+
+  @override
+  String get unassignedStatus => 'Non attribuée';
+
+  @override
+  String get paidAmount => 'Payé';
+
+  @override
+  String get balanceDue => 'Reste dû';
+
+  @override
+  String get associatedRooms => 'chambre(s) rattachée(s)';
 }

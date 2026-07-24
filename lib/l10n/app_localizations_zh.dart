@@ -1437,4 +1437,40 @@ class AppLocalizationsZh extends AppLocalizations {
   String roomAddedToCartDesc(String roomName, int nights) {
     return '您的住宿\'$roomName\'（$nights 晚）已加入购物车。免费赠送早餐！';
   }
+
+  @override
+  String get unassignedBookingsBanner => '待分配预订';
+
+  @override
+  String get totalRooms => '客房总数';
+
+  @override
+  String get occupancyRateLabel => '入住率';
+
+  @override
+  String get avgPricePerNight => '平均房价 / 晚';
+
+  @override
+  String get totalCapacity => '总接待能力';
+
+  @override
+  String get totalRevenue => '总营业额';
+
+  @override
+  String get viewModeGrid => '网格';
+
+  @override
+  String get viewModeTable => '表格';
+
+  @override
+  String get unassignedStatus => '未分配';
+
+  @override
+  String get paidAmount => '已付';
+
+  @override
+  String get balanceDue => '未付余额';
+
+  @override
+  String get associatedRooms => '关联客房';
 }

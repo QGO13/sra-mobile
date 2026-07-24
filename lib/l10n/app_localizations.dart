@@ -2889,6 +2889,78 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Votre hébergement \'{roomName}\' pour {nights} nuit(s) a été ajouté à votre panier. Le petit-déjeuner est offert !'**
   String roomAddedToCartDesc(String roomName, int nights);
+
+  /// No description provided for @unassignedBookingsBanner.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réservations à attribuer'**
+  String get unassignedBookingsBanner;
+
+  /// No description provided for @totalRooms.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total Chambres'**
+  String get totalRooms;
+
+  /// No description provided for @occupancyRateLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Taux d\'occupation'**
+  String get occupancyRateLabel;
+
+  /// No description provided for @avgPricePerNight.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix moyen / nuit'**
+  String get avgPricePerNight;
+
+  /// No description provided for @totalCapacity.
+  ///
+  /// In fr, this message translates to:
+  /// **'Capacité d\'accueil'**
+  String get totalCapacity;
+
+  /// No description provided for @totalRevenue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chiffre d\'affaires'**
+  String get totalRevenue;
+
+  /// No description provided for @viewModeGrid.
+  ///
+  /// In fr, this message translates to:
+  /// **'Grille'**
+  String get viewModeGrid;
+
+  /// No description provided for @viewModeTable.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tableau'**
+  String get viewModeTable;
+
+  /// No description provided for @unassignedStatus.
+  ///
+  /// In fr, this message translates to:
+  /// **'Non attribuée'**
+  String get unassignedStatus;
+
+  /// No description provided for @paidAmount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Payé'**
+  String get paidAmount;
+
+  /// No description provided for @balanceDue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reste dû'**
+  String get balanceDue;
+
+  /// No description provided for @associatedRooms.
+  ///
+  /// In fr, this message translates to:
+  /// **'chambre(s) rattachée(s)'**
+  String get associatedRooms;
 }
 
 class _AppLocalizationsDelegate

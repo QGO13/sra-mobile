@@ -12,7 +12,7 @@ import 'package:sra_hotel/features/reservation_management/presentation/pages/boo
 import 'package:sra_hotel/features/reservation_management/presentation/pages/booking_items_page.dart';
 import 'package:sra_hotel/l10n/app_localizations.dart';
 
-/// Vue d'administration des réservations avec filtres et recherche.
+/// Vue d'administration des réservations enrichie avec bandeau KPIs et outils intuitifs.
 class AdminBookingsView extends StatefulWidget {
   const AdminBookingsView({super.key});
 
@@ -54,6 +54,8 @@ class _AdminBookingsViewState extends State<AdminBookingsView> {
     switch (filter) {
       case "confirmed":
         return booking.statutBooking == 'CONFIRME' || booking.statutBooking == 'CONFIRMEE';
+      case "pending":
+        return booking.statutBooking == 'EN_ATTENTE';
       case "past":
         final checkOutDate = DateTime.tryParse(booking.checkOut);
         return checkOutDate != null && checkOutDate.isBefore(today);
@@ -90,6 +92,7 @@ class _AdminBookingsViewState extends State<AdminBookingsView> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context)!;
+    final isWide = MediaQuery.of(context).size.width >= AppDimensions.breakpointMd;
 
     return BlocBuilder<AdminBookingBloc, AdminBookingState>(
       builder: (context, state) {
@@ -101,24 +104,42 @@ class _AdminBookingsViewState extends State<AdminBookingsView> {
             onRetry: () => context.read<AdminBookingBloc>().add(LoadAdminBookingsEvent()),
           );
         } else if (state is AdminBookingLoaded) {
-          final filteredBookings = state.bookings.where((booking) {
+          final allBookings = state.bookings;
+          final totalBookings = allBookings.length;
+          final confirmedCount = allBookings.where((b) => b.statutBooking == 'CONFIRME' || b.statutBooking == 'CONFIRMEE').length;
+          final pendingCount = allBookings.where((b) => b.statutBooking == 'EN_ATTENTE').length;
+          final totalRevenue = totalBookings > 0 ? allBookings.map((b) => b.prixTotal).reduce((a, b) => a + b) : 0.0;
+
+          final filteredBookings = allBookings.where((booking) {
             return _matchesFilter(booking, _selectedFilter) &&
                 _matchesSearch(booking, _searchQuery);
           }).toList();
 
           return Column(
             children: [
+              // ── Bandeau KPIs Supérieur ──
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMd, vertical: AppDimensions.spacingSm),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(l10n.bookingsTitle, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                  ],
+                padding: const EdgeInsets.all(AppDimensions.spacingMd),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final itemWidth = isWide ? (constraints.maxWidth - 30) / 4 : (constraints.maxWidth - 10) / 2;
+                    return Wrap(
+                      spacing: AppDimensions.spacingSm,
+                      runSpacing: AppDimensions.spacingSm,
+                      children: [
+                        _buildKpiChip(l10n.bookingsTitle, "$totalBookings", Icons.calendar_month, AppColors.champagneGold, isDark, itemWidth),
+                        _buildKpiChip(l10n.filterConfirmed, "$confirmedCount", Icons.check_circle_outline, AppColors.statusSuccess, isDark, itemWidth),
+                        _buildKpiChip(l10n.pendingStatus, "$pendingCount", Icons.hourglass_empty, AppColors.statusWarning, isDark, itemWidth),
+                        _buildKpiChip(l10n.totalRevenue, _formatCurrency(totalRevenue), Icons.account_balance_wallet_outlined, AppColors.champagneGold, isDark, itemWidth),
+                      ],
+                    );
+                  },
                 ),
               ),
+
+              // ── Barre de recherche ──
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMd, vertical: AppDimensions.spacingSm),
+                padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMd),
                 child: SraInput(
                   controller: _searchController,
                   placeholder: l10n.searchBookingsPlaceholder,
@@ -141,10 +162,14 @@ class _AdminBookingsViewState extends State<AdminBookingsView> {
                   },
                 ),
               ),
+              const SizedBox(height: AppDimensions.spacingSm),
+
+              // ── Chips de Filtrage par Statut ──
               SraFilterBar(
                 items: [
-                  SraFilterItem(id: 'all', label: l10n.filterAll),
-                  SraFilterItem(id: 'confirmed', label: l10n.filterConfirmed),
+                  SraFilterItem(id: 'all', label: "${l10n.filterAll} ($totalBookings)"),
+                  SraFilterItem(id: 'confirmed', label: "${l10n.filterConfirmed} ($confirmedCount)"),
+                  SraFilterItem(id: 'pending', label: "${l10n.pendingStatus} ($pendingCount)"),
                   SraFilterItem(id: 'past', label: l10n.filterPast),
                   SraFilterItem(id: 'cancelled', label: l10n.filterCancelled),
                   SraFilterItem(id: 'check_in', label: l10n.filterCheckIn),
@@ -158,6 +183,8 @@ class _AdminBookingsViewState extends State<AdminBookingsView> {
                 },
               ),
               const SizedBox(height: AppDimensions.spacingMd),
+
+              // ── Liste des Réservations ──
               Expanded(
                 child: filteredBookings.isEmpty
                     ? EmptyStateView(
@@ -183,7 +210,7 @@ class _AdminBookingsViewState extends State<AdminBookingsView> {
                         itemCount: filteredBookings.length,
                         padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMd),
                         maxCrossAxisExtent: 480,
-                        mainAxisExtent: 250,
+                        mainAxisExtent: 255,
                         itemBuilder: (context, index) {
                           final booking = filteredBookings[index];
                           final checkin = DateTime.tryParse(booking.checkIn) ?? DateTime.now();
@@ -196,6 +223,10 @@ class _AdminBookingsViewState extends State<AdminBookingsView> {
                           if (isConfirmed) statusText = l10n.effectueStatus;
                           if (isCancelled) statusText = l10n.cancelledStatus;
                           if (booking.statutBooking == 'EN_ATTENTE') statusText = l10n.pendingStatus;
+
+                          final roomNo = booking.lines.isNotEmpty && booking.lines[0].roomNumber != null
+                              ? booking.lines[0].roomNumber
+                              : null;
 
                           return Container(
                             margin: MediaQuery.of(context).size.width < AppDimensions.breakpointMd
@@ -241,6 +272,7 @@ class _AdminBookingsViewState extends State<AdminBookingsView> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
+                                    // ── Header Référence + Statut + Chambre Attribuée ──
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
@@ -251,29 +283,43 @@ class _AdminBookingsViewState extends State<AdminBookingsView> {
                                             color: AppColors.champagneGold,
                                           ),
                                         ),
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: AppDimensions.spacingSm - 2,
-                                            vertical: 3.0,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: isConfirmed
-                                                ? AppColors.statusSuccess.withValues(alpha: 0.12)
-                                                : (isCancelled
-                                                    ? AppColors.statusError.withValues(alpha: 0.12)
-                                                    : AppColors.statusWarning.withValues(alpha: 0.12)),
-                                            borderRadius: BorderRadius.circular(AppDimensions.radiusXs),
-                                          ),
-                                          child: Text(
-                                            statusText.toUpperCase(),
-                                            style: TextStyle(
-                                              fontSize: 9.5,
-                                              fontWeight: FontWeight.bold,
-                                              color: isConfirmed
-                                                  ? AppColors.statusSuccess
-                                                  : (isCancelled ? AppColors.statusError : AppColors.statusWarning),
+                                        Row(
+                                          children: [
+                                            if (roomNo != null)
+                                              Container(
+                                                margin: const EdgeInsets.only(right: 6),
+                                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.champagneGold.withValues(alpha: 0.15),
+                                                  borderRadius: BorderRadius.circular(AppDimensions.radiusXs),
+                                                ),
+                                                child: Text(
+                                                  "CH. $roomNo",
+                                                  style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold, color: AppColors.champagneGold),
+                                                ),
+                                              ),
+                                            Container(
+                                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                              decoration: BoxDecoration(
+                                                color: isConfirmed
+                                                    ? AppColors.statusSuccess.withValues(alpha: 0.12)
+                                                    : (isCancelled
+                                                        ? AppColors.statusError.withValues(alpha: 0.12)
+                                                        : AppColors.statusWarning.withValues(alpha: 0.12)),
+                                                borderRadius: BorderRadius.circular(AppDimensions.radiusXs),
+                                              ),
+                                              child: Text(
+                                                statusText.toUpperCase(),
+                                                style: TextStyle(
+                                                  fontSize: 9.5,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: isConfirmed
+                                                      ? AppColors.statusSuccess
+                                                      : (isCancelled ? AppColors.statusError : AppColors.statusWarning),
+                                                ),
+                                              ),
                                             ),
-                                          ),
+                                          ],
                                         ),
                                       ],
                                     ),
@@ -289,20 +335,20 @@ class _AdminBookingsViewState extends State<AdminBookingsView> {
                                               borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
                                               child: CachedNetworkImage(
                                                 imageUrl: _getBookingImageUrl(booking),
-                                                width: 84,
-                                                height: 84,
+                                                width: 80,
+                                                height: 80,
                                                 fit: BoxFit.cover,
                                                 placeholder: (context, url) => Container(
-                                                  width: 84,
-                                                  height: 84,
+                                                  width: 80,
+                                                  height: 80,
                                                   color: isDark ? AppColors.darkSurface : AppColors.fog,
                                                   child: const Center(
                                                     child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.champagneGold),
                                                   ),
                                                 ),
                                                 errorWidget: (context, url, error) => Container(
-                                                  width: 84,
-                                                  height: 84,
+                                                  width: 80,
+                                                  height: 80,
                                                   color: isDark ? AppColors.darkSurface : AppColors.fog,
                                                   child: const Icon(Icons.hotel, color: AppColors.champagneGold, size: 28),
                                                 ),
@@ -381,7 +427,7 @@ class _AdminBookingsViewState extends State<AdminBookingsView> {
                                                       Text(
                                                         _formatCurrency(booking.prixTotal),
                                                         style: AppTextStyles.titleMedium.copyWith(
-                                                          fontSize: 14.5,
+                                                          fontSize: 14,
                                                           fontWeight: FontWeight.bold,
                                                           color: AppColors.champagneGold,
                                                         ),
@@ -390,7 +436,7 @@ class _AdminBookingsViewState extends State<AdminBookingsView> {
                                                   ),
                                                 ],
                                               ),
-                                              const SizedBox(height: 8),
+                                              const SizedBox(height: 6),
                                               Text(
                                                 l10n.periodOfStay.toUpperCase(),
                                                 style: const TextStyle(
@@ -452,6 +498,52 @@ class _AdminBookingsViewState extends State<AdminBookingsView> {
 
         return const SizedBox();
       },
+    );
+  }
+
+  Widget _buildKpiChip(String label, String value, IconData icon, Color color, bool isDark, double width) {
+    return Container(
+      width: width,
+      padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingSm + 2, vertical: AppDimensions.spacingSm),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.deepBlue : Colors.white,
+        borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+        border: Border.all(color: isDark ? Colors.white10 : AppColors.softGrey),
+        boxShadow: const [AppShadows.shadowCard],
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.12),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, size: 16, color: color),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  value,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: color),
+                ),
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontSize: 10, color: AppColors.textMuted),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

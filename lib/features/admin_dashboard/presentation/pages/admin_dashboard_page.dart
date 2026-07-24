@@ -32,6 +32,7 @@ import 'package:sra_hotel/features/room_assignment/presentation/pages/room_assig
 import 'package:sra_hotel/features/equipment_management/presentation/bloc/equipment_bloc.dart';
 import 'package:sra_hotel/features/equipment_management/presentation/bloc/equipment_event.dart';
 import 'package:sra_hotel/features/equipment_management/presentation/pages/admin_equipments_view.dart';
+import 'package:sra_hotel/features/admin_dashboard/presentation/widgets/admin_sidebar_widget.dart';
 import 'package:sra_hotel/injection_container.dart' as di;
 import 'package:sra_hotel/l10n/app_localizations.dart';
 
@@ -55,7 +56,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   late final EquipmentBloc _equipmentBloc;
 
   int _currentMobileIndex = 0;
-  int _currentWideIndex = 0;
+  int _currentWideIndex = 1; // 1 = Chambres par défaut
   bool? _isSidebarExtended;
 
   @override
@@ -114,8 +115,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     final l10n = AppLocalizations.of(context)!;
     final isWide = MediaQuery.of(context).size.width >= 1024;
     final isLargeDesktop = MediaQuery.of(context).size.width >= 1280;
+    final sidebarExtended = _isSidebarExtended ?? isLargeDesktop;
 
-    // --- GRAND ÉCRAN (Sidebar) : 10 onglets directs ---
+    // --- GRAND ÉCRAN (Sidebar) : 11 destinations ---
     final wideTitles = [
       l10n.reportsTab,
       l10n.roomsTab,
@@ -150,7 +152,65 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       const AboutUsPage(),
     ];
 
-    // --- PETIT ÉCRAN (Mobile) : 4 onglets principaux + Menu ---
+    final sidebarItems = [
+      AdminSidebarItem(
+        icon: Icons.analytics_outlined,
+        selectedIcon: Icons.analytics,
+        label: l10n.reportsTab,
+      ),
+      AdminSidebarItem(
+        icon: Icons.king_bed_outlined,
+        selectedIcon: Icons.king_bed,
+        label: l10n.roomsTab,
+      ),
+      AdminSidebarItem(
+        icon: Icons.meeting_room_outlined,
+        selectedIcon: Icons.meeting_room,
+        label: l10n.roomTypesTab,
+      ),
+      AdminSidebarItem(
+        icon: Icons.event_note_outlined,
+        selectedIcon: Icons.event_note,
+        label: l10n.reservationsTab,
+      ),
+      AdminSidebarItem(
+        icon: Icons.assignment_turned_in_outlined,
+        selectedIcon: Icons.assignment_turned_in,
+        label: l10n.roomAssignmentTitle,
+      ),
+      AdminSidebarItem(
+        icon: Icons.receipt_long_outlined,
+        selectedIcon: Icons.receipt_long,
+        label: l10n.invoicesTab,
+      ),
+      AdminSidebarItem(
+        icon: Icons.room_service_outlined,
+        selectedIcon: Icons.room_service,
+        label: l10n.servicesTab,
+      ),
+      AdminSidebarItem(
+        icon: Icons.people_outline,
+        selectedIcon: Icons.people,
+        label: l10n.personnelTab,
+      ),
+      const AdminSidebarItem(
+        icon: Icons.electrical_services_outlined,
+        selectedIcon: Icons.electrical_services,
+        label: "Équipements",
+      ),
+      const AdminSidebarItem(
+        icon: Icons.settings_outlined,
+        selectedIcon: Icons.settings,
+        label: "Paramètres",
+      ),
+      const AdminSidebarItem(
+        icon: Icons.info_outline,
+        selectedIcon: Icons.info,
+        label: "À propos de nous",
+      ),
+    ];
+
+    // --- PETIT ÉCRAN (Mobile) : 5 onglets principaux ---
     final mobileTitles = [
       l10n.reportsTab,
       l10n.roomsTab,
@@ -243,115 +303,17 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         body: isWide
             ? Row(
                 children: [
-                  SingleChildScrollView(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height - AppBar().preferredSize.height),
-                      child: IntrinsicHeight(
-                        child: NavigationRail(
-                          extended: _isSidebarExtended ?? isLargeDesktop,
-                          leading: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: Icon((_isSidebarExtended ?? isLargeDesktop)
-                                    ? Icons.menu_open_outlined
-                                    : Icons.menu_outlined),
-                                color: AppColors.champagneGold,
-                                onPressed: () {
-                                  setState(() {
-                                    _isSidebarExtended = !(_isSidebarExtended ?? isLargeDesktop);
-                                  });
-                                },
-                              ),
-                              const SizedBox(height: AppDimensions.spacingSm),
-                            ],
-                          ),
-                          selectedIndex: _currentWideIndex,
-                          onDestinationSelected: _selectWideIndex,
-                          indicatorColor: AppColors.champagneGold.withValues(
-                            alpha: 0.15,
-                          ),
-                          selectedIconTheme: const IconThemeData(
-                            color: AppColors.champagneGold,
-                          ),
-                          unselectedIconTheme: const IconThemeData(
-                            color: AppColors.textMuted,
-                          ),
-                          selectedLabelTextStyle: const TextStyle(
-                            color: AppColors.champagneGold,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          unselectedLabelTextStyle: const TextStyle(
-                            color: AppColors.textMuted,
-                          ),
-                          labelType: (_isSidebarExtended ?? isLargeDesktop)
-                              ? NavigationRailLabelType.none
-                              : NavigationRailLabelType.all,
-                          backgroundColor: theme.brightness == Brightness.dark
-                              ? AppColors.imperialNightBlue
-                              : AppColors.surfaceLight,
-                          destinations: [
-                            NavigationRailDestination(
-                              icon: const Icon(Icons.analytics_outlined),
-                              selectedIcon: const Icon(Icons.analytics),
-                              label: Text(l10n.reportsTab),
-                            ),
-                            NavigationRailDestination(
-                              icon: const Icon(Icons.king_bed_outlined),
-                              selectedIcon: const Icon(Icons.king_bed),
-                              label: Text(l10n.roomsTab),
-                            ),
-                            NavigationRailDestination(
-                              icon: const Icon(Icons.meeting_room_outlined),
-                              selectedIcon: const Icon(Icons.meeting_room),
-                              label: Text(l10n.roomTypesTab),
-                            ),
-                            NavigationRailDestination(
-                              icon: const Icon(Icons.event_note_outlined),
-                              selectedIcon: const Icon(Icons.event_note),
-                              label: Text(l10n.reservationsTab),
-                            ),
-                            NavigationRailDestination(
-                              icon: const Icon(Icons.assignment_turned_in_outlined),
-                              selectedIcon: const Icon(Icons.assignment_turned_in),
-                              label: Text(l10n.roomAssignmentTitle),
-                            ),
-                            NavigationRailDestination(
-                              icon: const Icon(Icons.receipt_long_outlined),
-                              selectedIcon: const Icon(Icons.receipt_long),
-                              label: Text(l10n.invoicesTab),
-                            ),
-                            NavigationRailDestination(
-                              icon: const Icon(Icons.room_service_outlined),
-                              selectedIcon: const Icon(Icons.room_service),
-                              label: Text(l10n.servicesTab),
-                            ),
-                            NavigationRailDestination(
-                              icon: const Icon(Icons.people_outline),
-                              selectedIcon: const Icon(Icons.people),
-                              label: Text(l10n.personnelTab),
-                            ),
-                            const NavigationRailDestination(
-                              icon: Icon(Icons.electrical_services_outlined),
-                              selectedIcon: Icon(Icons.electrical_services),
-                              label: Text("Équipements"),
-                            ),
-                            const NavigationRailDestination(
-                              icon: Icon(Icons.settings_outlined),
-                              selectedIcon: Icon(Icons.settings),
-                              label: Text("Paramètres"),
-                            ),
-                            const NavigationRailDestination(
-                              icon: Icon(Icons.info_outline),
-                              selectedIcon: Icon(Icons.info),
-                              label: Text("À propos de nous"),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                  AdminSidebarWidget(
+                    isExtended: sidebarExtended,
+                    selectedIndex: _currentWideIndex,
+                    onItemSelected: _selectWideIndex,
+                    onToggleExtend: () {
+                      setState(() {
+                        _isSidebarExtended = !sidebarExtended;
+                      });
+                    },
+                    items: sidebarItems,
                   ),
-                  const VerticalDivider(width: 1, thickness: 1),
                   Expanded(
                     child: currentBody,
                   ),

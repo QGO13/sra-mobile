@@ -110,99 +110,113 @@ class _AuthLeftPanel extends StatelessWidget {
           ),
 
           // ── Contenu principal du panneau ──
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // En-tête : Marque & Commutateur de Thème
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const SraLogo(height: AppDimensions.avatarSizeLg),
-                  Row(
+          LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: constraints.maxHeight,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(
-                        icon: Icon(
-                          Theme.of(context).brightness == Brightness.dark
-                              ? Icons.wb_sunny_outlined
-                              : Icons.dark_mode_outlined,
-                          color: AppColors.gold,
-                        ),
-                        onPressed: () {
-                          final current = MyApp.getThemeMode(context);
-                          final next = current == ThemeMode.dark
-                              ? ThemeMode.light
-                              : ThemeMode.dark;
-                          MyApp.setThemeMode(context, next);
-                        },
+                      // En-tête : Marque & Commutateur de Thème
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const SraLogo(height: AppDimensions.avatarSizeLg),
+                          Row(
+                            children: [
+                              IconButton(
+                                icon: Icon(
+                                  Theme.of(context).brightness == Brightness.dark
+                                      ? Icons.wb_sunny_outlined
+                                      : Icons.dark_mode_outlined,
+                                  color: AppColors.gold,
+                                ),
+                                onPressed: () {
+                                  final current = MyApp.getThemeMode(context);
+                                  final next = current == ThemeMode.dark
+                                      ? ThemeMode.light
+                                      : ThemeMode.dark;
+                                  MyApp.setThemeMode(context, next);
+                                },
+                              ),
+                              LanguageSelector(
+                                currentLocale: currentLocale,
+                                onLocaleChanged: (locale) => MyApp.setLocale(context, locale),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                      LanguageSelector(
-                        currentLocale: currentLocale,
-                        onLocaleChanged: (locale) => MyApp.setLocale(context, locale),
+
+                      // Centre : Titre & Points de confiance
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: AppDimensions.spacingLg),
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 510),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "ESPACE SÉCURISÉ",
+                                style: AppTextStyles.labelUppercase.copyWith(
+                                  color: AppColors.gold,
+                                  letterSpacing: 2.0,
+                                ),
+                              ),
+                              AppDimensions.vGapSm,
+                              Text(
+                                "L’hospitalité commence par la confiance.",
+                                style: AppTextStyles.displayXl.copyWith(
+                                  color: AppColors.white,
+                                  fontSize: 46,
+                                  height: 1.05,
+                                ),
+                              ),
+                              AppDimensions.vGapLg,
+                              Text(
+                                "Accédez à vos outils, vos séjours et vos services en toute simplicité, avec une vérification pensée pour votre sécurité.",
+                                style: AppTextStyles.bodyMedium.copyWith(
+                                  color: AppColors.white.withValues(alpha: 0.75),
+                                  height: 1.6,
+                                ),
+                              ),
+                              AppDimensions.vGapXl,
+                              const Wrap(
+                                spacing: AppDimensions.spacingLg,
+                                runSpacing: AppDimensions.spacingSm,
+                                children: [
+                                  _TrustPoint(
+                                    icon: Icons.shield_outlined,
+                                    label: "Accès chiffré",
+                                  ),
+                                  _TrustPoint(
+                                    icon: Icons.vpn_key_outlined,
+                                    label: "Vérification renforcée",
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      // Pied de page
+                      Text(
+                        "© 2026 Sweet Rest Aparthotel · Abidjan",
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: AppColors.white.withValues(alpha: 0.45),
+                        ),
                       ),
                     ],
                   ),
-                ],
-              ),
-
-              // Centre : Titre & Points de confiance
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 510),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      "ESPACE SÉCURISÉ",
-                      style: AppTextStyles.labelUppercase.copyWith(
-                        color: AppColors.gold,
-                        letterSpacing: 2.0,
-                      ),
-                    ),
-                    AppDimensions.vGapSm,
-                    Text(
-                      "L’hospitalité commence par la confiance.",
-                      style: AppTextStyles.displayXl.copyWith(
-                        color: AppColors.white,
-                        fontSize: 46,
-                        height: 1.05,
-                      ),
-                    ),
-                    AppDimensions.vGapLg,
-                    Text(
-                      "Accédez à vos outils, vos séjours et vos services en toute simplicité, avec une vérification pensée pour votre sécurité.",
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: AppColors.white.withValues(alpha: 0.75),
-                        height: 1.6,
-                      ),
-                    ),
-                    AppDimensions.vGapXl,
-                    const Wrap(
-                      spacing: AppDimensions.spacingLg,
-                      runSpacing: AppDimensions.spacingSm,
-                      children: [
-                        _TrustPoint(
-                          icon: Icons.shield_outlined,
-                          label: "Accès chiffré",
-                        ),
-                        _TrustPoint(
-                          icon: Icons.vpn_key_outlined,
-                          label: "Vérification renforcée",
-                        ),
-                      ],
-                    ),
-                  ],
                 ),
-              ),
-
-              // Pied de page
-              Text(
-                "© 2026 Sweet Rest Aparthotel · Abidjan",
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.white.withValues(alpha: 0.45),
-                ),
-              ),
-            ],
+              );
+            },
           ),
         ],
       ),

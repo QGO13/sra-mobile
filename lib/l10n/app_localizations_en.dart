@@ -1475,4 +1475,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String roomAddedToCartDesc(String roomName, int nights) {
     return 'Your accommodation \'$roomName\' for $nights night(s) has been added to your cart. Breakfast is complimentary!';
   }
+
+  @override
+  String get unassignedBookingsBanner => 'Unassigned bookings';
+
+  @override
+  String get totalRooms => 'Total Rooms';
+
+  @override
+  String get occupancyRateLabel => 'Occupancy Rate';
+
+  @override
+  String get avgPricePerNight => 'Avg Price / night';
+
+  @override
+  String get totalCapacity => 'Total Capacity';
+
+  @override
+  String get totalRevenue => 'Total Revenue';
+
+  @override
+  String get viewModeGrid => 'Grid';
+
+  @override
+  String get viewModeTable => 'Table';
+
+  @override
+  String get unassignedStatus => 'Unassigned';
+
+  @override
+  String get paidAmount => 'Paid';
+
+  @override
+  String get balanceDue => 'Balance Due';
+
+  @override
+  String get associatedRooms => 'associated room(s)';
 }

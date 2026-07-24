@@ -506,5 +506,17 @@
   "availableSingular": "{count} disponible",
   "availablePlural": "{count} disponibles",
   "startingFromPerNight": "desde {price} / noche",
-  "roomAddedToCartDesc": "¡Su alojamiento '{roomName}' para {nights} noche(s) ha sido añadido a su carrito. El desayuno es gratuito!"
+  "roomAddedToCartDesc": "¡Su alojamiento '{roomName}' para {nights} noche(s) ha sido añadido a su carrito. El desayuno es gratuito!",
+  "unassignedBookingsBanner": "Reservas por asignar",
+  "totalRooms": "Total Habitaciones",
+  "occupancyRateLabel": "Tasa de Ocupación",
+  "avgPricePerNight": "Precio Medio / noche",
+  "totalCapacity": "Capacidad Total",
+  "totalRevenue": "Ingresos Totales",
+  "viewModeGrid": "Cuadrícula",
+  "viewModeTable": "Tabla",
+  "unassignedStatus": "No asignada",
+  "paidAmount": "Pagado",
+  "balanceDue": "Pendiente",
+  "associatedRooms": "habitación(es) asociada(s)"
 }

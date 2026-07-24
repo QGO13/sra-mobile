@@ -506,5 +506,17 @@
   "availableSingular": "{count} متوفرة",
   "availablePlural": "{count} متوفرة",
   "startingFromPerNight": "ابتداءً من {price} / ليلة",
-  "roomAddedToCartDesc": "تمت إضافة إقامتكم '{roomName}' لـ {nights} ليلة إلى السلة. الإفطار مجاني!"
+  "roomAddedToCartDesc": "تمت إضافة إقامتكم '{roomName}' لـ {nights} ليلة إلى السلة. الإفطار مجاني!",
+  "unassignedBookingsBanner": "الحجوزات المراد تعيينها",
+  "totalRooms": "إجمالي الغرف",
+  "occupancyRateLabel": "نسبة الإشغال",
+  "avgPricePerNight": "متوسط السعر / ليلة",
+  "totalCapacity": "السعة الإجمالية",
+  "totalRevenue": "إجمالي الإيرادات",
+  "viewModeGrid": "شبكة",
+  "viewModeTable": "جدول",
+  "unassignedStatus": "غير معينة",
+  "paidAmount": "مدفوع",
+  "balanceDue": "المتبقي",
+  "associatedRooms": "غرفة (غرف) مرتبطة"
 }

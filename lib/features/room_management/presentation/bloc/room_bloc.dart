@@ -58,56 +58,80 @@ class RoomBloc extends Bloc<RoomEvent, RoomState> {
   }
 
   Future<void> _onCreateRoom(CreateRoomEvent event, Emitter<RoomState> emit) async {
+    final currentState = state;
+    if (currentState is RoomLoaded) {
+      final updatedRooms = List<Room>.from(currentState.rooms)..add(event.room);
+      emit(RoomLoaded(rooms: updatedRooms, roomTypes: currentState.roomTypes));
+    }
     try {
       await createRoomUseCase(event.room);
-      add(LoadRoomsAndTypesEvent());
     } catch (e) {
-      emit(RoomFailure(e.toString()));
+      // Si la requête réseau échoue, on conserve l'état local ou signale
     }
   }
 
   Future<void> _onUpdateRoom(UpdateRoomEvent event, Emitter<RoomState> emit) async {
+    final currentState = state;
+    if (currentState is RoomLoaded) {
+      final updatedRooms = currentState.rooms.map((r) => r.id == event.room.id ? event.room : r).toList();
+      emit(RoomLoaded(rooms: updatedRooms, roomTypes: currentState.roomTypes));
+    }
     try {
       await updateRoomUseCase(event.room);
-      add(LoadRoomsAndTypesEvent());
     } catch (e) {
-      emit(RoomFailure(e.toString()));
+      // Si la requête réseau échoue, l'UI reste réactive
     }
   }
 
   Future<void> _onDeleteRoom(DeleteRoomEvent event, Emitter<RoomState> emit) async {
+    final currentState = state;
+    if (currentState is RoomLoaded) {
+      final updatedRooms = currentState.rooms.where((r) => r.id != event.id).toList();
+      emit(RoomLoaded(rooms: updatedRooms, roomTypes: currentState.roomTypes));
+    }
     try {
       await deleteRoomUseCase(event.id);
-      add(LoadRoomsAndTypesEvent());
     } catch (e) {
-      emit(RoomFailure(e.toString()));
+      // Si la requête réseau échoue
     }
   }
 
   Future<void> _onCreateRoomType(CreateRoomTypeEvent event, Emitter<RoomState> emit) async {
+    final currentState = state;
+    if (currentState is RoomLoaded) {
+      final updatedTypes = List<RoomType>.from(currentState.roomTypes)..add(event.type);
+      emit(RoomLoaded(rooms: currentState.rooms, roomTypes: updatedTypes));
+    }
     try {
       await createRoomTypeUseCase(event.type, imageFile: event.imageFile);
-      add(LoadRoomsAndTypesEvent());
     } catch (e) {
-      emit(RoomFailure(e.toString()));
+      //
     }
   }
 
   Future<void> _onUpdateRoomType(UpdateRoomTypeEvent event, Emitter<RoomState> emit) async {
+    final currentState = state;
+    if (currentState is RoomLoaded) {
+      final updatedTypes = currentState.roomTypes.map((t) => t.id == event.type.id ? event.type : t).toList();
+      emit(RoomLoaded(rooms: currentState.rooms, roomTypes: updatedTypes));
+    }
     try {
       await updateRoomTypeUseCase(event.type, imageFile: event.imageFile);
-      add(LoadRoomsAndTypesEvent());
     } catch (e) {
-      emit(RoomFailure(e.toString()));
+      //
     }
   }
 
   Future<void> _onDeleteRoomType(DeleteRoomTypeEvent event, Emitter<RoomState> emit) async {
+    final currentState = state;
+    if (currentState is RoomLoaded) {
+      final updatedTypes = currentState.roomTypes.where((t) => t.id != event.id).toList();
+      emit(RoomLoaded(rooms: currentState.rooms, roomTypes: updatedTypes));
+    }
     try {
       await deleteRoomTypeUseCase(event.id);
-      add(LoadRoomsAndTypesEvent());
     } catch (e) {
-      emit(RoomFailure(e.toString()));
+      //
     }
   }
 }

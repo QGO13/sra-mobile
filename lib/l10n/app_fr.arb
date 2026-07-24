@@ -564,5 +564,17 @@
       "roomName": { "type": "String" },
       "nights": { "type": "int" }
     }
-  }
+  },
+  "unassignedBookingsBanner": "Réservations à attribuer",
+  "totalRooms": "Total Chambres",
+  "occupancyRateLabel": "Taux d'occupation",
+  "avgPricePerNight": "Prix moyen / nuit",
+  "totalCapacity": "Capacité d'accueil",
+  "totalRevenue": "Chiffre d'affaires",
+  "viewModeGrid": "Grille",
+  "viewModeTable": "Tableau",
+  "unassignedStatus": "Non attribuée",
+  "paidAmount": "Payé",
+  "balanceDue": "Reste dû",
+  "associatedRooms": "chambre(s) rattachée(s)"
 }

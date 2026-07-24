@@ -84,6 +84,7 @@ class AssignmentKanbanWidget extends StatelessWidget {
           margin: const EdgeInsets.only(right: AppDimensions.spacingMd),
           decoration: BoxDecoration(
             color: isDark ? AppColors.darkCard : AppColors.surfaceLight,
+            borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
             border: Border.all(color: isDark ? Colors.white10 : AppColors.mist),
           ),
           child: Column(
@@ -95,19 +96,26 @@ class AssignmentKanbanWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(color: isDark ? Colors.white10 : AppColors.mist),
-                    left: BorderSide(color: colColor, width: 3),
+                    left: BorderSide(color: colColor, width: 3.5),
                   ),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      _getColumnTitle(colStatus, l10n).toUpperCase(),
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11, letterSpacing: 0.5),
+                    Expanded(
+                      child: Text(
+                        _getColumnTitle(colStatus, l10n).toUpperCase(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11, letterSpacing: 0.5),
+                      ),
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      color: colColor.withValues(alpha: 0.15),
+                      decoration: BoxDecoration(
+                        color: colColor.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
                       child: Text(
                         colBookings.length.toString(),
                         style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: colColor),
@@ -133,9 +141,11 @@ class AssignmentKanbanWidget extends StatelessWidget {
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         side: BorderSide(color: isDark ? Colors.white10 : AppColors.mist),
+                        borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
                       ),
                       color: isDark ? AppColors.darkSurface : Colors.white,
                       child: InkWell(
+                        borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
                         onTap: () {
                           showDialog(
                             context: context,
@@ -148,83 +158,112 @@ class AssignmentKanbanWidget extends StatelessWidget {
                           );
                         },
                         child: Padding(
-                          padding: const EdgeInsets.all(12),
+                          padding: const EdgeInsets.all(10),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              // Reference & Room Number (SÉCURISÉ CONTRE LES OVERFLOWS)
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    booking.reference,
-                                    style: AppTextStyles.monospace.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 11,
-                                      color: AppColors.gold,
-                                    ),
-                                  ),
-                                  if (roomNo != null)
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                                      color: AppColors.gold.withValues(alpha: 0.1),
-                                      child: Text(
-                                        "Ch. $roomNo",
-                                        style: const TextStyle(fontSize: 9, color: AppColors.gold, fontWeight: FontWeight.bold),
+                                  Expanded(
+                                    child: Text(
+                                      booking.reference,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: AppTextStyles.monospace.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 10.5,
+                                        color: AppColors.gold,
                                       ),
                                     ),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                                    decoration: BoxDecoration(
+                                      color: (roomNo != null ? AppColors.gold : AppColors.statusWarning).withValues(alpha: 0.12),
+                                      borderRadius: BorderRadius.circular(3),
+                                    ),
+                                    child: Text(
+                                      roomNo != null ? "Ch. $roomNo" : "Non ass.",
+                                      style: TextStyle(
+                                        fontSize: 9,
+                                        color: roomNo != null ? AppColors.gold : AppColors.statusWarning,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
-                              const SizedBox(height: 6),
+                              const SizedBox(height: 5),
+
+                              // Guest Name
                               Text(
                                 booking.clientNom,
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5),
                               ),
-                              const SizedBox(height: 4),
+                              const SizedBox(height: 3),
+
+                              // Stay info & date range
                               Text(
                                 "${booking.typeChambre} • $dateRange",
-                                style: const TextStyle(color: AppColors.inkMuted, fontSize: 11),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(color: AppColors.inkMuted, fontSize: 10.5),
                               ),
-                              const Divider(height: 16),
+                              const Divider(height: 12),
+
+                              // Occupants & Status shift menu (SÉCURISÉ CONTRE LES OVERFLOWS)
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    "${booking.adultes} Ad. / ${(booking.enfants ?? 0)} Enf.",
-                                    style: const TextStyle(fontSize: 10, color: AppColors.inkMuted),
+                                  Expanded(
+                                    child: Text(
+                                      "${booking.adultes} Ad. / ${(booking.enfants ?? 0)} Enf.",
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(fontSize: 10, color: AppColors.inkMuted),
+                                    ),
                                   ),
-                                  // Quick status shift popup
-                                  PopupMenuButton<String>(
-                                    icon: const Icon(Icons.arrow_forward, size: 16, color: AppColors.gold),
-                                    padding: EdgeInsets.zero,
-                                    constraints: const BoxConstraints(minWidth: 120),
-                                    onSelected: (newStatus) {
-                                      final updated = Booking(
-                                        id: booking.id,
-                                        reference: booking.reference,
-                                        clientNom: booking.clientNom,
-                                        typeChambre: booking.typeChambre,
-                                        checkIn: booking.checkIn,
-                                        checkOut: booking.checkOut,
-                                        adultes: booking.adultes,
-                                        enfants: booking.enfants,
-                                        statutBooking: newStatus,
-                                        prixTotal: booking.prixTotal,
-                                        lines: booking.lines,
-                                      );
-                                      onBookingUpdated(updated);
-                                    },
-                                    itemBuilder: (context) {
-                                      return columns
-                                          .where((s) => s != colStatus)
-                                          .map((s) => PopupMenuItem<String>(
-                                                value: s,
-                                                child: Text(
-                                                  "Déplacer vers ${_getColumnTitle(s, l10n)}",
-                                                  style: const TextStyle(fontSize: 11),
-                                                ),
-                                              ))
-                                          .toList();
-                                    },
+                                  SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: PopupMenuButton<String>(
+                                      icon: const Icon(Icons.arrow_forward_ios, size: 12, color: AppColors.gold),
+                                      padding: EdgeInsets.zero,
+                                      constraints: const BoxConstraints(minWidth: 140),
+                                      onSelected: (newStatus) {
+                                        final updated = Booking(
+                                          id: booking.id,
+                                          reference: booking.reference,
+                                          clientNom: booking.clientNom,
+                                          typeChambre: booking.typeChambre,
+                                          checkIn: booking.checkIn,
+                                          checkOut: booking.checkOut,
+                                          adultes: booking.adultes,
+                                          enfants: booking.enfants,
+                                          statutBooking: newStatus,
+                                          prixTotal: booking.prixTotal,
+                                          lines: booking.lines,
+                                        );
+                                        onBookingUpdated(updated);
+                                      },
+                                      itemBuilder: (context) {
+                                        return columns
+                                            .where((s) => s != colStatus)
+                                            .map((s) => PopupMenuItem<String>(
+                                                  value: s,
+                                                  child: Text(
+                                                    "Passer à ${_getColumnTitle(s, l10n)}",
+                                                    style: const TextStyle(fontSize: 11),
+                                                  ),
+                                                ))
+                                            .toList();
+                                      },
+                                    ),
                                   ),
                                 ],
                               ),

@@ -189,6 +189,8 @@ class _VisioPlanningWidgetState extends State<VisioPlanningWidget> {
                       side: const BorderSide(color: AppColors.gold, width: 1),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusFull)),
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                     child: Text(l10n.todayLabel.toUpperCase(), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                   ),

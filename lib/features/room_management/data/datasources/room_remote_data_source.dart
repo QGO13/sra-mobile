@@ -51,22 +51,24 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
   @override
   Future<RoomModel> createRoom(RoomModel room) async {
     final response = await apiClient.post('/rooms/', data: room.toJson());
+    await apiCache.clear('rooms');
     return RoomModel.fromJson(response.data as Map<String, dynamic>);
   }
 
   @override
   Future<RoomModel> updateRoom(RoomModel room) async {
-    // Le backend attend un PATCH sur /rooms/{id}
     final response = await apiClient.dio.patch(
       '/rooms/${room.id}',
       data: room.toJson(),
     );
+    await apiCache.clear('rooms');
     return RoomModel.fromJson(response.data as Map<String, dynamic>);
   }
 
   @override
   Future<void> deleteRoom(String id) async {
     await apiClient.delete('/rooms/$id');
+    await apiCache.clear('rooms');
   }
 
   @override
@@ -112,6 +114,7 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
       '/room-types/',
       data: imageFile != null ? FormData.fromMap(map) : type.toJson(),
     );
+    await apiCache.clear('room_types');
     return RoomTypeModel.fromJson(response.data as Map<String, dynamic>);
   }
 
@@ -135,11 +138,13 @@ class RoomRemoteDataSourceImpl implements RoomRemoteDataSource {
       '/room-types/${type.id}',
       data: imageFile != null ? FormData.fromMap(map) : type.toJson(),
     );
+    await apiCache.clear('room_types');
     return RoomTypeModel.fromJson(response.data as Map<String, dynamic>);
   }
 
   @override
   Future<void> deleteRoomType(String id) async {
     await apiClient.delete('/room-types/$id');
+    await apiCache.clear('room_types');
   }
 }

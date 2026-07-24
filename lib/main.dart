@@ -181,7 +181,7 @@ class SraWelcomePage extends StatelessWidget {
                   }
                 },
                 builder: (context, state) {
-                  return const LoadingWidget(label: "Initialisation de la session...");
+                  return LoadingIndicator();
                 },
               ),
               const SizedBox(height: 48),
