@@ -120,6 +120,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get typeLabel => 'Type';
 
   @override
+  String get roomInitialStatusLabel => 'Initial status';
+
+  @override
+  String get roomStatusAvailable => 'Available';
+
+  @override
+  String get roomStatusToClean => 'To clean';
+
+  @override
+  String get roomStatusMaintenance => 'Maintenance';
+
+  @override
   String get requiredField => 'Required';
 
   @override

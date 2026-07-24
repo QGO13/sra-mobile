@@ -120,6 +120,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get typeLabel => 'النوع';
 
   @override
+  String get roomInitialStatusLabel => 'الحالة الأولية';
+
+  @override
+  String get roomStatusAvailable => 'متاحة';
+
+  @override
+  String get roomStatusToClean => 'بحاجة للتنظيف';
+
+  @override
+  String get roomStatusMaintenance => 'صيانة';
+
+  @override
   String get requiredField => 'مطلوب';
 
   @override

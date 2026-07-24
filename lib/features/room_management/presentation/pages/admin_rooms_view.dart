@@ -97,24 +97,39 @@ class _AdminRoomsViewState extends State<AdminRoomsView> {
                         itemCount: filteredRooms.length,
                         padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMd),
                         maxCrossAxisExtent: 450,
-                        mainAxisExtent: 110,
+                        mainAxisExtent: 128,
                         itemBuilder: (context, index) {
                           final room = filteredRooms[index];
                           final isOccupied = room.occupee == 1;
 
-                          Color statusColor = AppColors.statusSuccess;
+                          // Mapping sémantique aligné sur statusLabels de RoomsPage.tsx :
+                          // available -> success, occupied -> info, cleaning -> warning, maintenance -> error.
+                          // "Hors service" est un état réel supplémentaire, absent de la maquette (divergence §7).
+                          SraStatusType statusType = SraStatusType.success;
+                          Color? statusCustomColor;
+                          String statusLabel;
                           if (room.estActive == 0) {
-                            statusColor = AppColors.textMuted;
+                            statusType = SraStatusType.custom;
+                            statusCustomColor = AppColors.textMuted;
+                            statusLabel = l10n.horsService;
                           } else if (isOccupied) {
-                            statusColor = AppColors.champagneGold;
-                          } else if (room.statutMenage == 'SALE') {
-                            statusColor = AppColors.statusError;
+                            statusType = SraStatusType.info;
+                            statusLabel = l10n.occupee;
+                          } else if (room.statutMenage == 'MAINTENANCE') {
+                            statusType = SraStatusType.error;
+                            statusLabel = l10n.dirtyStatus;
+                          } else if (room.statutMenage == 'SALE' || room.statutMenage == 'A_NETTOYER') {
+                            statusType = SraStatusType.warning;
+                            statusLabel = l10n.dirtyStatus;
+                          } else if (room.statutMenage == 'EN_COURS') {
+                            statusType = SraStatusType.warning;
+                            statusLabel = l10n.cleaningStatus;
+                          } else {
+                            statusType = SraStatusType.success;
+                            statusLabel = l10n.libre;
                           }
 
-                          String localizedMenage = room.statutMenage;
-                          if (room.statutMenage == 'PROPRE') localizedMenage = l10n.cleanStatus;
-                          if (room.statutMenage == 'SALE') localizedMenage = l10n.dirtyStatus;
-                          if (room.statutMenage == 'EN_COURS') localizedMenage = l10n.cleaningStatus;
+                          final isPremiumType = room.type == 'Premium' || room.type == 'Suite';
 
                           return Container(
                             margin: MediaQuery.of(context).size.width < AppDimensions.breakpointMd
@@ -142,33 +157,30 @@ class _AdminRoomsViewState extends State<AdminRoomsView> {
                                 ),
                                 const SizedBox(height: AppDimensions.spacingXs / 2),
                                 Text(
-                                  "${room.type} • ${l10n.floorLabel} ${room.etage}",
+                                  "${l10n.floorLabel} ${room.etage}",
                                   style: const TextStyle(color: AppColors.textMuted, fontSize: 12.5),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                                const SizedBox(height: AppDimensions.spacingXs),
-                                Row(
+                                const SizedBox(height: AppDimensions.spacingXs + 2),
+                                Wrap(
+                                  spacing: AppDimensions.spacingXs + 2,
+                                  runSpacing: AppDimensions.spacingXs,
                                   children: [
-                                    Container(
-                                      width: 8,
-                                      height: 8,
-                                      decoration: BoxDecoration(color: statusColor, shape: BoxShape.circle),
+                                    // Pastille "Typologie" — équivalent StatusPill tone gold/neutral
+                                    SraStatusBadge.custom(
+                                      label: room.type,
+                                      color: isPremiumType ? AppColors.gold : AppColors.inkMuted,
+                                      dot: false,
+                                      small: true,
                                     ),
-                                    const SizedBox(width: AppDimensions.spacingSm - 2),
-                                    Expanded(
-                                      child: Text(
-                                        room.estActive == 0
-                                            ? l10n.horsService
-                                            : (isOccupied ? l10n.occupee : "${l10n.libre} ($localizedMenage)"),
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                          color: statusColor,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
+                                    // Pastille de statut — équivalent StatusPill success/info/warning/error
+                                    SraStatusBadge(
+                                      label: statusLabel,
+                                      type: statusType,
+                                      customColor: statusCustomColor,
+                                      dot: false,
+                                      small: true,
                                     ),
                                   ],
                                 ),
@@ -220,6 +232,9 @@ class _AdminRoomsViewState extends State<AdminRoomsView> {
     final noController = TextEditingController(text: room?.numero ?? '');
     final floorController = TextEditingController(text: room?.etage.toString() ?? '');
     String? selectedTypeId = room?.idTypeDeChambre ?? (roomTypes.isNotEmpty ? roomTypes.first.id : null);
+    // Statut initial — équivalent du Select "Statut initial" de RoomDialog.tsx (Disponible/À nettoyer/Maintenance).
+    // 'PROPRE' est mappé vers l'état backend EN_COURS (disponible) par RoomModel.toJson().
+    String selectedStatus = room?.statutMenage ?? 'PROPRE';
     final l10n = AppLocalizations.of(context)!;
 
     showDialog(
@@ -263,6 +278,23 @@ class _AdminRoomsViewState extends State<AdminRoomsView> {
                     if (val != null) selectedTypeId = val;
                   },
                 ),
+                if (room == null) ...[
+                  const SizedBox(height: AppDimensions.spacingMd),
+                  SraDropdown(
+                    value: selectedStatus,
+                    label: l10n.roomInitialStatusLabel,
+                    placeholder: l10n.selectOption,
+                    items: const ['PROPRE', 'SALE', 'MAINTENANCE'],
+                    itemLabels: {
+                      'PROPRE': l10n.roomStatusAvailable,
+                      'SALE': l10n.roomStatusToClean,
+                      'MAINTENANCE': l10n.roomStatusMaintenance,
+                    },
+                    onChanged: (val) {
+                      if (val != null) selectedStatus = val;
+                    },
+                  ),
+                ],
               ],
             ),
           ),
@@ -284,7 +316,7 @@ class _AdminRoomsViewState extends State<AdminRoomsView> {
                     idTypeDeChambre: selectedTypeId!,
                     type: typ.nom,
                     etage: int.parse(floorController.text),
-                    statutMenage: room?.statutMenage ?? "PROPRE",
+                    statutMenage: room == null ? selectedStatus : room.statutMenage,
                     estActive: room?.estActive ?? 1,
                     occupee: room?.occupee ?? 0,
                     clientActuel: room?.clientActuel,

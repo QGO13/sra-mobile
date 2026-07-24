@@ -120,6 +120,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get typeLabel => '客房类型';
 
   @override
+  String get roomInitialStatusLabel => '初始状态';
+
+  @override
+  String get roomStatusAvailable => '可用';
+
+  @override
+  String get roomStatusToClean => '待清洁';
+
+  @override
+  String get roomStatusMaintenance => '维护';
+
+  @override
   String get requiredField => '必填项';
 
   @override

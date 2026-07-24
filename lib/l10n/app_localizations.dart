@@ -328,6 +328,30 @@ abstract class AppLocalizations {
   /// **'Typologie'**
   String get typeLabel;
 
+  /// No description provided for @roomInitialStatusLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Statut initial'**
+  String get roomInitialStatusLabel;
+
+  /// No description provided for @roomStatusAvailable.
+  ///
+  /// In fr, this message translates to:
+  /// **'Disponible'**
+  String get roomStatusAvailable;
+
+  /// No description provided for @roomStatusToClean.
+  ///
+  /// In fr, this message translates to:
+  /// **'À nettoyer'**
+  String get roomStatusToClean;
+
+  /// No description provided for @roomStatusMaintenance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Maintenance'**
+  String get roomStatusMaintenance;
+
   /// No description provided for @requiredField.
   ///
   /// In fr, this message translates to:

@@ -120,6 +120,18 @@ class AppLocalizationsFr extends AppLocalizations {
   String get typeLabel => 'Typologie';
 
   @override
+  String get roomInitialStatusLabel => 'Statut initial';
+
+  @override
+  String get roomStatusAvailable => 'Disponible';
+
+  @override
+  String get roomStatusToClean => 'À nettoyer';
+
+  @override
+  String get roomStatusMaintenance => 'Maintenance';
+
+  @override
   String get requiredField => 'Obligatoire';
 
   @override
