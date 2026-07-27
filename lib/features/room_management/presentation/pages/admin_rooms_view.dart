@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
-import 'package:sra_hotel/core/widgets/widgets.dart';
+import 'package:sra_hotel/core/widgets/buttons/sra_button.dart';
+import 'package:sra_hotel/core/widgets/display/sra_filter_bar.dart';
+import 'package:sra_hotel/core/widgets/display/sra_status_badge.dart';
+import 'package:sra_hotel/core/widgets/feedback/error_state_view.dart';
+import 'package:sra_hotel/core/widgets/feedback/loading_indicator.dart';
+import 'package:sra_hotel/core/widgets/inputs/sra_input.dart';
+import 'package:sra_hotel/core/widgets/layout/sra_data_table.dart';
 import 'package:sra_hotel/features/room_management/domain/entities/room.dart';
 import 'package:sra_hotel/features/room_management/domain/entities/room_type.dart';
 import 'package:sra_hotel/features/room_management/presentation/bloc/room_bloc.dart';
@@ -19,7 +25,6 @@ class AdminRoomsView extends StatefulWidget {
 class _AdminRoomsViewState extends State<AdminRoomsView> {
   String _searchQuery = "";
   String _selectedFilter = "all";
-  bool _isTableView = false;
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -54,7 +59,7 @@ class _AdminRoomsViewState extends State<AdminRoomsView> {
     return BlocBuilder<RoomBloc, RoomState>(
       builder: (context, state) {
         if (state is RoomLoading || state is RoomInitial) {
-          return const LoadingWidget();
+          return const LoadingIndicator();
         } else if (state is RoomFailure) {
           return ErrorStateView(
             message: state.error,
@@ -76,6 +81,7 @@ class _AdminRoomsViewState extends State<AdminRoomsView> {
           }).toList();
 
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // ── Bandeau KPIs Supérieur ──
               Padding(
@@ -87,11 +93,11 @@ class _AdminRoomsViewState extends State<AdminRoomsView> {
                       spacing: AppDimensions.spacingSm,
                       runSpacing: AppDimensions.spacingSm,
                       children: [
-                        _buildKpiChip(l10n.totalRooms, "$totalRooms", Icons.hotel, AppColors.champagneGold, isDark, itemWidth),
+                        _buildKpiChip(l10n.totalRooms, "$totalRooms", Icons.hotel, AppColors.gold, isDark, itemWidth),
                         _buildKpiChip(l10n.libre, "$freeRooms", Icons.check_circle_outline, AppColors.statusSuccess, isDark, itemWidth),
                         _buildKpiChip(l10n.occupee, "$occupiedRooms", Icons.person_outline, AppColors.statusInfo, isDark, itemWidth),
                         _buildKpiChip(l10n.roomStatusToClean, "$toCleanRooms", Icons.cleaning_services_outlined, AppColors.statusWarning, isDark, itemWidth),
-                        _buildKpiChip(l10n.occupancyRateLabel, "$occRate%", Icons.bar_chart, AppColors.champagneGold, isDark, itemWidth),
+                        _buildKpiChip(l10n.occupancyRateLabel, "$occRate%", Icons.bar_chart, AppColors.gold, isDark, itemWidth),
                       ],
                     );
                   },
@@ -107,7 +113,7 @@ class _AdminRoomsViewState extends State<AdminRoomsView> {
                       child: SraInput(
                         controller: _searchController,
                         placeholder: l10n.searchRoomPlaceholder,
-                        prefixIcon: const Icon(Icons.search, size: 20, color: AppColors.champagneGold),
+                        prefixIcon: const Icon(Icons.search, size: 20, color: AppColors.gold),
                         suffixIcon: _searchQuery.isNotEmpty
                             ? IconButton(
                                 icon: const Icon(Icons.clear, size: 18),
@@ -125,17 +131,6 @@ class _AdminRoomsViewState extends State<AdminRoomsView> {
                           });
                         },
                       ),
-                    ),
-                    const SizedBox(width: AppDimensions.spacingSm),
-                    // Bouton bascule Grille / Tableau
-                    IconButton(
-                      tooltip: _isTableView ? l10n.viewModeGrid : l10n.viewModeTable,
-                      icon: Icon(_isTableView ? Icons.grid_view : Icons.table_chart_outlined, color: AppColors.champagneGold),
-                      onPressed: () {
-                        setState(() {
-                          _isTableView = !_isTableView;
-                        });
-                      },
                     ),
                     const SizedBox(width: AppDimensions.spacingSm),
                     Flexible(
@@ -169,24 +164,91 @@ class _AdminRoomsViewState extends State<AdminRoomsView> {
               ),
               const SizedBox(height: AppDimensions.spacingMd),
 
-              // ── Vue Contenu (Grille ou Tableau) ──
+              // ── Vue Tableau CRUD Unifiée ──
               Expanded(
-                child: filteredRooms.isEmpty
-                    ? const EmptyStateView(
-                        icon: Icons.meeting_room_outlined,
-                      )
-                    : _isTableView
-                        ? _buildTableView(filteredRooms, state.roomTypes, isDark, l10n)
-                        : ResponsiveListGridView(
-                            itemCount: filteredRooms.length,
-                            padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMd),
-                            maxCrossAxisExtent: 460,
-                            mainAxisExtent: 155,
-                            itemBuilder: (context, index) {
-                              final room = filteredRooms[index];
-                              return _buildRoomCard(room, state.roomTypes, isDark, l10n);
-                            },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMd),
+                  child: SraDataTable<Room>(
+                    items: filteredRooms,
+                    minWidth: 700,
+                    emptyTitle: 'Aucune chambre trouvée',
+                    emptyIcon: Icons.meeting_room_outlined,
+                    columns: [
+                      SraTableColumn<Room>(
+                        label: l10n.roomNumberLabel,
+                        flex: 0.8,
+                        cellBuilder: (context, room) => Text(
+                          "CH. ${room.numero}",
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? AppColors.goldLight2 : AppColors.gold,
                           ),
+                        ),
+                      ),
+                      SraTableColumn<Room>(
+                        label: l10n.typeLabel,
+                        flex: 1.2,
+                        cellBuilder: (context, room) => Text(
+                          room.type,
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: isDark ? AppColors.white : AppColors.ink,
+                          ),
+                        ),
+                      ),
+                      SraTableColumn<Room>(
+                        label: l10n.floorLabel,
+                        flex: 0.6,
+                        cellBuilder: (context, room) => Text(
+                          "Étage ${room.etage}",
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: isDark ? AppColors.overlayDarkMedium : AppColors.inkMuted,
+                          ),
+                        ),
+                      ),
+                      SraTableColumn<Room>(
+                        label: l10n.statusLabel,
+                        flex: 1.4,
+                        cellBuilder: (context, room) {
+                          if (room.estActive == 0) {
+                            return const SraStatusBadge.custom(label: 'Hors service', color: AppColors.inkMuted, small: true);
+                          }
+                          if (room.occupee == 1) {
+                            return SraStatusBadge.info(
+                              label: '${l10n.occupee}${room.clientActuel != null ? ' (${room.clientActuel})' : ''}',
+                              small: true,
+                            );
+                          }
+                          switch (room.statutMenage) {
+                            case 'PROPRE':
+                              return SraStatusBadge.success(label: 'Disponible', small: true);
+                            case 'SALE':
+                            case 'A_NETTOYER':
+                            case 'EN_COURS':
+                              return SraStatusBadge.warning(label: l10n.roomStatusToClean, small: true);
+                            case 'MAINTENANCE':
+                            default:
+                              return SraStatusBadge.error(label: l10n.roomStatusMaintenance, small: true);
+                          }
+                        },
+                      ),
+                      SraTableColumn<Room>(
+                        label: "Actions",
+                        flex: 1.0,
+                        alignment: Alignment.centerRight,
+                        cellBuilder: (context, room) => Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              tooltip: "Modifier",
+                              icon: const Icon(Icons.edit_outlined, size: 18, color: AppColors.statusInfo),
+                              onPressed: () => _showRoomFormDialog(context, room, state.roomTypes),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           );
@@ -201,9 +263,9 @@ class _AdminRoomsViewState extends State<AdminRoomsView> {
       width: width,
       padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingSm + 2, vertical: AppDimensions.spacingSm),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.deepBlue : Colors.white,
+        color: isDark ? AppColors.darkCard : Colors.white,
         borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
-        border: Border.all(color: isDark ? Colors.white10 : AppColors.softGrey),
+        border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.mist),
         boxShadow: const [AppShadows.shadowCard],
       ),
       child: Row(
@@ -220,17 +282,23 @@ class _AdminRoomsViewState extends State<AdminRoomsView> {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   value,
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: color),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: isDark ? Colors.white : AppColors.ink,
+                  ),
                 ),
                 Text(
                   label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 10, color: AppColors.textMuted),
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: isDark ? AppColors.overlayDarkMedium : AppColors.inkMuted,
+                  ),
                 ),
               ],
             ),
@@ -240,311 +308,109 @@ class _AdminRoomsViewState extends State<AdminRoomsView> {
     );
   }
 
-  Widget _buildRoomCard(Room room, List<RoomType> roomTypes, bool isDark, AppLocalizations l10n) {
-    final isOccupied = room.occupee == 1;
-
-    SraStatusType statusType = SraStatusType.success;
-    Color? statusCustomColor;
-    String statusLabel;
-    if (room.estActive == 0) {
-      statusType = SraStatusType.custom;
-      statusCustomColor = AppColors.textMuted;
-      statusLabel = l10n.horsService;
-    } else if (isOccupied) {
-      statusType = SraStatusType.info;
-      statusLabel = l10n.occupee;
-    } else if (room.statutMenage == 'MAINTENANCE') {
-      statusType = SraStatusType.error;
-      statusLabel = l10n.dirtyStatus;
-    } else if (room.statutMenage == 'SALE' || room.statutMenage == 'A_NETTOYER') {
-      statusType = SraStatusType.warning;
-      statusLabel = l10n.dirtyStatus;
-    } else if (room.statutMenage == 'EN_COURS') {
-      statusType = SraStatusType.warning;
-      statusLabel = l10n.cleaningStatus;
-    } else {
-      statusType = SraStatusType.success;
-      statusLabel = l10n.libre;
-    }
-
-    final isPremiumType = room.type.toLowerCase().contains('suite') || room.type.toLowerCase().contains('prem');
-
-    return Container(
-      margin: MediaQuery.of(context).size.width < AppDimensions.breakpointMd
-          ? const EdgeInsets.only(bottom: AppDimensions.spacingSm + 2)
-          : EdgeInsets.zero,
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.deepBlue : AppColors.surfaceLight,
-        borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
-        border: Border.all(color: isDark ? Colors.white10 : AppColors.softGrey),
-        boxShadow: const [AppShadows.shadowCard],
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
-        onTap: () => _showRoomFormDialog(context, room, roomTypes),
-        child: Padding(
-          padding: const EdgeInsets.all(AppDimensions.spacingSm + 4),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Header: Numéro + Étage + Bouton d'édition unifié
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: AppColors.champagneGold.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(AppDimensions.radiusXs),
-                          ),
-                          child: Text(
-                            "CH. ${room.numero}",
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppColors.champagneGold),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          "${l10n.floorLabel} ${room.etage}",
-                          style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Icon(Icons.edit_outlined, color: AppColors.statusInfo, size: 20),
-                ],
-              ),
-
-              // Occupant actuel le cas échéant
-              if (room.clientActuel != null && room.clientActuel!.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 2),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.person, size: 13, color: AppColors.statusInfo),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          room.clientActuel!,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.statusInfo),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-              // Footer avec Pastille Typologie + Pastille Statut (Sans débordement)
-              Wrap(
-                spacing: 6,
-                runSpacing: 4,
-                children: [
-                  SraStatusBadge.custom(
-                    label: room.type,
-                    color: isPremiumType ? AppColors.gold : AppColors.inkMuted,
-                    dot: false,
-                    small: true,
-                  ),
-                  SraStatusBadge(
-                    label: statusLabel,
-                    type: statusType,
-                    customColor: statusCustomColor,
-                    dot: true,
-                    small: true,
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTableView(List<Room> rooms, List<RoomType> roomTypes, bool isDark, AppLocalizations l10n) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMd),
-      child: Container(
-        decoration: BoxDecoration(
-          color: isDark ? AppColors.deepBlue : Colors.white,
-          borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
-          border: Border.all(color: isDark ? Colors.white10 : AppColors.softGrey),
-        ),
-        child: DataTable(
-          columns: [
-            DataColumn(label: Text(l10n.roomNumberLabel, style: const TextStyle(fontWeight: FontWeight.bold))),
-            DataColumn(label: Text(l10n.typeLabel, style: const TextStyle(fontWeight: FontWeight.bold))),
-            DataColumn(label: Text(l10n.floorLabel, style: const TextStyle(fontWeight: FontWeight.bold))),
-            DataColumn(label: Text(l10n.statusLabel, style: const TextStyle(fontWeight: FontWeight.bold))),
-            const DataColumn(label: Text("Actions", style: TextStyle(fontWeight: FontWeight.bold))),
-          ],
-          rows: rooms.map((room) {
-            return DataRow(
-              cells: [
-                DataCell(Text(room.numero, style: const TextStyle(fontWeight: FontWeight.bold))),
-                DataCell(Text(room.type)),
-                DataCell(Text("${room.etage}")),
-                DataCell(Text(room.occupee == 1 ? l10n.occupee : room.statutMenage)),
-                DataCell(
-                  IconButton(
-                    icon: const Icon(Icons.edit_outlined, size: 18, color: AppColors.statusInfo),
-                    onPressed: () => _showRoomFormDialog(context, room, roomTypes),
-                  ),
-                ),
-              ],
-            );
-          }).toList(),
-        ),
-      ),
-    );
-  }
-
   void _showRoomFormDialog(BuildContext context, Room? room, List<RoomType> roomTypes) {
     final formKey = GlobalKey<FormState>();
     final noController = TextEditingController(text: room?.numero ?? '');
     final floorController = TextEditingController(text: room?.etage.toString() ?? '');
     String? selectedTypeId = room?.idTypeDeChambre ?? (roomTypes.isNotEmpty ? roomTypes.first.id : null);
-    String selectedStatus = room?.statutMenage ?? 'PROPRE';
-    bool isActiveState = room?.estActive == 1;
-    final l10n = AppLocalizations.of(context)!;
+    String selectedInitialStatus = 'PROPRE';
 
     showDialog(
       context: context,
       builder: (ctx) {
         final isDark = Theme.of(ctx).brightness == Brightness.dark;
-        return StatefulBuilder(
-          builder: (context, setStateModal) {
-            return AlertDialog(
-              backgroundColor: isDark ? AppColors.deepBlue : Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusLg)),
-              title: Text(
-                room == null ? l10n.addRoom : l10n.editRoom,
-                style: AppTextStyles.titleLarge.copyWith(color: AppColors.champagneGold),
-              ),
-              content: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 450),
-                child: SingleChildScrollView(
-                  child: Form(
-                    key: formKey,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SraInput(
-                          controller: noController,
-                          label: l10n.roomNumberLabel,
-                          placeholder: "e.g. 101",
-                          validator: (val) => val == null || val.isEmpty ? l10n.requiredField : null,
-                        ),
-                        const SizedBox(height: AppDimensions.spacingMd),
-                        SraInput(
-                          controller: floorController,
-                          label: l10n.floorLabel,
-                          placeholder: "e.g. 1",
-                          keyboardType: TextInputType.number,
-                          validator: (val) => val == null || val.isEmpty ? l10n.requiredField : null,
-                        ),
-                        const SizedBox(height: AppDimensions.spacingMd),
-                        SraDropdown(
-                          value: selectedTypeId,
-                          label: l10n.typeLabel,
-                          placeholder: l10n.selectOption,
-                          items: roomTypes.map((type) => type.id).toList(),
-                          itemLabels: Map.fromEntries(roomTypes.map((type) => MapEntry(type.id, type.nom))),
-                          onChanged: (val) {
-                            if (val != null) {
-                              setStateModal(() {
-                                selectedTypeId = val;
-                              });
-                            }
-                          },
-                        ),
-                        const SizedBox(height: AppDimensions.spacingMd),
-                        SraDropdown(
-                          value: selectedStatus,
-                          label: "Statut de propreté / maintenance",
-                          placeholder: l10n.selectOption,
-                          items: const ['PROPRE', 'SALE', 'EN_COURS', 'MAINTENANCE'],
-                          itemLabels: {
-                            'PROPRE': l10n.cleanStatus,
-                            'SALE': l10n.dirtyStatus,
-                            'EN_COURS': l10n.cleaningStatus,
-                            'MAINTENANCE': l10n.maintenanceStatus,
-                          },
-                          onChanged: (val) {
-                            if (val != null) {
-                              setStateModal(() {
-                                selectedStatus = val;
-                              });
-                            }
-                          },
-                        ),
-                        const SizedBox(height: AppDimensions.spacingMd),
-                        // Interrupteur d'activation / désactivation dans la modale
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Activer la chambre",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: isDark ? AppColors.white : AppColors.ink,
-                              ),
-                            ),
-                            Switch(
-                              value: isActiveState,
-                              activeTrackColor: AppColors.champagneGold,
-                              onChanged: (val) {
-                                setStateModal(() {
-                                  isActiveState = val;
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+        final l10n = AppLocalizations.of(ctx)!;
+        return AlertDialog(
+          backgroundColor: isDark ? AppColors.darkSurface : AppColors.white,
+          title: Text(
+            room == null ? "Créer une chambre" : "Modifier la chambre",
+            style: AppTextStyles.titleMedium.copyWith(
+              color: isDark ? AppColors.white : AppColors.ink,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SraInput(
+                    controller: noController,
+                    placeholder: l10n.roomNumberLabel,
+                    validator: (v) => v == null || v.isEmpty ? 'Champ obligatoire' : null,
                   ),
-                ),
+                  AppDimensions.vGapMd,
+                  SraInput(
+                    controller: floorController,
+                    placeholder: l10n.floorLabel,
+                    keyboardType: TextInputType.number,
+                    validator: (v) => v == null || v.isEmpty ? 'Champ obligatoire' : null,
+                  ),
+                  AppDimensions.vGapMd,
+                  DropdownButtonFormField<String>(
+                    initialValue: selectedTypeId,
+                    decoration: const InputDecoration(
+                      labelText: 'Type de chambre',
+                      border: OutlineInputBorder(),
+                    ),
+                    items: roomTypes
+                        .map((t) => DropdownMenuItem(value: t.id, child: Text(t.nom)))
+                        .toList(),
+                    onChanged: (v) => selectedTypeId = v,
+                  ),
+                  if (room == null) ...[
+                    AppDimensions.vGapMd,
+                    DropdownButtonFormField<String>(
+                      initialValue: selectedInitialStatus,
+                      decoration: InputDecoration(
+                        labelText: l10n.roomInitialStatusLabel,
+                        border: const OutlineInputBorder(),
+                      ),
+                      items: [
+                        DropdownMenuItem(value: 'PROPRE', child: Text(l10n.roomStatusAvailable)),
+                        DropdownMenuItem(value: 'SALE', child: Text(l10n.roomStatusToClean)),
+                        DropdownMenuItem(value: 'MAINTENANCE', child: Text(l10n.roomStatusMaintenance)),
+                      ],
+                      onChanged: (v) {
+                        if (v != null) selectedInitialStatus = v;
+                      },
+                    ),
+                  ],
+                ],
               ),
-              actions: [
-                SraButton(
-                  label: l10n.cancelLabel,
-                  isOutlined: true,
-                  onPressed: () => Navigator.of(ctx).pop(),
-                ),
-                const SizedBox(width: AppDimensions.spacingSm),
-                SraButton(
-                  label: l10n.validateLabel,
-                  onPressed: () {
-                    if (formKey.currentState!.validate() && selectedTypeId != null) {
-                      final typ = roomTypes.firstWhere((t) => t.id == selectedTypeId);
-                      final r = Room(
-                        id: room?.id ?? '',
-                        numero: noController.text,
-                        idTypeDeChambre: selectedTypeId!,
-                        type: typ.nom,
-                        etage: int.parse(floorController.text),
-                        statutMenage: selectedStatus,
-                        estActive: isActiveState ? 1 : 0,
-                        occupee: room?.occupee ?? 0,
-                        clientActuel: room?.clientActuel,
-                      );
-                      if (room == null) {
-                        context.read<RoomBloc>().add(CreateRoomEvent(r));
-                      } else {
-                        context.read<RoomBloc>().add(UpdateRoomEvent(r));
-                      }
-                      Navigator.of(ctx).pop();
-                    }
-                  },
-                ),
-              ],
-            );
-          },
+            ),
+          ),
+          actions: [
+            SraButton.secondary(
+              label: l10n.cancelLabel,
+              onPressed: () => Navigator.pop(ctx),
+            ),
+            SraButton(
+              label: 'Enregistrer',
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  final newRoom = Room(
+                    id: room?.id ?? '',
+                    numero: noController.text,
+                    idTypeDeChambre: selectedTypeId ?? '',
+                    type: roomTypes.firstWhere((t) => t.id == selectedTypeId, orElse: () => roomTypes.first).nom,
+                    etage: int.tryParse(floorController.text) ?? 1,
+                    statutMenage: room?.statutMenage ?? selectedInitialStatus,
+                    estActive: room?.estActive ?? 1,
+                    occupee: room?.occupee ?? 0,
+                  );
+
+                  if (room == null) {
+                    context.read<RoomBloc>().add(CreateRoomEvent(newRoom));
+                  } else {
+                    context.read<RoomBloc>().add(UpdateRoomEvent(newRoom));
+                  }
+                  Navigator.pop(ctx);
+                }
+              },
+            ),
+          ],
         );
       },
     );

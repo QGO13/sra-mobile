@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
-import 'package:sra_hotel/core/widgets/widgets.dart';
+import 'package:sra_hotel/core/widgets/buttons/sra_button.dart';
+import 'package:sra_hotel/core/widgets/feedback/confirm_delete_dialog.dart';
+import 'package:sra_hotel/core/widgets/feedback/error_state_view.dart';
+import 'package:sra_hotel/core/widgets/feedback/loading_indicator.dart';
+import 'package:sra_hotel/core/widgets/inputs/sra_input.dart';
+import 'package:sra_hotel/core/widgets/layout/sra_data_table.dart';
 import 'package:sra_hotel/features/service_management/domain/entities/hotel_service.dart';
 import 'package:sra_hotel/features/service_management/presentation/bloc/service_bloc.dart';
 import 'package:sra_hotel/features/service_management/presentation/bloc/service_event.dart';
@@ -26,7 +31,7 @@ class AdminServicesView extends StatelessWidget {
     return BlocBuilder<ServiceBloc, ServiceState>(
       builder: (context, state) {
         if (state is ServiceLoading || state is ServiceInitial) {
-          return const LoadingWidget();
+          return const LoadingIndicator();
         } else if (state is ServiceFailure) {
           return ErrorStateView(
             message: state.error,
@@ -34,19 +39,20 @@ class AdminServicesView extends StatelessWidget {
           );
         } else if (state is ServiceLoaded) {
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
                 padding: const EdgeInsets.all(AppDimensions.spacingMd),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
-                      child: Text(
-                        l10n.servicesTab,
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    Text(
+                      l10n.servicesTab,
+                      style: AppTextStyles.titleLarge.copyWith(
+                        color: isDark ? AppColors.white : AppColors.ink,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(width: AppDimensions.spacingSm + 4),
                     Flexible(
                       fit: FlexFit.loose,
                       child: SraButton(
@@ -59,90 +65,99 @@ class AdminServicesView extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: state.services.isEmpty
-                    ? const EmptyStateView(
-                        icon: Icons.design_services_outlined,
-                      )
-                    : ResponsiveListGridView(
-                        itemCount: state.services.length,
-                        padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMd),
-                        maxCrossAxisExtent: 450,
-                        mainAxisExtent: 110,
-                        itemBuilder: (context, index) {
-                    final service = state.services[index];
-
-                    String localizedCat = service.categorie;
-                    if (service.categorie == 'RESTAURATION') localizedCat = l10n.restorationCat;
-                    if (service.categorie == 'SPA') localizedCat = l10n.spaCat;
-                    if (service.categorie == 'TRANSPORT') localizedCat = l10n.transportCat;
-
-                      return Container(
-                        margin: MediaQuery.of(context).size.width < AppDimensions.breakpointMd
-                            ? const EdgeInsets.only(bottom: AppDimensions.spacingSm + 2)
-                            : EdgeInsets.zero,
-                        padding: const EdgeInsets.all(AppDimensions.spacingSm + 4),
-                        decoration: BoxDecoration(
-                          color: isDark ? AppColors.deepBlue : Colors.white,
-                          borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
-                          border: Border.all(color: isDark ? Colors.white10 : AppColors.softGrey),
-                          boxShadow: const [AppShadows.shadowCard],
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMd),
+                  child: SraDataTable<HotelService>(
+                    items: state.services,
+                    minWidth: 700,
+                    emptyTitle: 'Aucun service hôtelier',
+                    emptyIcon: Icons.design_services_outlined,
+                    columns: [
+                      SraTableColumn<HotelService>(
+                        label: "Libellé du Service",
+                        flex: 1.4,
+                        cellBuilder: (context, service) => Text(
+                          service.nom,
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? AppColors.white : AppColors.ink,
+                          ),
                         ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  service.nom,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                                ),
-                                const SizedBox(height: AppDimensions.spacingXs / 2),
-                                Text(
-                                  _formatCurrency(service.prix),
-                                  style: const TextStyle(color: AppColors.champagneGold, fontWeight: FontWeight.bold, fontSize: 13),
-                                ),
-                                Text(
-                                  "${l10n.categoryLabel} : $localizedCat • ${service.description}",
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.edit_outlined, color: AppColors.statusInfo),
-                                onPressed: () => _showServiceFormDialog(context, service),
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.delete_outline, color: AppColors.statusError),
-                                onPressed: () async {
-                                  final serviceBloc = context.read<ServiceBloc>();
-                                  final confirmed = await ConfirmDeleteDialog.show(
-                                    context,
-                                    title: l10n.deleteServiceTitle,
-                                    message: l10n.deleteServiceMessage,
-                                    confirmLabel: l10n.deleteLabel,
-                                    cancelLabel: l10n.cancelLabel,
-                                    isDestructive: true,
-                                  );
-                                  if (confirmed) {
-                                    serviceBloc.add(DeleteServiceEvent(service.id));
-                                  }
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
                       ),
-                    );
-                  },
+                      SraTableColumn<HotelService>(
+                        label: "Tarif",
+                        flex: 1.0,
+                        cellBuilder: (context, service) => Text(
+                          _formatCurrency(service.prix),
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? AppColors.goldLight2 : AppColors.gold,
+                          ),
+                        ),
+                      ),
+                      SraTableColumn<HotelService>(
+                        label: l10n.categoryLabel,
+                        flex: 1.0,
+                        cellBuilder: (context, service) {
+                          String localizedCat = service.categorie;
+                          if (service.categorie == 'RESTAURATION') localizedCat = l10n.restorationCat;
+                          if (service.categorie == 'SPA') localizedCat = l10n.spaCat;
+                          if (service.categorie == 'TRANSPORT') localizedCat = l10n.transportCat;
+                          return Text(
+                            localizedCat,
+                            style: AppTextStyles.bodySmall.copyWith(
+                              color: isDark ? AppColors.white : AppColors.ink,
+                            ),
+                          );
+                        },
+                      ),
+                      SraTableColumn<HotelService>(
+                        label: l10n.descriptionLabel,
+                        flex: 1.8,
+                        cellBuilder: (context, service) => Text(
+                          service.description.isNotEmpty ? service.description : "Aucune description",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: isDark ? AppColors.overlayDarkMedium : AppColors.inkMuted,
+                          ),
+                        ),
+                      ),
+                      SraTableColumn<HotelService>(
+                        label: "Actions",
+                        flex: 0.8,
+                        alignment: Alignment.centerRight,
+                        cellBuilder: (context, service) => Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              tooltip: "Modifier",
+                              icon: const Icon(Icons.edit_outlined, size: 18, color: AppColors.statusInfo),
+                              onPressed: () => _showServiceFormDialog(context, service),
+                            ),
+                            IconButton(
+                              tooltip: "Supprimer",
+                              icon: const Icon(Icons.delete_outline, size: 18, color: AppColors.statusError),
+                              onPressed: () async {
+                                final serviceBloc = context.read<ServiceBloc>();
+                                final confirmed = await ConfirmDeleteDialog.show(
+                                  context,
+                                  title: l10n.deleteServiceTitle,
+                                  message: l10n.deleteServiceMessage,
+                                  confirmLabel: l10n.deleteLabel,
+                                  cancelLabel: l10n.cancelLabel,
+                                  isDestructive: true,
+                                );
+                                if (confirmed) {
+                                  serviceBloc.add(DeleteServiceEvent(service.id));
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -155,93 +170,93 @@ class AdminServicesView extends StatelessWidget {
 
   void _showServiceFormDialog(BuildContext context, HotelService? service) {
     final formKey = GlobalKey<FormState>();
-    final nameController = TextEditingController(text: service?.nom ?? '');
-    final priceController = TextEditingController(text: service?.prix.toString() ?? '');
+    final nomController = TextEditingController(text: service?.nom ?? '');
+    final prixController = TextEditingController(text: service?.prix.toString() ?? '');
     final descController = TextEditingController(text: service?.description ?? '');
-    String selectedCat = service?.categorie ?? "RESTAURATION";
-    final l10n = AppLocalizations.of(context)!;
+    String selectedCat = service?.categorie ?? 'RESTAURATION';
 
     showDialog(
       context: context,
       builder: (ctx) {
         final isDark = Theme.of(ctx).brightness == Brightness.dark;
+        final l10n = AppLocalizations.of(ctx)!;
         return AlertDialog(
-          backgroundColor: isDark ? AppColors.deepBlue : Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusLg)),
+          backgroundColor: isDark ? AppColors.darkSurface : AppColors.white,
           title: Text(
-            service == null ? l10n.addService : l10n.editService,
-            style: AppTextStyles.titleLarge.copyWith(color: AppColors.champagneGold),
+            service == null ? "Créer un service" : "Modifier le service",
+            style: AppTextStyles.titleMedium.copyWith(
+              color: isDark ? AppColors.white : AppColors.ink,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          content: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 500),
+          content: SingleChildScrollView(
             child: Form(
               key: formKey,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SraInput(
-                    controller: nameController,
-                    label: l10n.serviceNameLabel,
-                    placeholder: "e.g. Petit déjeuner",
-                    validator: (val) => val == null || val.isEmpty ? l10n.requiredField : null,
+                    controller: nomController,
+                    placeholder: "Nom du service",
+                    validator: (v) => v == null || v.isEmpty ? 'Champ obligatoire' : null,
                   ),
-                  const SizedBox(height: AppDimensions.spacingMd),
+                  AppDimensions.vGapMd,
                   SraInput(
-                    controller: priceController,
-                    label: l10n.priceLabel,
-                    placeholder: "e.g. 5000",
+                    controller: prixController,
+                    placeholder: "Prix (FCFA)",
                     keyboardType: TextInputType.number,
-                    validator: (val) => val == null || val.isEmpty ? l10n.requiredField : null,
+                    validator: (v) => v == null || v.isEmpty ? 'Champ obligatoire' : null,
                   ),
-                  const SizedBox(height: AppDimensions.spacingMd),
+                  AppDimensions.vGapMd,
+                  DropdownButtonFormField<String>(
+                    initialValue: selectedCat,
+                    decoration: InputDecoration(
+                      labelText: l10n.categoryLabel,
+                      border: const OutlineInputBorder(),
+                    ),
+                    items: [
+                      DropdownMenuItem(value: 'RESTAURATION', child: Text(l10n.restorationCat)),
+                      DropdownMenuItem(value: 'SPA', child: Text(l10n.spaCat)),
+                      DropdownMenuItem(value: 'TRANSPORT', child: Text(l10n.transportCat)),
+                      const DropdownMenuItem(value: 'AUTRE', child: Text('Autre')),
+                    ],
+                    onChanged: (v) {
+                      if (v != null) selectedCat = v;
+                    },
+                  ),
+                  AppDimensions.vGapMd,
                   SraInput(
                     controller: descController,
-                    label: l10n.descriptionLabel,
-                    placeholder: "Description",
-                  ),
-                  const SizedBox(height: AppDimensions.spacingMd),
-                  SraDropdown(
-                    value: selectedCat,
-                    label: l10n.categoryLabel,
-                    placeholder: l10n.selectOption,
-                    items: const ["RESTAURATION", "SPA", "TRANSPORT"],
-                    itemLabels: {
-                      "RESTAURATION": l10n.restorationCat,
-                      "SPA": l10n.spaCat,
-                      "TRANSPORT": l10n.transportCat,
-                    },
-                    onChanged: (val) {
-                      if (val != null) selectedCat = val;
-                    },
+                    placeholder: l10n.descriptionLabel,
+                    maxLines: 3,
                   ),
                 ],
               ),
             ),
           ),
           actions: [
-            SraButton(
+            SraButton.secondary(
               label: l10n.cancelLabel,
-              isOutlined: true,
-              onPressed: () => Navigator.of(ctx).pop(),
+              onPressed: () => Navigator.pop(ctx),
             ),
-            const SizedBox(width: AppDimensions.spacingSm),
             SraButton(
-              label: l10n.validateLabel,
+              label: 'Enregistrer',
               onPressed: () {
                 if (formKey.currentState!.validate()) {
-                  final s = HotelService(
+                  final newService = HotelService(
                     id: service?.id ?? 0,
-                    nom: nameController.text,
-                    prix: double.parse(priceController.text),
+                    nom: nomController.text,
+                    prix: double.tryParse(prixController.text) ?? 0.0,
                     categorie: selectedCat,
                     description: descController.text,
                   );
+
                   if (service == null) {
-                    context.read<ServiceBloc>().add(CreateServiceEvent(s));
+                    context.read<ServiceBloc>().add(CreateServiceEvent(newService));
                   } else {
-                    context.read<ServiceBloc>().add(UpdateServiceEvent(s));
+                    context.read<ServiceBloc>().add(UpdateServiceEvent(newService));
                   }
-                  Navigator.of(ctx).pop();
+                  Navigator.pop(ctx);
                 }
               },
             ),

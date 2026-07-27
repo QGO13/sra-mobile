@@ -111,7 +111,7 @@ class _ClientReservationsPageState extends State<ClientReservationsPage> {
         return BlocBuilder<AdminBookingBloc, AdminBookingState>(
           builder: (context, state) {
             if (state is AdminBookingLoading || state is AdminBookingInitial) {
-              return const LoadingWidget();
+              return const LoadingIndicator();
             }
 
             if (state is AdminBookingFailure) {

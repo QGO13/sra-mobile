@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
-import 'package:sra_hotel/core/widgets/widgets.dart';
+import 'package:sra_hotel/core/widgets/display/sra_status_badge.dart';
+import 'package:sra_hotel/core/widgets/feedback/empty_state_view.dart';
+import 'package:sra_hotel/core/widgets/feedback/error_state_view.dart';
+import 'package:sra_hotel/core/widgets/feedback/loading_indicator.dart';
+import 'package:sra_hotel/core/widgets/layout/sra_data_table.dart';
+import 'package:sra_hotel/features/invoice_management/domain/entities/client_invoice.dart';
 import 'package:sra_hotel/features/invoice_management/presentation/bloc/invoice_bloc.dart';
 import 'package:sra_hotel/features/invoice_management/presentation/bloc/invoice_event.dart';
 import 'package:sra_hotel/features/invoice_management/presentation/bloc/invoice_state.dart';
+import 'package:sra_hotel/features/invoice_management/presentation/widgets/invoice_details_dialog.dart';
 import 'package:sra_hotel/l10n/app_localizations.dart';
 
 class AdminInvoicesView extends StatelessWidget {
@@ -25,7 +31,7 @@ class AdminInvoicesView extends StatelessWidget {
     return BlocBuilder<InvoiceBloc, InvoiceState>(
       builder: (context, state) {
         if (state is InvoiceLoading || state is InvoiceInitial) {
-          return const LoadingWidget();
+          return const LoadingIndicator();
         } else if (state is InvoiceFailure) {
           return ErrorStateView(
             message: state.error,
@@ -38,78 +44,108 @@ class AdminInvoicesView extends StatelessWidget {
             );
           }
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
                 padding: const EdgeInsets.all(AppDimensions.spacingMd),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(l10n.invoicesTitle, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                    Text(
+                      l10n.invoicesTitle,
+                      style: AppTextStyles.titleLarge.copyWith(
+                        color: isDark ? AppColors.white : AppColors.ink,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      '${state.invoices.length} factures',
+                      style: AppTextStyles.labelMuted,
+                    ),
                   ],
                 ),
               ),
               Expanded(
-                child: ResponsiveListGridView(
-                  itemCount: state.invoices.length,
+                child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMd),
-                  maxCrossAxisExtent: 450,
-                  mainAxisExtent: 110,
-                  itemBuilder: (context, index) {
-                    final invoice = state.invoices[index];
-                    final isPaid = invoice.statutFacture == 'PAYEE';
-                    final date = DateTime.tryParse(invoice.dateCreation);
-                    final localeStr = Localizations.localeOf(context).toString();
-                    final formattedDate = date != null ? DateFormat.yMMMd(localeStr).format(date) : invoice.dateCreation;
-
-                    return Container(
-                      margin: MediaQuery.of(context).size.width < AppDimensions.breakpointMd
-                          ? const EdgeInsets.only(bottom: AppDimensions.spacingSm + 2)
-                          : EdgeInsets.zero,
-                      padding: const EdgeInsets.all(AppDimensions.spacingSm + 4),
-                      decoration: BoxDecoration(
-                        color: isDark ? AppColors.deepBlue : Colors.white,
-                        borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
-                        border: Border.all(color: isDark ? Colors.white10 : AppColors.softGrey),
-                        boxShadow: const [AppShadows.shadowCard],
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(invoice.code, style: AppTextStyles.monospace.copyWith(fontWeight: FontWeight.bold, fontSize: 14)),
-                              const SizedBox(height: AppDimensions.spacingXs / 2),
-                              Text(invoice.clientNom, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-                              Text('${l10n.dateLabel} : $formattedDate', style: const TextStyle(color: AppColors.textMuted, fontSize: 12)),
-                            ],
+                  child: SraDataTable<ClientInvoice>(
+                    items: state.invoices,
+                    minWidth: 700,
+                    emptyTitle: 'Aucune facture enregistrée',
+                    emptyIcon: Icons.receipt_long_outlined,
+                    columns: [
+                      SraTableColumn<ClientInvoice>(
+                        label: "Code Facture",
+                        flex: 1.2,
+                        cellBuilder: (context, invoice) => Text(
+                          invoice.code,
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? AppColors.goldLight2 : AppColors.gold,
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                _formatCurrency(invoice.prixTotal),
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppColors.champagneGold),
-                              ),
-                              const SizedBox(height: AppDimensions.spacingXs),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingSm - 2, vertical: AppDimensions.spacingXs / 2),
-                                color: isPaid ? AppColors.statusSuccess.withValues(alpha: 0.1) : AppColors.statusWarning.withValues(alpha: 0.1),
-                                child: Text(
-                                  isPaid ? l10n.paidStatus : l10n.pendingStatus,
-                                  style: TextStyle(
-                                    fontSize: 9,
-                                    color: isPaid ? AppColors.statusSuccess : AppColors.statusWarning,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                        ),
                       ),
-                    );
-                  },
+                      SraTableColumn<ClientInvoice>(
+                        label: "Client",
+                        flex: 1.4,
+                        cellBuilder: (context, invoice) => Text(
+                          invoice.clientNom,
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: isDark ? AppColors.white : AppColors.ink,
+                          ),
+                        ),
+                      ),
+                      SraTableColumn<ClientInvoice>(
+                        label: l10n.dateLabel,
+                        flex: 1.0,
+                        cellBuilder: (context, invoice) {
+                          final date = DateTime.tryParse(invoice.dateCreation);
+                          final localeStr = Localizations.localeOf(context).toString();
+                          final formattedDate = date != null ? DateFormat.yMMMd(localeStr).format(date) : invoice.dateCreation;
+                          return Text(
+                            formattedDate,
+                            style: AppTextStyles.bodySmall.copyWith(
+                              color: isDark ? AppColors.overlayDarkMedium : AppColors.inkMuted,
+                            ),
+                          );
+                        },
+                      ),
+                      SraTableColumn<ClientInvoice>(
+                        label: "Montant Total",
+                        flex: 1.2,
+                        cellBuilder: (context, invoice) => Text(
+                          _formatCurrency(invoice.prixTotal),
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? AppColors.goldLight2 : AppColors.gold,
+                          ),
+                        ),
+                      ),
+                      SraTableColumn<ClientInvoice>(
+                        label: "Statut",
+                        flex: 1.0,
+                        cellBuilder: (context, invoice) {
+                          final isPaid = invoice.statutFacture.toUpperCase() == 'PAYEE';
+                          return SraStatusBadge(
+                            label: isPaid ? l10n.paidStatus : l10n.pendingStatus,
+                            type: isPaid ? SraStatusType.success : SraStatusType.warning,
+                            small: true,
+                          );
+                        },
+                      ),
+                      SraTableColumn<ClientInvoice>(
+                        label: "Actions",
+                        flex: 0.8,
+                        alignment: Alignment.centerRight,
+                        cellBuilder: (context, invoice) => IconButton(
+                          tooltip: "Détails & Impression",
+                          icon: const Icon(Icons.visibility_outlined, size: 18, color: AppColors.gold),
+                          onPressed: () => InvoiceDetailsDialog.show(context, invoice),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

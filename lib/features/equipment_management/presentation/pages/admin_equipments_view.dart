@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
-import 'package:sra_hotel/core/widgets/widgets.dart';
+import 'package:sra_hotel/core/widgets/buttons/sra_button.dart';
+import 'package:sra_hotel/core/widgets/display/sra_filter_bar.dart';
+import 'package:sra_hotel/core/widgets/display/sra_status_badge.dart';
+import 'package:sra_hotel/core/widgets/feedback/confirm_delete_dialog.dart';
+import 'package:sra_hotel/core/widgets/feedback/error_state_view.dart';
+import 'package:sra_hotel/core/widgets/feedback/loading_indicator.dart';
+import 'package:sra_hotel/core/widgets/inputs/sra_input.dart';
+import 'package:sra_hotel/core/widgets/layout/sra_data_table.dart';
 import 'package:sra_hotel/features/equipment_management/domain/entities/equipment.dart';
 import 'package:sra_hotel/features/equipment_management/presentation/bloc/equipment_bloc.dart';
 import 'package:sra_hotel/features/equipment_management/presentation/bloc/equipment_event.dart';
@@ -36,11 +43,12 @@ class _AdminEquipmentsViewState extends State<AdminEquipmentsView> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context)!;
 
     return BlocBuilder<EquipmentBloc, EquipmentState>(
       builder: (context, state) {
         if (state is EquipmentLoading || state is EquipmentInitial) {
-          return const LoadingWidget();
+          return const LoadingIndicator();
         } else if (state is EquipmentFailure) {
           return ErrorStateView(
             message: state.error,
@@ -59,9 +67,10 @@ class _AdminEquipmentsViewState extends State<AdminEquipmentsView> {
             return matchesSearch && matchesFilter;
           }).toList();
 
-          final l10n = AppLocalizations.of(context)!;
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // ── Barre de recherche & Action ──
               Padding(
                 padding: const EdgeInsets.all(AppDimensions.spacingMd),
                 child: Row(
@@ -70,7 +79,7 @@ class _AdminEquipmentsViewState extends State<AdminEquipmentsView> {
                       child: SraInput(
                         controller: _searchController,
                         placeholder: l10n.searchEquipmentPlaceholder,
-                        prefixIcon: const Icon(Icons.search, size: 20, color: AppColors.champagneGold),
+                        prefixIcon: const Icon(Icons.search, size: 20, color: AppColors.gold),
                         suffixIcon: _searchQuery.isNotEmpty
                             ? IconButton(
                                 icon: const Icon(Icons.clear, size: 18),
@@ -114,103 +123,89 @@ class _AdminEquipmentsViewState extends State<AdminEquipmentsView> {
                   });
                 },
               ),
-              Expanded(
-                child: filtered.isEmpty
-                  ? const EmptyStateView(icon: Icons.electrical_services_outlined)
-                  : ResponsiveListGridView(
-                      itemCount: filtered.length,
-                      padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMd),
-                      maxCrossAxisExtent: 450,
-                      mainAxisExtent: 110,
-                      itemBuilder: (context, index) {
-                        final eq = filtered[index];
-                        final isAvailable = eq.status == 'AVAILABLE';
+              const SizedBox(height: AppDimensions.spacingMd),
 
-                        return Opacity(
-                          opacity: isAvailable ? 1.0 : 0.5,
-                          child: Container(
-                            margin: MediaQuery.of(context).size.width < AppDimensions.breakpointMd
-                                ? const EdgeInsets.only(bottom: AppDimensions.spacingSm + 2)
-                                : EdgeInsets.zero,
-                            padding: const EdgeInsets.all(AppDimensions.spacingSm + 4),
-                            decoration: BoxDecoration(
-                              color: isDark ? AppColors.deepBlue : Colors.white,
-                              borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
-                              border: Border.all(color: isDark ? Colors.white10 : AppColors.softGrey),
-                              boxShadow: const [AppShadows.shadowCard],
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        eq.name,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                                      ),
-                                      const SizedBox(height: AppDimensions.spacingXs / 2),
-                                      Text(
-                                        eq.description.isNotEmpty ? eq.description : l10n.noDescription,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(color: AppColors.textMuted, fontSize: 12.5),
-                                      ),
-                                      const SizedBox(height: AppDimensions.spacingXs),
-                                      Row(
-                                        children: [
-                                          Container(
-                                            width: 8,
-                                            height: 8,
-                                            decoration: BoxDecoration(
-                                              color: isAvailable ? AppColors.statusSuccess : AppColors.statusError,
-                                              shape: BoxShape.circle,
-                                            ),
-                                          ),
-                                          const SizedBox(width: AppDimensions.spacingSm - 2),
-                                          Text(
-                                            (isAvailable ? l10n.availableStatus : l10n.unavailableStatus).toUpperCase(),
-                                            style: TextStyle(
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.bold,
-                                              color: isAvailable ? AppColors.statusSuccess : AppColors.statusError,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.edit_outlined, color: AppColors.statusInfo),
-                                      onPressed: () => _showEquipmentFormDialog(context, eq),
-                                    ),
-                                    Switch(
-                                      value: isAvailable,
-                                      activeTrackColor: AppColors.champagneGold,
-                                      onChanged: (val) {
-                                        final updated = Equipment(
-                                          id: eq.id,
-                                          name: eq.name,
-                                          description: eq.description,
-                                          status: val ? 'AVAILABLE' : 'UNAVAILABLE',
-                                        );
-                                        context.read<EquipmentBloc>().add(UpdateEquipmentEvent(updated));
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+              // ── Vue Tableau CRUD Unifiée ──
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMd),
+                  child: SraDataTable<Equipment>(
+                    items: filtered,
+                    minWidth: 650,
+                    emptyTitle: 'Aucun équipement enregistré',
+                    emptyIcon: Icons.electrical_services_outlined,
+                    columns: [
+                      SraTableColumn<Equipment>(
+                        label: "Équipement",
+                        flex: 1.4,
+                        cellBuilder: (context, eq) => Text(
+                          eq.name,
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? AppColors.white : AppColors.ink,
                           ),
-                        );
-                      },
-                    ),
+                        ),
+                      ),
+                      SraTableColumn<Equipment>(
+                        label: "Statut",
+                        flex: 1.0,
+                        cellBuilder: (context, eq) {
+                          final isAvailable = eq.status == 'AVAILABLE';
+                          return SraStatusBadge(
+                            label: isAvailable ? l10n.availableStatus : l10n.unavailableStatus,
+                            type: isAvailable ? SraStatusType.success : SraStatusType.error,
+                            small: true,
+                          );
+                        },
+                      ),
+                      SraTableColumn<Equipment>(
+                        label: l10n.descriptionLabel,
+                        flex: 2.0,
+                        cellBuilder: (context, eq) => Text(
+                          eq.description.isNotEmpty ? eq.description : "Aucune description",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: isDark ? AppColors.overlayDarkMedium : AppColors.inkMuted,
+                          ),
+                        ),
+                      ),
+                      SraTableColumn<Equipment>(
+                        label: "Actions",
+                        flex: 0.8,
+                        alignment: Alignment.centerRight,
+                        cellBuilder: (context, eq) => Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              tooltip: "Modifier",
+                              icon: const Icon(Icons.edit_outlined, size: 18, color: AppColors.statusInfo),
+                              onPressed: () => _showEquipmentFormDialog(context, eq),
+                            ),
+                            IconButton(
+                              tooltip: "Supprimer",
+                              icon: const Icon(Icons.delete_outline, size: 18, color: AppColors.statusError),
+                              onPressed: () async {
+                                final eqBloc = context.read<EquipmentBloc>();
+                                final confirmed = await ConfirmDeleteDialog.show(
+                                  context,
+                                  title: l10n.deleteEquipmentTitle,
+                                  message: "Voulez-vous supprimer cet équipement ?",
+                                  confirmLabel: l10n.deleteLabel,
+                                  cancelLabel: l10n.cancelLabel,
+                                  isDestructive: true,
+                                );
+                                if (confirmed) {
+                                  eqBloc.add(DeleteEquipmentEvent(eq.id));
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           );
@@ -224,26 +219,23 @@ class _AdminEquipmentsViewState extends State<AdminEquipmentsView> {
     final formKey = GlobalKey<FormState>();
     final nameController = TextEditingController(text: eq?.name ?? '');
     final descController = TextEditingController(text: eq?.description ?? '');
-    final rawStatus = (eq?.status ?? 'AVAILABLE').toUpperCase();
-    String selectedStatus = 'AVAILABLE';
-    if (rawStatus == 'UNAVAILABLE' || rawStatus == 'MAUVAIS_ETAT' || rawStatus == 'INDISPONIBLE') {
-      selectedStatus = 'UNAVAILABLE';
-    }
-    final l10n = AppLocalizations.of(context)!;
+    String selectedStatus = eq?.status ?? 'AVAILABLE';
 
     showDialog(
       context: context,
       builder: (ctx) {
         final isDark = Theme.of(ctx).brightness == Brightness.dark;
+        final l10n = AppLocalizations.of(ctx)!;
         return AlertDialog(
-          backgroundColor: isDark ? AppColors.deepBlue : Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusLg)),
+          backgroundColor: isDark ? AppColors.darkSurface : AppColors.white,
           title: Text(
-            eq == null ? l10n.addEquipment : l10n.editEquipment,
-            style: AppTextStyles.titleLarge.copyWith(color: AppColors.champagneGold),
+            eq == null ? "Créer un équipement" : "Modifier l'équipement",
+            style: AppTextStyles.titleMedium.copyWith(
+              color: isDark ? AppColors.white : AppColors.ink,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          content: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 500),
+          content: SingleChildScrollView(
             child: Form(
               key: formKey,
               child: Column(
@@ -251,57 +243,56 @@ class _AdminEquipmentsViewState extends State<AdminEquipmentsView> {
                 children: [
                   SraInput(
                     controller: nameController,
-                    label: l10n.equipmentNameLabel,
-                    placeholder: "e.g. Téléviseur",
-                    validator: (val) => val == null || val.isEmpty ? l10n.requiredField : null,
+                    placeholder: "Nom de l'équipement",
+                    validator: (v) => v == null || v.isEmpty ? 'Champ obligatoire' : null,
                   ),
-                  const SizedBox(height: AppDimensions.spacingMd),
+                  AppDimensions.vGapMd,
+                  DropdownButtonFormField<String>(
+                    initialValue: selectedStatus,
+                    decoration: InputDecoration(
+                      labelText: l10n.statusLabel,
+                      border: const OutlineInputBorder(),
+                    ),
+                    items: [
+                      DropdownMenuItem(value: 'AVAILABLE', child: Text(l10n.availableStatus)),
+                      DropdownMenuItem(value: 'UNAVAILABLE', child: Text(l10n.unavailableStatus)),
+                    ],
+                    onChanged: (v) {
+                      if (v != null) selectedStatus = v;
+                    },
+                  ),
+                  AppDimensions.vGapMd,
                   SraInput(
                     controller: descController,
-                    label: l10n.descriptionLabel,
-                    placeholder: "Description",
-                  ),
-                  const SizedBox(height: AppDimensions.spacingMd),
-                  SraDropdown(
-                    value: selectedStatus,
-                    label: l10n.statusLabel,
-                    placeholder: l10n.selectOption,
-                    items: const ["AVAILABLE", "UNAVAILABLE"],
-                    itemLabels: {
-                      "AVAILABLE": l10n.availableStatus,
-                      "UNAVAILABLE": l10n.unavailableStatus,
-                    },
-                    onChanged: (val) {
-                      if (val != null) selectedStatus = val;
-                    },
+                    placeholder: l10n.descriptionLabel,
+                    maxLines: 3,
                   ),
                 ],
               ),
             ),
           ),
           actions: [
-            SraButton(
+            SraButton.secondary(
               label: l10n.cancelLabel,
-              isOutlined: true,
-              onPressed: () => Navigator.of(ctx).pop(),
+              onPressed: () => Navigator.pop(ctx),
             ),
-            const SizedBox(width: AppDimensions.spacingSm),
             SraButton(
-              label: l10n.validateLabel,
+              label: 'Enregistrer',
               onPressed: () {
                 if (formKey.currentState!.validate()) {
-                  final e = Equipment(
+                  final newEq = Equipment(
                     id: eq?.id ?? '',
                     name: nameController.text,
-                    description: descController.text,
                     status: selectedStatus,
+                    description: descController.text,
                   );
+
                   if (eq == null) {
-                    context.read<EquipmentBloc>().add(CreateEquipmentEvent(e));
+                    context.read<EquipmentBloc>().add(CreateEquipmentEvent(newEq));
                   } else {
-                    context.read<EquipmentBloc>().add(UpdateEquipmentEvent(e));
+                    context.read<EquipmentBloc>().add(UpdateEquipmentEvent(newEq));
                   }
-                  Navigator.of(ctx).pop();
+                  Navigator.pop(ctx);
                 }
               },
             ),

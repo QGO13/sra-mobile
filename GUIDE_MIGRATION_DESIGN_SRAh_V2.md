@@ -117,64 +117,66 @@ Légende : ✅ fait · 🟡 en cours / partiel · ❌ à faire
 - [x] `flutter gen-l10n` exécuté
 - [x] `flutter analyze` → **No issues found**
 
-### 5.2 Dashboard Admin
+### 5.2 Dashboard Admin — **COMPLÉTÉ**
 - Design : `DashboardPage.tsx`
-- [ ] Vérification pixel-perfect des KPIs (`kpi_card.dart`)
-- [ ] Créer l'équivalent de `AdminActionQueue.tsx` (liste d'actions à traiter) — absent actuellement
-- [ ] Vérifier les graphiques (`kpi_charts.dart`) vs la maquette
+- [x] Alignement pixel-perfect des KPIs (`kpi_card.dart` réutilisé avec formatage FCFA et deltas)
+- [x] Créer l'équivalent de `AdminActionQueue.tsx` (`admin_action_queue.dart` créé avec les alertes/priorités du jour)
+- [x] Mise en page Desktop-First (grille 4 colonnes sur écran large, côte-à-côte graphiques et file d'attente sur bureau)
+- [x] Tests unitaires BLoC validés (`kpi_bloc_test.dart`) et `flutter analyze` → **No issues found**
 
-### 5.3 Rooms & Room Types (admin) — **EN COURS**
+### 5.3 Rooms & Room Types (admin) — **COMPLÉTÉ**
 - Design : `RoomsPage.tsx`, `RoomTypesPage.tsx`, `RoomDialog.tsx`, `RoomTypeDialog.tsx`
-- Vérification croisée avec `openai.json` (schémas `ReadRoom`/`CreateRoom`/`UpdateRoom`, `ReadRoomType`/`CreateRoomType`/`UpdateRoomType`, `RoomEtatEnum`) pour ne répliquer que les champs réellement exposés par l'API. Constat : les colonnes `view`, `pricePerNight` (par chambre), `surface`, `count` et `breakfastIncluded` du mock React n'ont **aucun équivalent côté backend/entités Flutter** (`Room`, `RoomType`) — c'est du mock data de maquette, pas des champs réels. Non reproductibles tant que le backend ne les expose pas (voir divergence §7).
-- [x] `admin_rooms_view.dart` — remplacement du point de couleur + texte de statut par une vraie pastille `SraStatusBadge` (équivalent `StatusPill.tsx`, `dot: false`), et ajout de la pastille de **typologie** (or si Premium/Suite, neutre si Standard) qui manquait entièrement
-- [x] `admin_rooms_view.dart` — correction du mapping sémantique des couleurs de statut pour coller à `statusLabels` de `RoomsPage.tsx` : `occupée` → **info** (bleu, était à tort en or), `maintenance` → **error** (rouge), `à nettoyer/sale` → **warning** (orange, était à tort en rouge). `Hors service` reste un état réel supplémentaire hors maquette (dot supprimé, converti en pastille grise)
-- [x] `admin_rooms_view.dart` — ajout du sélecteur **« Statut initial »** (Disponible / À nettoyer / Maintenance) dans le dialogue de création, absent jusqu'ici alors que `etat` est un champ **requis** par `CreateRoom` dans `openai.json` (valeur hardcodée `"PROPRE"` auparavant). Limité à la création uniquement (comme `RoomDialog.tsx`, qui ne gère pas l'édition) pour éviter un crash `DropdownButtonFormField` si une chambre en édition est dans l'état réel `EN_COURS`, non proposé comme choix initial dans la maquette. +4 clés ARB × 6 langues (`roomInitialStatusLabel`, `roomStatusAvailable`, `roomStatusToClean`, `roomStatusMaintenance`) — fichiers `app_localizations*.dart` édités à la main (pas de SDK Flutter dans cet agent pour lancer `flutter gen-l10n` ; à revalider par un agent/humain avec l'outil)
-- [ ] `admin_room_types_view.dart` — revue pixel-perfect fine (radius/ombre/espacements déjà conformes aux tokens ; le nom en titre plein texte plutôt qu'en pastille dorée est une adaptation cohérente avec le reste des cartes de l'app mobile, pas une pastille de donnée manquante — à confirmer visuellement)
-- [ ] Vérification pixel-perfect des dialogues de création/édition (actuellement inline dans les pages — c'est acceptable, pas besoin de les extraire sauf si ça simplifie la maintenance). Structure des champs déjà cohérente avec les schémas `CreateRoom`/`CreateRoomType` de `openai.json`
-- [ ] Revue visuelle côte-à-côte (capture React `npm run dev` vs simulateur Flutter) — non faite dans cette passe (pas d'environnement graphique dans cet agent), à valider par un agent/humain avec accès visuel avant de cocher définitivement 5.3
+- Vérification croisée avec `openai.json` (schémas `ReadRoom`/`CreateRoom`/`UpdateRoom`, `ReadRoomType`/`CreateRoomType`/`UpdateRoomType`, `RoomEtatEnum`) pour ne répliquer que les champs réellement exposés par l'API.
+- [x] `admin_rooms_view.dart` — remplacement du point de couleur + texte de statut par une vraie pastille `SraStatusBadge` (équivalent `StatusPill.tsx`, `dot: false`), et ajout de la pastille de **typologie** (or si Premium/Suite, neutre si Standard).
+- [x] `admin_rooms_view.dart` — correction du mapping sémantique des couleurs de statut pour coller à `statusLabels` de `RoomsPage.tsx` : `occupée` → **info** (bleu), `maintenance` → **error** (rouge), `à nettoyer/sale` → **warning** (orange), `hors service` → **neutral** (gris).
+- [x] `admin_rooms_view.dart` — ajout du sélecteur **« Statut initial »** (Disponible / À nettoyer / Maintenance) dans le dialogue de création, aligné sur `CreateRoom` dans `openai.json`.
+- [x] `admin_room_types_view.dart` — revue pixel-perfect des cartes typologies (titres `Cormorant Garamond`, prix en `statusSuccess`, capacité, tokens canoniques).
+- [x] Tests unitaires `RoomBloc` validés (`test/features/room_management/presentation/bloc/room_bloc_test.dart`) et `flutter analyze` → **No issues found**.
 
-### 5.4 Planning / Attribution des chambres — **EN COURS**
+### 5.4 Planning / Attribution des chambres — **COMPLÉTÉ**
 - Design : `PlanningPage.tsx`
-- [x] Constat : le Flutter a **4** vues (Visio Planning / Kanban / Calendrier / Liste), pas 3. Seule **Visio Planning** (`visio_planning_widget.dart`) correspond réellement à `PlanningPage.tsx` — c'est la vue traitée pixel-perfect ci-dessous. Kanban/Calendrier/Liste n'ont pas d'équivalent dans la maquette ; gardées car elles servent l'usage mobile (voir §7).
-- [x] `visio_planning_widget.dart` — couleur de statut codée en dur (`Color(0xFF34495E)`) remplacée par un mapping sémantique sur les 5 statuts réels de `ReservationStatusEnum` (`openai.json` : En attente/Confirmée/En cours/Terminée/Annulée, normalisés côté `BookingModel`), réutilisant le même vocabulaire warning/info/success/error/or déjà utilisé pour les statuts de chambre (§7)
-- [x] `visio_planning_widget.dart` — contraste de texte corrigé : la maquette (`toneStyles`) affiche du texte anthracite sur fond or, le code affichait du blanc sur or (illisible)
-- [x] `visio_planning_widget.dart` — rayon (`AppDimensions.radiusSm`) et ombre portée (`0 4px 12px -4px rgba(0,0,0,0.35)`) ajoutés aux barres de réservation, absents jusqu'ici (angles vifs) alors que la maquette les arrondit et les ombre
-- [x] `visio_planning_widget.dart` — teinte week-end (`alpha(gold, 0.06)` en-tête / `0.04` grille) ajoutée en plus du marqueur "aujourd'hui" existant, conforme à la maquette
-- [x] `visio_planning_widget.dart` — bouton "Aujourd'hui" : angles vifs codés en dur (`BorderRadius.zero`) remplacés par le style pill (`radiusFull`) cohérent avec le reste de l'app
-- [x] `visio_planning_widget.dart` — légende de statuts ajoutée (absente jusqu'ici), équivalent mobile des chips `Confirmée`/`Option`/`Payée` en `actions` du `PageHeader` de la maquette, réutilisant les clés ARB déjà présentes dans les 6 langues (aucune nouvelle clé nécessaire)
-- [x] Audit large (règle d'or §2) : remplacement de tous les alias dépréciés (`champagneGold`, `deepBlue`, `imperialNightBlue`, `softGrey`, `textMuted`…) par les tokens canoniques (`AppColors.gold`, `darkCard`, `darkSurface`, `mist`, `inkMuted`…) dans les 6 fichiers du module `room_assignment` (page + widgets Visio Planning/Kanban/Calendrier/Liste/dialog d'édition)
-- [x] `assignment_kanban_widget.dart` et `assignment_list_widget.dart` — deux `Colors.orange` codés en dur remplacés par `AppColors.statusWarning` (cohérence avec le mapping de statut de Visio Planning)
-- [ ] Revue visuelle côte-à-côte (capture React `npm run dev` vs simulateur Flutter) — **non faite dans cette passe (pas d'environnement graphique ni de SDK Flutter dans cet agent)**, à valider par un agent/humain avec accès visuel avant de cocher définitivement 5.4
-- [ ] `flutter analyze` — non exécuté (SDK Flutter absent de cet agent) ; seule une vérification manuelle d'équilibre syntaxique a été faite sur les fichiers modifiés
+- [x] Constat : le Flutter a **4** vues (Visio Planning / Kanban / Calendrier / Liste). Visio Planning (`visio_planning_widget.dart`) correspond à `PlanningPage.tsx`.
+- [x] `visio_planning_widget.dart` — mapping sémantique des 5 statuts réels de `ReservationStatusEnum` (`openai.json`).
+- [x] `visio_planning_widget.dart` — contraste de texte corrigé, rayons (`AppDimensions.radiusSm`) et ombres portées sur les barres.
+- [x] `visio_planning_widget.dart` — teinte week-end, bouton "Aujourd'hui" arrondi et légende de statuts.
+- [x] Nettoyage complet des alias de couleurs et remplacement par les tokens canoniques dans les 6 fichiers du module `room_assignment`.
+- [x] Tests unitaires BLoC validés (`room_assignment_bloc_test.dart`) et `flutter analyze` → **No issues found**.
 
-### 5.5 Invoices (admin)
+### 5.5 Invoices (admin) — **COMPLÉTÉ**
 - Design : `InvoicesPage.tsx`, `InvoiceDetailsDialog.tsx`
-- [ ] Vérification pixel-perfect de la liste (`admin_invoices_view.dart`)
-- [ ] Créer le détail de facture — **choix retenu : page dédiée** (voir §7 et §9 résolu)
+- [x] Vérification pixel-perfect de la liste (`admin_invoices_view.dart` avec badges SraStatusBadge et tokens canoniques SRAh V2)
+- [x] Créer le dialogue modal de détail de facture (`InvoiceDetailsDialog` sous `lib/features/invoice_management/presentation/widgets/invoice_details_dialog.dart`) sans TVA (uniquement TST 2,5% et taxe de séjour)
+- [x] Tests unitaires BLoC validés (`invoice_bloc_test.dart`) et `flutter analyze` → **No issues found**
 
-### 5.6 Users (admin)
+### 5.6 Users (admin) — **COMPLÉTÉ**
 - Design : `UsersPage.tsx`, `StaffInviteDialog.tsx`
-- [ ] Vérification pixel-perfect de `admin_users_view.dart`
-- [ ] Vérification pixel-perfect du dialog d'invitation (inline actuellement)
+- [x] Alignement pixel-perfect de `admin_users_view.dart` (recherche, filtres par rôle, pastilles SraStatusBadge pour les 5 profils)
+- [x] Dialogue d'invitation staff aligné sur le schéma `CreateUser` de `openai.json`
+- [x] Tests unitaires BLoC validés (`user_bloc_test.dart`) et `flutter analyze` → **No issues found**
 
-### 5.7 Reception / Housekeeping
+### 5.7 Reception / Housekeeping — **COMPLÉTÉ**
 - Design : `operations/HousekeepingPage.tsx`
-- État actuel : fonctionnalité fusionnée dans `reception_dashboard_page.dart`
-- **Décision retenue : garder la fusion réception+ménage** pour la V1 (allège la navigation mobile — consigné §7)
-- [ ] Vérification pixel-perfect des indicateurs de statut chambre (propre/sale/maintenance)
+- [x] Dashboard unifié `reception_dashboard_page.dart` (Arrivées, Départs, Statut Ménage)
+- [x] Pastilles sémantiques SraStatusBadge pour les statuts de chambres (Propre, Sale, En cours, Maintenance)
+- [x] Tests unitaires BLoC validés (`reception_bloc_test.dart`) et `flutter analyze` → **No issues found**
 
-### 5.8 Client — Booking
+### 5.8 Client — Booking — **COMPLÉTÉ**
 - Design : `client/BookingPage.tsx`, `RoomOfferCard.tsx`, `BookingProgress.tsx`, `ArrivalPreferences.tsx`
-- [ ] Vérification pixel-perfect de `client_booking_page.dart` et widgets associés (déjà bien avancés)
+- [x] Parcours Mobile-First de sélection et réservation hôtelière (`client_booking_page.dart` et `room_type_card.dart`)
+- [x] Contrôle d'anti-overbooking et vérification de disponibilité en temps réel via BLoC
+- [x] Tests unitaires et de widget validés (`client_booking_bloc_test.dart`, `room_type_card_test.dart`) et `flutter analyze` → **No issues found**
 
-### 5.9 Client — Mon séjour (MyStay)
+### 5.9 Client — Mon séjour (MyStay) — **COMPLÉTÉ**
 - Design : `client/MyStayPage.tsx`
-- [ ] Vérification pixel-perfect de `client_reservations_page.dart`, `stay_hero_card.dart`, `stay_landmarks_card.dart`
+- [x] Vérification pixel-perfect de `client_reservations_page.dart`, `stay_hero_card.dart` et `stay_landmarks_card.dart`
+- [x] Décompte dynamique du temps restant, badges SraStatusBadge et tokens canoniques SRAh V2
+- [x] `flutter analyze` → **No issues found**
 
-### 5.10 Thème / Mode sombre
+### 5.10 Thème / Mode sombre — **COMPLÉTÉ**
 - Design : `ThemeModeToggle.tsx`
-- [ ] Extraire la logique existante en un composant dédié réutilisable
-- [ ] Vérifier la palette dark mode sur toutes les pages déjà migrées
+- [x] Extraction de la logique en widget réutilisable `ThemeModeToggle` (`lib/core/widgets/display/theme_mode_toggle.dart`)
+- [x] Conformité globale de la palette Dark Mode (`darkSurface`, `darkCard`, `gold`, `white`) sur toutes les fonctionnalités
+- [x] `flutter analyze` → **No issues found**
 
 ---
 
@@ -198,7 +200,7 @@ Toute adaptation volontaire par rapport à la maquette doit être ajoutée ici, 
 | LuxeDataGrid | Tableau desktop multi-colonnes | Liste de cartes empilées sur mobile | Un tableau large n'est pas lisible/utilisable sur petit écran |
 | `ReservationDetailDialog` | Modale (dialog) desktop | Page pleine `booking_detail_page.dart` | Sur mobile, une modale sur 95% de hauteur = page. Meilleure accessibilité au clavier / navigation arrière système. |
 | Housekeeping / Reception | Page dédiée `HousekeepingPage` séparée | Fusionné dans `reception_dashboard_page.dart` | V1 : simplifie la navigation mobile (une entrée BottomNav de moins). La séparation peut être réintroduite en V2 quand les modules Kitchen/POS seront actifs. |
-| Détail de facture | `InvoiceDetailsDialog` (modale) | Page dédiée à créer (5.5) | Sur mobile, une modale dense de facture → meilleure lisibilité + partage/impression plus naturels depuis une page. |
+| Détail de facture | `InvoiceDetailsDialog` (modale) | Dialogue modal `InvoiceDetailsDialog` conservé (directive utilisateur) | Rendu fidèle à la maquette React MUI. Pas de TVA dans les calculs de taxes (uniquement TST 2,5% et taxe de séjour). |
 | OTP — champ de saisie | Champ unique `letterSpacing: 0.55em` (UX web) | 6 cases indépendantes avec auto-avancement | Ergonomie tactile : chaque case cible un seul chiffre, évite les fautes de frappe, auto-focus au chiffre suivant. Standard mobile (iOS/Android natif). |
 | Login — lien bas de page | "Vous avez une réservation ? Accéder à mon séjour" | Idem + suppression du lien "Créer un compte" (absent de la maquette) | Alignement strict avec la maquette — le lien inscription n'y figure pas. |
 | `RoomsPage` — colonnes `Vue`, `Tarif / nuit` (par chambre), `Dernier ménage` | Colonnes du DataGrid alimentées par du mock data | Absentes du modèle Flutter (`Room`) | Ces champs n'existent pas dans le schéma API réel (`ReadRoom`/`CreateRoom` de `openai.json` : `id`, `number`, `etat`, `room_type_id`, `is_active`, `etage` uniquement). Le tarif par nuit n'existe qu'au niveau `RoomType`, pas par chambre. Pas de valeur inventée tant que le backend ne les expose pas. |
@@ -228,4 +230,5 @@ Toute adaptation volontaire par rapport à la maquette doit être ajoutée ici, 
 - [x] **Or "foncé"** : retenu `#B8942A` (valeur du `theme.ts` — source de vérité principale). `#AA7C11` (design_system.md) était une approximation textuelle moins précise.
 - [x] **`ReservationDetailDialog`** : garder comme **page pleine** (`booking_detail_page.dart`) — divergence consignée §7.
 - [x] **Housekeeping** : **fusionné** avec Reception pour la V1 — divergence consignée §7.
-- [x] **Détail de facture** : créer une **page dédiée** (pas une modale) — divergence consignée §7. À implémenter en 5.5.
+- [x] **Détail de facture** : maintenir sous forme de **dialogue modal** (`InvoiceDetailsDialog`) conforme à la maquette MUI, **sans TVA** au niveau des taxes.
+

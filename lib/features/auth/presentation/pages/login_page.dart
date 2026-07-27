@@ -167,35 +167,41 @@ class _LoginPageState extends State<LoginPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        width: 24, height: 24,
-                        child: Checkbox(
-                          value: _rememberMe,
-                          activeColor: AppColors.gold,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(AppDimensions.radiusXs / 2),
+                  Flexible(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: 24, height: 24,
+                          child: Checkbox(
+                            value: _rememberMe,
+                            activeColor: AppColors.gold,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(AppDimensions.radiusXs / 2),
+                            ),
+                            onChanged: (val) => setState(() => _rememberMe = val ?? false),
                           ),
-                          onChanged: (val) => setState(() => _rememberMe = val ?? false),
                         ),
-                      ),
-                      AppDimensions.hGapXs,
-                      Text(
-                        l10n.rememberMe,
-                        style: AppTextStyles.bodySmall.copyWith(color: textMuted),
-                      ),
-                    ],
+                        AppDimensions.hGapXs,
+                        Flexible(
+                          child: Text(
+                            l10n.rememberMe,
+                            style: AppTextStyles.bodySmall.copyWith(color: textMuted),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   GestureDetector(
                     onTap: () => Navigator.of(context).pushNamed(AppRoutes.changePassword),
                     child: Text(
                       l10n.changePasswordTitle,
                       style: AppTextStyles.bodySmall.copyWith(
-                        color: AppColors.goldDark,
-                        fontWeight: FontWeight.w700,
+                        color: AppColors.gold,
+                        fontWeight: FontWeight.w600,
                       ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],

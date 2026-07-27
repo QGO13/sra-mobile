@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sra_hotel/core/routes/app_routes.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
+import 'package:sra_hotel/core/widgets/display/sra_logo.dart';
 import 'package:sra_hotel/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:sra_hotel/features/auth/presentation/bloc/auth_state.dart';
 import 'package:sra_hotel/features/home/presentation/pages/client_profile_page.dart';
@@ -112,6 +113,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context)!;
     final isWide = MediaQuery.of(context).size.width >= 1024;
     final isLargeDesktop = MediaQuery.of(context).size.width >= 1280;
@@ -252,6 +254,28 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       },
       child: Scaffold(
         appBar: AppBar(
+          leading: Builder(
+            builder: (ctx) => IconButton(
+              tooltip: isWide
+                  ? (sidebarExtended ? "Réduire le menu" : "Agrandir le menu")
+                  : "Menu administration",
+              icon: Icon(
+                isWide
+                    ? (sidebarExtended ? Icons.menu_open_rounded : Icons.menu_rounded)
+                    : Icons.menu_rounded,
+                color: isDark ? AppColors.goldLight2 : AppColors.gold,
+              ),
+              onPressed: () {
+                if (isWide) {
+                  setState(() {
+                    _isSidebarExtended = !sidebarExtended;
+                  });
+                } else {
+                  Scaffold.of(ctx).openDrawer();
+                }
+              },
+            ),
+          ),
           title: Text(
             currentTitle,
             style: theme.textTheme.titleLarge?.copyWith(
@@ -261,7 +285,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           ),
           actions: [
             IconButton(
-              icon: const Icon(Icons.refresh, color: AppColors.champagneGold),
+              icon: const Icon(Icons.refresh, color: AppColors.gold),
               onPressed: _refreshAll,
             ),
             IconButton(
@@ -272,15 +296,15 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: AppColors.champagneGold,
+                    color: AppColors.gold,
                     width: 1.5,
                   ),
-                  color: AppColors.champagneGold.withValues(alpha: 0.15),
+                  color: AppColors.gold.withValues(alpha: 0.15),
                 ),
                 child: const Icon(
                   Icons.person_rounded,
                   size: 20,
-                  color: AppColors.champagneGold,
+                  color: AppColors.gold,
                 ),
               ),
               onPressed: () {
@@ -300,6 +324,69 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             const SizedBox(width: AppDimensions.spacingSm),
           ],
         ),
+        drawer: isWide
+            ? null
+            : Drawer(
+                backgroundColor: isDark ? AppColors.darkSurface : AppColors.white,
+                child: Column(
+                  children: [
+                    DrawerHeader(
+                      decoration: BoxDecoration(
+                        color: isDark ? AppColors.darkCard : AppColors.fog,
+                        border: Border(
+                          bottom: BorderSide(
+                            color: isDark ? AppColors.darkBorder : AppColors.mist,
+                          ),
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SraLogo(size: 42),
+                          AppDimensions.vGapSm,
+                          Text(
+                            "SRA HÔTEL ADMIN",
+                            style: AppTextStyles.labelUppercase.copyWith(
+                              color: isDark ? AppColors.goldLight2 : AppColors.gold,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: sidebarItems.length,
+                        itemBuilder: (context, index) {
+                          final item = sidebarItems[index];
+                          final isSelected = _currentWideIndex == index;
+                          return ListTile(
+                            leading: Icon(
+                              isSelected ? item.selectedIcon : item.icon,
+                              color: isSelected
+                                  ? (isDark ? AppColors.goldLight2 : AppColors.gold)
+                                  : (isDark ? AppColors.overlayDarkMedium : AppColors.inkMuted),
+                            ),
+                            title: Text(
+                              item.label,
+                              style: AppTextStyles.bodyMedium.copyWith(
+                                color: isSelected
+                                    ? (isDark ? AppColors.goldLight2 : AppColors.gold)
+                                    : (isDark ? AppColors.white : AppColors.ink),
+                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                              ),
+                            ),
+                            onTap: () {
+                              Navigator.pop(context); // fermer drawer
+                              _selectWideIndex(index);
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
         body: isWide
             ? Row(
                 children: [
@@ -325,11 +412,11 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             : BottomNavigationBar(
                 currentIndex: _currentMobileIndex,
                 onTap: _selectMobileIndex,
-                selectedItemColor: AppColors.champagneGold,
-                unselectedItemColor: AppColors.textMuted,
+                selectedItemColor: AppColors.gold,
+                unselectedItemColor: AppColors.inkMuted,
                 type: BottomNavigationBarType.fixed,
-                backgroundColor: theme.brightness == Brightness.dark
-                    ? AppColors.imperialNightBlue
+                backgroundColor: isDark
+                    ? AppColors.darkSurface
                     : AppColors.surfaceLight,
                 items: [
                   BottomNavigationBarItem(

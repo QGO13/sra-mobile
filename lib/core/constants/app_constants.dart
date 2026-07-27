@@ -1,6 +1,6 @@
 class AppConstants {
   // Network Config
-  static const String apiBaseUrl = 'http://192.168.10.153:8000/api/v1';
+  static const String apiBaseUrl = 'https://api.sra-hotel.com/api/v1';
   static const int connectTimeoutSeconds = 10;
   static const int receiveTimeoutSeconds = 10;
 

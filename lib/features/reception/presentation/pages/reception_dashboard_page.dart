@@ -117,7 +117,7 @@ class _ReceptionDashboardPageState extends State<ReceptionDashboardPage> with Si
         },
         builder: (context, state) {
           if (state is ReceptionLoading || state is ReceptionInitial) {
-            return const LoadingWidget();
+            return const LoadingIndicator();
           } else if (state is ReceptionFailure) {
             return ErrorStateView(
               message: state.error,

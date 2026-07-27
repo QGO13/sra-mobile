@@ -30,6 +30,7 @@ export 'display/sra_star_rating.dart';
 export 'display/sra_status_badge.dart';
 export 'display/section_header.dart';
 export 'display/language_selector.dart';
+export 'display/theme_mode_toggle.dart';
 
 // ── Layout & Structure ──────────────────────────────────────────────────────
 export 'layout/sra_app_bar.dart';
@@ -37,6 +38,7 @@ export 'layout/sra_bottom_nav.dart';
 export 'layout/sra_page_scaffold.dart';
 export 'layout/responsive_list_grid_view.dart';
 export 'layout/luxe_data_grid.dart';
+export 'layout/sra_data_table.dart';
 export 'layout/auth_shell.dart';
 
 // ── Feedback & États ────────────────────────────────────────────────────────

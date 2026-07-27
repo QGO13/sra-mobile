@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sra_hotel/core/theme/app_theme.dart';
-import 'package:sra_hotel/core/widgets/widgets.dart';
+import 'package:sra_hotel/core/widgets/buttons/sra_button.dart';
+import 'package:sra_hotel/core/widgets/display/sra_avatar.dart';
+import 'package:sra_hotel/core/widgets/display/sra_filter_bar.dart';
+import 'package:sra_hotel/core/widgets/display/sra_status_badge.dart';
+import 'package:sra_hotel/core/widgets/feedback/confirm_delete_dialog.dart';
+import 'package:sra_hotel/core/widgets/feedback/error_state_view.dart';
+import 'package:sra_hotel/core/widgets/feedback/loading_indicator.dart';
+import 'package:sra_hotel/core/widgets/inputs/sra_input.dart';
+import 'package:sra_hotel/core/widgets/layout/sra_data_table.dart';
 import 'package:sra_hotel/features/user_management/domain/entities/staff_user.dart';
 import 'package:sra_hotel/features/user_management/presentation/bloc/user_bloc.dart';
 import 'package:sra_hotel/features/user_management/presentation/bloc/user_event.dart';
@@ -35,7 +43,7 @@ class _AdminUsersViewState extends State<AdminUsersView> {
     return BlocBuilder<UserBloc, UserState>(
       builder: (context, state) {
         if (state is UserLoading || state is UserInitial) {
-          return const LoadingWidget();
+          return const LoadingIndicator();
         } else if (state is UserFailure) {
           return ErrorStateView(
             message: state.error,
@@ -61,7 +69,9 @@ class _AdminUsersViewState extends State<AdminUsersView> {
           }).toList();
 
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // ── Barre de recherche & Action ──
               Padding(
                 padding: const EdgeInsets.all(AppDimensions.spacingMd),
                 child: Row(
@@ -70,7 +80,7 @@ class _AdminUsersViewState extends State<AdminUsersView> {
                       child: SraInput(
                         controller: _searchController,
                         placeholder: l10n.searchStaffPlaceholder,
-                        prefixIcon: const Icon(Icons.search, size: 20, color: AppColors.champagneGold),
+                        prefixIcon: const Icon(Icons.search, size: 20, color: AppColors.gold),
                         suffixIcon: _searchQuery.isNotEmpty
                             ? IconButton(
                                 icon: const Icon(Icons.clear, size: 18),
@@ -116,116 +126,119 @@ class _AdminUsersViewState extends State<AdminUsersView> {
                   });
                 },
               ),
+              const SizedBox(height: AppDimensions.spacingMd),
+
+              // ── Vue Tableau CRUD Unifiée ──
               Expanded(
-                child: filteredUsers.isEmpty
-                    ? const EmptyStateView(
-                        icon: Icons.people_outline,
-                      )
-                    : ResponsiveListGridView(
-                        itemCount: filteredUsers.length,
-                        padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMd),
-                        maxCrossAxisExtent: 450,
-                        mainAxisExtent: 110,
-                        itemBuilder: (context, index) {
-                    final user = filteredUsers[index];
-                    return Opacity(
-                      opacity: user.isActive == 1 ? 1.0 : 0.5,
-                      child: Container(
-                        margin: MediaQuery.of(context).size.width < AppDimensions.breakpointMd
-                            ? const EdgeInsets.only(bottom: AppDimensions.spacingSm + 2)
-                            : EdgeInsets.zero,
-                        padding: const EdgeInsets.all(AppDimensions.spacingSm + 4),
-                        decoration: BoxDecoration(
-                          color: isDark ? AppColors.deepBlue : Colors.white,
-                          borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
-                          border: Border.all(color: isDark ? Colors.white10 : AppColors.softGrey),
-                          boxShadow: const [AppShadows.shadowCard],
-                        ),
-                        child: Row(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMd),
+                  child: SraDataTable<StaffUser>(
+                    items: filteredUsers,
+                    minWidth: 700,
+                    emptyTitle: 'Aucun collaborateur trouvé',
+                    emptyIcon: Icons.people_outline,
+                    columns: [
+                      SraTableColumn<StaffUser>(
+                        label: "Collaborateur",
+                        flex: 1.4,
+                        cellBuilder: (context, user) => Row(
                           children: [
-                            CircleAvatar(
-                              backgroundColor: AppColors.champagneGold.withValues(alpha: 0.1),
-                              foregroundColor: AppColors.champagneGold,
-                              child: Text(user.nom.isNotEmpty ? user.nom.substring(0, 1).toUpperCase() : ""),
-                            ),
-                            const SizedBox(width: AppDimensions.spacingSm + 4),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "${user.prenoms} ${user.nom}",
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                                  ),
-                                  Text(
-                                    user.login,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
-                                  ),
-                                  const SizedBox(height: AppDimensions.spacingXs / 2),
-                                  Builder(
-                                    builder: (context) {
-                                      final r = user.role.toLowerCase();
-                                      String label = r.toUpperCase();
-                                      Color col = AppColors.statusInfo;
-                                      if (r.contains('admin')) {
-                                        label = l10n.adminRole.toUpperCase();
-                                        col = AppColors.champagneGold;
-                                      } else if (r.contains('reception')) {
-                                        label = l10n.receptionistRole.toUpperCase();
-                                        col = AppColors.statusSuccess;
-                                      } else if (r.contains('housekeeper')) {
-                                        label = "GOUVERNANTE";
-                                        col = AppColors.statusWarning;
-                                      } else if (r.contains('client')) {
-                                        label = "CLIENT";
-                                        col = AppColors.textMuted;
-                                      }
-                                      return Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                        color: col.withValues(alpha: 0.15),
-                                        child: Text(
-                                          label,
-                                          style: TextStyle(fontSize: 9, color: col, fontWeight: FontWeight.bold),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
+                            SraAvatar(
+                              name: "${user.prenoms} ${user.nom}",
+                              size: 32,
                             ),
                             const SizedBox(width: AppDimensions.spacingSm),
+                            Expanded(
+                              child: Text(
+                                "${user.prenoms} ${user.nom}",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppTextStyles.bodyMedium.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: isDark ? AppColors.white : AppColors.ink,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SraTableColumn<StaffUser>(
+                        label: "Identifiant / Email",
+                        flex: 1.4,
+                        cellBuilder: (context, user) => Text(
+                          user.login,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: isDark ? AppColors.overlayDarkMedium : AppColors.inkMuted,
+                          ),
+                        ),
+                      ),
+                      SraTableColumn<StaffUser>(
+                        label: "Téléphone",
+                        flex: 1.0,
+                        cellBuilder: (context, user) => Text(
+                          user.telephone.isNotEmpty ? user.telephone : "N/A",
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: isDark ? AppColors.white : AppColors.ink,
+                          ),
+                        ),
+                      ),
+                      SraTableColumn<StaffUser>(
+                        label: "Rôle",
+                        flex: 1.0,
+                        cellBuilder: (context, user) {
+                          final r = user.role.toLowerCase();
+                          if (r.contains('admin')) {
+                            return SraStatusBadge.custom(label: l10n.adminRole.toUpperCase(), color: AppColors.gold, small: true);
+                          } else if (r.contains('reception')) {
+                            return SraStatusBadge.success(label: l10n.receptionistRole.toUpperCase(), small: true);
+                          } else if (r.contains('housekeeper')) {
+                            return const SraStatusBadge.warning(label: 'GOUVERNANTE', small: true);
+                          } else {
+                            return const SraStatusBadge.custom(label: 'CLIENT', color: AppColors.inkMuted, small: true);
+                          }
+                        },
+                      ),
+                      SraTableColumn<StaffUser>(
+                        label: "Statut",
+                        flex: 0.8,
+                        cellBuilder: (context, user) => user.isActive == 1
+                            ? const SraStatusBadge.success(label: 'ACTIF', small: true)
+                            : const SraStatusBadge.custom(label: 'INACTIF', color: AppColors.inkMuted, small: true),
+                      ),
+                      SraTableColumn<StaffUser>(
+                        label: "Actions",
+                        flex: 0.8,
+                        alignment: Alignment.centerRight,
+                        cellBuilder: (context, user) => Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
                             IconButton(
-                              icon: const Icon(Icons.edit_outlined, color: AppColors.statusInfo),
+                              tooltip: "Modifier",
+                              icon: const Icon(Icons.edit_outlined, size: 18, color: AppColors.statusInfo),
                               onPressed: () => _showUserFormDialog(context, user),
                             ),
-                            Switch(
-                              value: user.isActive == 1,
-                              activeTrackColor: AppColors.champagneGold,
-                              onChanged: (val) {
-                                final updated = StaffUser(
-                                  id: user.id,
-                                  login: user.login,
-                                  role: user.role,
-                                  nom: user.nom,
-                                  prenoms: user.prenoms,
-                                  telephone: user.telephone,
-                                  sexe: user.sexe,
-                                  pays: user.pays,
-                                  adresse: user.adresse,
-                                  isActive: val ? 1 : 0,
+                            IconButton(
+                              tooltip: "Supprimer",
+                              icon: const Icon(Icons.delete_outline, size: 18, color: AppColors.statusError),
+                              onPressed: () async {
+                                final confirmed = await ConfirmDeleteDialog.show(
+                                  context,
+                                  title: 'Supprimer cet utilisateur ?',
+                                  message: 'Êtes-vous sûr de vouloir supprimer ${user.prenoms} ${user.nom} ?',
                                 );
-                                context.read<UserBloc>().add(UpdateUserEvent(updated));
+                                if (confirmed && context.mounted) {
+                                  final intId = int.tryParse(user.id) ?? 0;
+                                  context.read<UserBloc>().add(DeleteUserEvent(intId));
+                                }
                               },
                             ),
                           ],
                         ),
                       ),
-                    );
-                  },
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -238,110 +251,105 @@ class _AdminUsersViewState extends State<AdminUsersView> {
 
   void _showUserFormDialog(BuildContext context, StaffUser? user) {
     final formKey = GlobalKey<FormState>();
-    final emailController = TextEditingController(text: user?.login ?? '');
-    final nameController = TextEditingController(text: user?.nom ?? '');
-    final preController = TextEditingController(text: user?.prenoms ?? '');
-    final phoneController = TextEditingController(text: user?.telephone ?? '');
-    String selectedRole = user?.role ?? "receptionist";
-    // Normalize old role format
-    if (selectedRole == "reception") selectedRole = "receptionist";
-    final l10n = AppLocalizations.of(context)!;
+    final nomController = TextEditingController(text: user?.nom ?? '');
+    final prenomsController = TextEditingController(text: user?.prenoms ?? '');
+    final loginController = TextEditingController(text: user?.login ?? '');
+    final telController = TextEditingController(text: user?.telephone ?? '');
+    String selectedRole = user?.role ?? 'receptionist';
 
     showDialog(
       context: context,
       builder: (ctx) {
         final isDark = Theme.of(ctx).brightness == Brightness.dark;
+        final l10n = AppLocalizations.of(ctx)!;
         return AlertDialog(
-          backgroundColor: isDark ? AppColors.deepBlue : Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusLg)),
+          backgroundColor: isDark ? AppColors.darkSurface : AppColors.white,
           title: Text(
-            user == null ? l10n.addStaff : l10n.editStaff,
-            style: AppTextStyles.titleLarge.copyWith(color: AppColors.champagneGold),
+            user == null ? "Ajouter un collaborateur" : "Modifier l'utilisateur",
+            style: AppTextStyles.titleMedium.copyWith(
+              color: isDark ? AppColors.white : AppColors.ink,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          content: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 500),
-            child: SingleChildScrollView(
-              child: Form(
-                key: formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SraInput(
-                      controller: emailController,
-                      label: l10n.emailLabel,
-                      placeholder: "e.g. staff@srahotel.com",
-                      validator: (val) => val == null || val.isEmpty ? l10n.requiredField : null,
+          content: SingleChildScrollView(
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SraInput(
+                    controller: nomController,
+                    placeholder: "Nom",
+                    validator: (v) => v == null || v.isEmpty ? 'Champ obligatoire' : null,
+                  ),
+                  AppDimensions.vGapMd,
+                  SraInput(
+                    controller: prenomsController,
+                    placeholder: "Prénoms",
+                    validator: (v) => v == null || v.isEmpty ? 'Champ obligatoire' : null,
+                  ),
+                  AppDimensions.vGapMd,
+                  SraInput(
+                    controller: loginController,
+                    placeholder: "Identifiant / Email",
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (v) => v == null || v.isEmpty ? 'Champ obligatoire' : null,
+                  ),
+                  AppDimensions.vGapMd,
+                  SraInput(
+                    controller: telController,
+                    placeholder: "Téléphone",
+                    keyboardType: TextInputType.phone,
+                  ),
+                  AppDimensions.vGapMd,
+                  DropdownButtonFormField<String>(
+                    initialValue: selectedRole,
+                    decoration: const InputDecoration(
+                      labelText: "Rôle de l'utilisateur",
+                      border: OutlineInputBorder(),
                     ),
-                    const SizedBox(height: AppDimensions.spacingMd),
-                    SraInput(
-                      controller: nameController,
-                      label: l10n.lastNameLabel,
-                      placeholder: "e.g. Dupont",
-                      validator: (val) => val == null || val.isEmpty ? l10n.requiredField : null,
-                    ),
-                    const SizedBox(height: AppDimensions.spacingMd),
-                    SraInput(
-                      controller: preController,
-                      label: l10n.firstNameLabel,
-                      placeholder: "e.g. Jean",
-                      validator: (val) => val == null || val.isEmpty ? l10n.requiredField : null,
-                    ),
-                    const SizedBox(height: AppDimensions.spacingMd),
-                    SraInput(
-                      controller: phoneController,
-                      label: l10n.phoneLabel,
-                      placeholder: "e.g. +229 99 99 99 99",
-                    ),
-                    const SizedBox(height: AppDimensions.spacingMd),
-                    SraDropdown(
-                      value: selectedRole,
-                      label: l10n.roleLabel,
-                      placeholder: l10n.selectOption,
-                      items: const ["admin", "receptionist", "housekeeper", "client"],
-                      itemLabels: {
-                        "admin": l10n.adminRole,
-                        "receptionist": l10n.receptionistRole,
-                        "housekeeper": l10n.housekeeperRole,
-                        "client": l10n.clientRole,
-                      },
-                      onChanged: (val) {
-                        if (val != null) selectedRole = val;
-                      },
-                    ),
-                  ],
-                ),
+                    items: [
+                      DropdownMenuItem(value: 'admin', child: Text(l10n.adminRole)),
+                      DropdownMenuItem(value: 'receptionist', child: Text(l10n.receptionistRole)),
+                      const DropdownMenuItem(value: 'housekeeper', child: Text('Gouvernante')),
+                      const DropdownMenuItem(value: 'client', child: Text('Client')),
+                    ],
+                    onChanged: (v) {
+                      if (v != null) selectedRole = v;
+                    },
+                  ),
+                ],
               ),
             ),
           ),
           actions: [
-            SraButton(
+            SraButton.secondary(
               label: l10n.cancelLabel,
-              isOutlined: true,
-              onPressed: () => Navigator.of(ctx).pop(),
+              onPressed: () => Navigator.pop(ctx),
             ),
-            const SizedBox(width: AppDimensions.spacingSm),
             SraButton(
-              label: l10n.validateLabel,
+              label: 'Enregistrer',
               onPressed: () {
                 if (formKey.currentState!.validate()) {
-                  final u = StaffUser(
+                  final newUser = StaffUser(
                     id: user?.id ?? '',
-                    login: emailController.text,
+                    login: loginController.text,
                     role: selectedRole,
-                    nom: nameController.text,
-                    prenoms: preController.text,
-                    telephone: phoneController.text,
-                    sexe: user?.sexe ?? "M",
-                    pays: user?.pays ?? "Benin",
-                    adresse: user?.adresse ?? "",
+                    nom: nomController.text,
+                    prenoms: prenomsController.text,
+                    telephone: telController.text,
+                    sexe: user?.sexe ?? 'M',
+                    pays: user?.pays ?? 'Côte d\'Ivoire',
+                    adresse: user?.adresse ?? '',
                     isActive: user?.isActive ?? 1,
                   );
+
                   if (user == null) {
-                    context.read<UserBloc>().add(CreateUserEvent(u));
+                    context.read<UserBloc>().add(CreateUserEvent(newUser));
                   } else {
-                    context.read<UserBloc>().add(UpdateUserEvent(u));
+                    context.read<UserBloc>().add(UpdateUserEvent(newUser));
                   }
-                  Navigator.of(ctx).pop();
+                  Navigator.pop(ctx);
                 }
               },
             ),

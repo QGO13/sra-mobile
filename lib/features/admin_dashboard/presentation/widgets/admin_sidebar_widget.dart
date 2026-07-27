@@ -33,8 +33,8 @@ class AdminSidebarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final backgroundColor = isDark ? AppColors.imperialNightBlue : AppColors.surfaceLight;
-    final borderColor = isDark ? Colors.white10 : AppColors.softGrey;
+    final backgroundColor = isDark ? AppColors.darkSurface : AppColors.surfaceLight;
+    final borderColor = isDark ? AppColors.darkBorder : AppColors.mist;
 
     final sidebarWidth = isExtended ? 230.0 : 72.0;
 
@@ -50,33 +50,7 @@ class AdminSidebarWidget extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // ── Toggle Icon Button Header ──
-          Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: isExtended ? AppDimensions.spacingMd : 12.0,
-              vertical: AppDimensions.spacingSm + 4,
-            ),
-            child: Row(
-              mainAxisAlignment: isExtended ? MainAxisAlignment.spaceBetween : MainAxisAlignment.center,
-              children: [
-                if (isExtended)
-                  IconButton(
-                    tooltip: "Réduire le menu",
-                    icon: const Icon(Icons.menu_open_outlined, color: AppColors.champagneGold, size: 22),
-                    onPressed: onToggleExtend,
-                  )
-                else
-                  IconButton(
-                    tooltip: "Agrandir le menu",
-                    icon: const Icon(Icons.menu_outlined, color: AppColors.champagneGold, size: 22),
-                    onPressed: onToggleExtend,
-                  ),
-              ],
-            ),
-          ),
-          const SizedBox(height: AppDimensions.spacingXs),
-
-          // ── Navigation Items List ──
+          const SizedBox(height: AppDimensions.spacingSm),
           Expanded(
             child: ListView.builder(
               itemCount: items.length,
@@ -101,7 +75,7 @@ class AdminSidebarWidget extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? AppColors.champagneGold.withValues(alpha: isDark ? 0.18 : 0.12)
+                              ? AppColors.gold.withValues(alpha: isDark ? 0.18 : 0.12)
                               : Colors.transparent,
                           borderRadius: BorderRadius.circular(AppDimensions.radiusSm + 2),
                         ),
@@ -112,8 +86,8 @@ class AdminSidebarWidget extends StatelessWidget {
                               isSelected ? item.selectedIcon : item.icon,
                               size: 20,
                               color: isSelected
-                                  ? AppColors.champagneGold
-                                  : (isDark ? AppColors.darkTextMuted : AppColors.textMuted),
+                                  ? (isDark ? AppColors.goldLight2 : AppColors.gold)
+                                  : (isDark ? AppColors.overlayDarkMedium : AppColors.inkMuted),
                             ),
                             if (isExtended) ...[
                               const SizedBox(width: AppDimensions.spacingSm + 4),
@@ -126,8 +100,8 @@ class AdminSidebarWidget extends StatelessWidget {
                                     fontSize: 13,
                                     fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                                     color: isSelected
-                                        ? AppColors.champagneGold
-                                        : (isDark ? AppColors.darkTextSecondary : AppColors.ink),
+                                        ? (isDark ? AppColors.goldLight2 : AppColors.gold)
+                                        : (isDark ? AppColors.white : AppColors.ink),
                                   ),
                                 ),
                               ),
